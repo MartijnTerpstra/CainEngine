@@ -1,0 +1,9 @@
+{
+  "selectedRenderer": "DX11",
+  "renderers": [
+    {
+      "ShortName": "DX11",
+      "HdrEnabled": false
+    }
+  ]
+}

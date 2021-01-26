@@ -1,0 +1,12 @@
+{
+  "renderer": "DX11",
+  "display": {
+    "fullScreenMode": "Windowed",
+    "pixelFormat": "UnormRGBA8",
+    "resolution": {
+      "width": 1280,
+      "height": 720
+    },
+    "refreshRate": 60
+  }
+}

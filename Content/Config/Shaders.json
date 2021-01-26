@@ -1,0 +1,28 @@
+[
+  {
+    "source": "PixelShader.hlsl",
+    "name": "PixelShader",
+    "shaderType": "Pixel",
+    "entryPoint": "main",
+    "renderers": [
+      "DX11",
+      "DX12"
+    ],
+    "defines": [
+      {
+        "key": "COLOR",
+        "value": "float4(1,1,1,1)"
+      }
+    ]
+  },
+  {
+    "source": "VertexShader.hlsl",
+    "name": "VertexShader",
+    "shaderType": "Vertex",
+    "entryPoint": "main",
+    "renderers": [
+      "DX11",
+      "DX12"
+    ]
+  }
+]
