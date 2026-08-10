@@ -16,6 +16,6 @@ target_link_libraries(${PROJECT_NAME}
 	PUBLIC absl::inlined_vector
 	PRIVATE nlohmann_json::nlohmann_json)
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 
 add_precompiled_header(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/Precomp.h" "${PROJECT_SOURCE_DIR}/Precomp.cpp")

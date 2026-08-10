@@ -60,7 +60,7 @@ public:
 		auto& modelManager = m_engine.GetModelManager();
 		auto& renderer = m_engine.GetRenderer();
 
-		m_camera = scene.Create(u8"Main camera");
+		m_camera = scene.Create("Main camera");
 
 		scene.GetTransform(m_camera).SetPosition(float3(0, 0, 10));
 		//m_camera.AddComponent<Graphics::Camera>(Graphics::Camera(90, 1, 100));
@@ -85,7 +85,7 @@ public:
 
 		model.second->AddSubMesh(0, 3, material.first);
 
-		m_simpleTriangle = scene.Create(u8"Simple triangle");
+		m_simpleTriangle = scene.Create("Simple triangle");
 		modelManager.AddEntity(model.first, scene, m_simpleTriangle);
 		//m_simpleTriangle.AddComponent<shared_ptr<Graphics::Model>>(move(model));
 	}

@@ -1,12 +1,11 @@
 #pragma once
 
 #include <cstdio>
+#include <string_view>
 
 namespace Common {
 
 void Log(LogSeverity severity, string str);
-
-void BreakOnLogSeverity(LogSeverity minimalSeverity);
 
 template<typename... Args>
 [[noreturn]] constexpr inline void FatalError(const char* formatStr, Args&&... args)
@@ -14,8 +13,6 @@ template<typename... Args>
 	auto formattedString = mst::to_printf_string(formatStr, std::forward<Args>(args)...);
 
 	::Common::Log(LogSeverity::FatalError, formattedString.c_str());
-
-	exit(1);
 }
 
 template<typename... Args>

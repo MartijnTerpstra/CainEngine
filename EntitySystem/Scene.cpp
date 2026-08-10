@@ -5,17 +5,32 @@
 using namespace ::CainEngine::EntitySystem;
 
 Scene::Scene()
-{
-}
+{ }
 
 Scene::~Scene()
 {
+	for(int32_t i = 0; i < m_entityCount; ++i)
+	{
+		m_entities[i].~EntityData();
+	}
+
+	// mst::aligned_free() doesn't tolerate nullptr (it unconditionally reads
+	// memory - 1), and a Scene that never created an entity never allocated.
+	if(m_entities)
+	{
+		mst::aligned_free(m_entities);
+	}
+
+	if(m_entitySkips)
+	{
+		mst::aligned_free(m_entitySkips);
+	}
 }
 
 EntityID Scene::Create()
 {
 	int32_t newId = RemoveFromFreeList();
-	if (newId == -1)
+	if(newId == -1)
 	{
 		COMMON_ASSERT(m_entityCount < 0xFFFFF - 1);
 
@@ -24,7 +39,7 @@ EntityID Scene::Create()
 
 	auto& e = m_entities[newId];
 	e.parent = EntityID::Null;
-	e.position = { 0,0,0 };
+	e.position = { 0, 0, 0 };
 	e.orientation = EulerAngles{ 0, 0, 0, euler_rotation_order::zxy };
 	e.globalMatrix = matrix4x3::identity;
 	e.hasDirtyTransform = false;
@@ -33,7 +48,14 @@ EntityID Scene::Create()
 	e.freeListNext = -1;
 	e.uniqueId = nullptr;
 
-	return EntityID{ newId, e.version };
+	auto entityId = EntityID{ newId, e.version };
+
+	for(const auto& [_, handler] : m_createHandlers)
+	{
+		handler(*this, entityId);
+	}
+
+	return entityId;
 }
 
 EntityID Scene::Create(string name)
@@ -48,7 +70,7 @@ EntityID Scene::Find(string_view name) const noexcept
 {
 	const auto iter = m_names.find(name);
 
-	if (iter == m_names.end())
+	if(iter == m_names.end())
 		return EntityID::Null;
 
 	return iter->second;
@@ -58,7 +80,7 @@ EntityID Scene::Find(const uuid& id) const noexcept
 {
 	const auto iter = m_uniqueIds.find(id);
 
-	if (iter == m_uniqueIds.end())
+	if(iter == m_uniqueIds.end())
 		return EntityID::Null;
 
 	return iter->second;
@@ -68,12 +90,10 @@ void Scene::Destroy(EntityID entity, bool recursive)
 {
 	COMMON_ASSERT(IsAlive(entity));
 
-	for (auto& handler : m_destroyHandlers)
+	for(auto& handler : m_destroyHandlers)
 	{
 		handler.second(*this, entity);
 	}
-
-	--m_liveEntityCount;
 
 	ResetParentForDestroy(entity);
 
@@ -81,7 +101,7 @@ void Scene::Destroy(EntityID entity, bool recursive)
 
 	DestroyAndAddToFreeList(index);
 
-	if (recursive)
+	if(recursive)
 	{
 		DestroyChilds(index);
 	}
@@ -93,7 +113,7 @@ void Scene::Destroy(EntityID entity, bool recursive)
 
 bool Scene::IsAlive(EntityID entity) const noexcept
 {
-	if (entity.IsNull())
+	if(entity.IsNull())
 		return false;
 
 	COMMON_ASSERT(entity.Index() < m_entityCount);
@@ -105,14 +125,14 @@ bool Scene::IsAlive(EntityID entity) const noexcept
 
 void Scene::Clear() noexcept
 {
-	if (m_entityCount == 0)
+	if(m_entityCount == 0)
 		return;
 
-	if (m_liveEntityCount == 0)
+	if(m_liveEntityCount == 0)
 		return;
 
 	auto index = m_entitySkips[0];
-	while (index != m_entityCount)
+	while(index != m_entityCount)
 	{
 		auto& e = m_entities[index];
 
@@ -141,12 +161,12 @@ void Scene::SetName(EntityID entity, string name)
 
 	auto& e = m_entities[entity.Index()];
 
-	if (!e.name.empty())
+	if(!e.name.empty())
 	{
 		m_names.erase(e.name);
 	}
 
-	if (name.empty())
+	if(name.empty())
 	{
 		e.name = {};
 	}
@@ -183,23 +203,23 @@ void Scene::SetParent(EntityID entity, EntityID parent)
 	COMMON_ASSERT(IsAlive(entity));
 	COMMON_ASSERT(entity != parent);
 	COMMON_ASSERT(!parent || IsAlive(parent));
-	COMMON_ASSERT(!parent || HasParent(parent, entity));
+	COMMON_ASSERT(!parent || !HasParent(parent, entity));
 
 	auto& e = m_entities[entity.Index()];
 
 	// No changes
-	if (e.parent == parent)
+	if(e.parent == parent)
 		return;
 
-	if (e.parent)
+	if(e.parent)
 		RemoveChild(e.parent.Index(), entity);
 
 	e.parent = parent;
-	if (parent)
+	if(parent)
 	{
 		m_hierarchy[parent.Index()].emplace_back(entity);
 
-		if (GetFromID(parent).hasDirtyTransform)
+		if(GetFromID(parent).hasDirtyTransform)
 		{
 			SetDirtyWithNewParent(entity);
 			return;
@@ -221,7 +241,7 @@ array_view<EntityID> Scene::GetChildren(EntityID entity) const noexcept
 
 	const auto iter = m_hierarchy.find(entity.Index());
 
-	if (iter == m_hierarchy.end())
+	if(iter == m_hierarchy.end())
 		return {};
 
 	return iter->second;
@@ -234,7 +254,7 @@ void Scene::SetUniqueID(EntityID entity, const uuid& id)
 
 	auto& e = m_entities[entity.Index()];
 
-	if (e.uniqueId)
+	if(e.uniqueId)
 	{
 		m_uniqueIds.erase(*e.uniqueId);
 	}
@@ -255,56 +275,58 @@ uint32_t Scene::LiveEntities() const noexcept
 	return m_liveEntityCount;
 }
 
+uint32_t Scene::Capacity() const noexcept
+{
+	return static_cast<uint32_t>(m_capacity);
+}
+
 uint32_t Scene::DeadEntities() const noexcept
 {
 	return m_deadEntityCount;
 }
 
-void Scene::AddCreateCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate)
+void Scene::AddCreateCallback(
+	void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate)
 {
 	m_createHandlers.emplace_back(managerPtr, std::move(onCreate));
 }
 
-void Scene::AddDestroyCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy)
+void Scene::AddDestroyCallback(
+	void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy)
 {
 	m_destroyHandlers.emplace_back(managerPtr, std::move(onDestroy));
 }
 
-void Scene::AddTransformChangeCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)> onTransformChange)
+void Scene::AddTransformChangeCallback(void* managerPtr,
+	std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)> onTransformChange)
 {
 	m_transformChangeHandlers.emplace_back(managerPtr, std::move(onTransformChange));
 }
 
 void Scene::RemoveAllCallbacks(void* managerPtr) noexcept
 {
-	mst::iterate_remove(m_createHandlers, [managerPtr](auto& p)
-	{
-		return p.first == managerPtr;
-	});
+	std::erase_if(m_createHandlers, [managerPtr](auto& p) { return p.first == managerPtr; });
 
-	mst::iterate_remove(m_destroyHandlers, [managerPtr](auto& p)
-	{
-		return p.first == managerPtr;
-	});
+	std::erase_if(m_destroyHandlers, [managerPtr](auto& p) { return p.first == managerPtr; });
 
-	mst::iterate_remove(m_transformChangeHandlers, [managerPtr](auto& p)
-	{
-		return p.first == managerPtr;
-	});
+	std::erase_if(
+		m_transformChangeHandlers, [managerPtr](auto& p) { return p.first == managerPtr; });
 }
 
 void Scene::BuildMatrices() noexcept
 {
-	for (auto it = m_dirtyTransforms.rbegin(); it != m_dirtyTransforms.rend(); ++it)
+	for(auto it = m_dirtyTransforms.rbegin(); it != m_dirtyTransforms.rend(); ++it)
 	{
 		const auto entity = *it;
 
 		auto& e = m_entities[entity.Index()];
 
-		e.globalMatrix = std::visit([this, &e](const auto& o) { return GenerateLocalMatrixImpl(e.position, o); }, e.orientation);
+		e.globalMatrix =
+			std::visit([this, &e](const auto& o) { return GenerateLocalMatrixImpl(e.position, o); },
+				e.orientation);
 		e.hasDirtyTransform = false;
 
-		if (e.parent)
+		if(e.parent)
 		{
 			const auto& parentMatrix = GetGlobalMatrix(e.parent);
 
@@ -326,9 +348,9 @@ void Scene::RemoveChild(int32_t parent, EntityID child) noexcept
 {
 	auto& childs = m_hierarchy.at(parent);
 
-	for (auto it = childs.begin(); it != childs.end(); ++it)
+	for(auto it = childs.begin(); it != childs.end(); ++it)
 	{
-		if (*it == child)
+		if(*it == child)
 		{
 			childs.erase(it);
 			return;
@@ -340,9 +362,9 @@ void Scene::ClearChilds(int32_t parent)
 {
 	const auto iter = m_hierarchy.find(parent);
 
-	if (iter != m_hierarchy.end())
+	if(iter != m_hierarchy.end())
 	{
-		for (auto& child : iter->second)
+		for(auto& child : iter->second)
 		{
 			auto& e = m_entities[child.Index()];
 			e.parent = EntityID::Null;
@@ -357,9 +379,9 @@ void Scene::DestroyChilds(int32_t parent)
 {
 	const auto iter = m_hierarchy.find(parent);
 
-	if (iter != m_hierarchy.end())
+	if(iter != m_hierarchy.end())
 	{
-		for (auto& child : iter->second)
+		for(auto& child : iter->second)
 		{
 			const auto index = child.Index();
 
@@ -376,11 +398,11 @@ void Scene::DestroyAndAddToFreeList(int32_t entityIndex)
 	auto& e = m_entities[entityIndex];
 
 	e.version = (e.version + 1) & 0xFFF;
-	if (!e.name.empty())
+	if(!e.name.empty())
 	{
 		m_names.erase(e.name);
 	}
-	if (e.uniqueId)
+	if(e.uniqueId)
 	{
 		m_uniqueIds.erase(*e.uniqueId);
 	}
@@ -395,15 +417,15 @@ void Scene::SetDirty(EntityID entity)
 	auto& e = m_entities[entityIndex];
 
 	// Already set to dirty, ignore
-	if (e.hasDirtyTransform)
+	if(e.hasDirtyTransform)
 		return;
 
 	e.hasDirtyTransform = true;
 	const auto iter = m_hierarchy.find(entityIndex);
 
-	if (iter != m_hierarchy.end())
+	if(iter != m_hierarchy.end())
 	{
-		for (auto child : iter->second)
+		for(auto child : iter->second)
 		{
 			SetDirty(child);
 		}
@@ -418,7 +440,7 @@ void Scene::SetDirtyWithNewParent(EntityID entity)
 
 	auto parent = GetFromID(entity).parent;
 
-	while (parent && GetFromID(parent).hasDirtyTransform)
+	while(parent && GetFromID(parent).hasDirtyTransform)
 	{
 		m_dirtyTransforms.push_back(parent);
 
@@ -440,7 +462,7 @@ int32_t Scene::RemoveFromFreeList() noexcept
 {
 	const auto entityIndex = m_freeListHead;
 
-	if (m_freeListHead == -1) [[unlikely]]
+	if(m_freeListHead == -1) [[unlikely]]
 		return m_freeListHead;
 
 	++m_liveEntityCount;
@@ -450,7 +472,7 @@ int32_t Scene::RemoveFromFreeList() noexcept
 
 	const bool containsRight = entityIndex != lastIndex && m_entitySkips[entityIndex + 1] != 0;
 
-	if (containsRight)
+	if(containsRight)
 	{
 		m_entitySkips[entityIndex + m_entitySkips[entityIndex] - 1] =
 			m_entitySkips[entityIndex + 1] = m_entitySkips[entityIndex] - 1;
@@ -461,7 +483,7 @@ int32_t Scene::RemoveFromFreeList() noexcept
 	else
 	{
 		m_freeListHead = m_entities[entityIndex].freeListNext;
-		if (m_freeListHead != -1)
+		if(m_freeListHead != -1)
 		{
 			m_entities[m_freeListHead].freeListPrev = -1;
 		}
@@ -481,16 +503,15 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 	const uint8_t containsLeft = entityIndex != 0 && m_entitySkips[entityIndex - 1] != 0;
 	const uint8_t containsRight = entityIndex != lastIndex && m_entitySkips[entityIndex + 1] != 0;
 
-	switch (containsLeft | (containsRight << 1))
+	switch(containsLeft | (containsRight << 1))
 	{
 		// Contains none
-	[[likely]] case 0:
-	{
+	[[likely]] case 0: {
 		m_entitySkips[entityIndex] = 1;
 
 		// Set as start of the free list
 		m_entities[entityIndex].freeListNext = m_freeListHead;
-		if (m_freeListHead != -1)
+		if(m_freeListHead != -1)
 		{
 			m_entities[m_freeListHead].freeListPrev = entityIndex;
 		}
@@ -498,8 +519,7 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 		break;
 	}
 		// Contains left
-	case 1:
-	{
+	case 1: {
 		const auto skipStart = entityIndex - m_entitySkips[entityIndex - 1];
 		const auto skipCount = entityIndex - skipStart + 1;
 
@@ -508,8 +528,7 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 		break;
 	}
 		// Contains right
-	case 2:
-	{
+	case 2: {
 		const auto skipEnd = entityIndex + m_entitySkips[entityIndex + 1];
 
 		const auto skipCount = skipEnd - entityIndex + 1;
@@ -524,7 +543,7 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 		m_entities[entityIndex].freeListPrev = followingPrev;
 		m_entities[entityIndex].freeListNext = followingNext;
 
-		if (followingPrev != -1)
+		if(followingPrev != -1)
 		{
 			m_entities[followingPrev].freeListNext = entityIndex;
 		}
@@ -532,15 +551,14 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 		{
 			m_freeListHead = entityIndex;
 		}
-		if (followingNext != -1)
+		if(followingNext != -1)
 		{
 			m_entities[followingNext].freeListPrev = entityIndex;
 		}
 		break;
 	}
 		// Contains both
-	case 3:
-	{
+	case 3: {
 		const auto skipStart = entityIndex - m_entitySkips[entityIndex - 1];
 		const auto skipEnd = entityIndex + m_entitySkips[entityIndex + 1];
 
@@ -554,7 +572,7 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 		const auto followingNext = m_entities[entityIndex + 1].freeListNext;
 		const auto followingPrev = m_entities[entityIndex + 1].freeListPrev;
 
-		if (followingPrev != -1)
+		if(followingPrev != -1)
 		{
 			m_entities[followingPrev].freeListNext = followingNext;
 		}
@@ -563,7 +581,7 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 			m_freeListHead = followingNext;
 		}
 
-		if (followingNext != -1)
+		if(followingNext != -1)
 		{
 			m_entities[followingNext].freeListPrev = followingPrev;
 		}
@@ -577,7 +595,7 @@ void Scene::ResetParentForDestroy(EntityID entity) noexcept
 {
 	auto& e = m_entities[entity.Index()];
 
-	if (e.parent)
+	if(e.parent)
 		RemoveChild(e.parent.Index(), entity);
 }
 
@@ -585,24 +603,27 @@ int32_t Scene::CreateNew()
 {
 	++m_liveEntityCount;
 
-	if (m_entityCount == m_capacity) [[unlikely]]
+	if(m_entityCount == m_capacity) [[unlikely]]
 	{
-		if (m_capacity == 0) [[unlikely]]
+		if(m_capacity == 0) [[unlikely]]
 		{
 			m_capacity = 256;
-			m_entities = reinterpret_cast<EntityData*>(mst::aligned_malloc(m_capacity * sizeof(EntityData), alignof(EntityData)));
-			m_entitySkips = reinterpret_cast<int32_t*>(mst::aligned_realloc(m_entitySkips, m_capacity * sizeof(int32_t) + sizeof(int32_t), 64));
+			m_entities = reinterpret_cast<EntityData*>(
+				mst::aligned_malloc(m_capacity * sizeof(EntityData), alignof(EntityData)));
+			m_entitySkips = reinterpret_cast<int32_t*>(mst::aligned_realloc(
+				m_entitySkips, m_capacity * sizeof(int32_t) + sizeof(int32_t), 64));
 			m_entitySkips[0] = 0;
 		}
 		else
 		{
 			m_capacity <<= 1;
 
-			auto newEntities = reinterpret_cast<EntityData*>(mst::aligned_malloc(m_capacity * sizeof(EntityData), alignof(EntityData)));
+			auto newEntities = reinterpret_cast<EntityData*>(
+				mst::aligned_malloc(m_capacity * sizeof(EntityData), alignof(EntityData)));
 
-			for (int32_t i = 0; i < m_entityCount; ++i)
+			for(int32_t i = 0; i < m_entityCount; ++i)
 			{
-				new (newEntities + i) EntityData(std::move(m_entities[i]));
+				new(newEntities + i) EntityData(std::move(m_entities[i]));
 
 				m_entities[i].~EntityData();
 			}
@@ -611,12 +632,13 @@ int32_t Scene::CreateNew()
 
 			m_entities = newEntities;
 
-			m_entitySkips = reinterpret_cast<int32_t*>(mst::aligned_realloc(m_entitySkips, m_capacity * sizeof(int32_t) + sizeof(int32_t), 64));
+			m_entitySkips = reinterpret_cast<int32_t*>(mst::aligned_realloc(
+				m_entitySkips, m_capacity * sizeof(int32_t) + sizeof(int32_t), 64));
 		}
 	}
 
 	m_entitySkips[m_entityCount + 1] = 0;
-	new (m_entities + m_entityCount) EntityData();
+	new(m_entities + m_entityCount) EntityData();
 
 	return m_entityCount++;
 }
@@ -624,9 +646,9 @@ int32_t Scene::CreateNew()
 bool Scene::HasParent(EntityID entity, EntityID parent) const noexcept
 {
 	auto p = GetFromID(entity).parent;
-	while (p)
+	while(p)
 	{
-		if (parent == p) [[unlikely]]
+		if(parent == p) [[unlikely]]
 			return true;
 
 		p = GetFromID(p).parent;
@@ -635,12 +657,14 @@ bool Scene::HasParent(EntityID entity, EntityID parent) const noexcept
 	return false;
 }
 
-matrix4x3 Scene::GenerateLocalMatrixImpl(const float3& position, const Scene::EulerAngles& angles) const noexcept
+matrix4x3 Scene::GenerateLocalMatrixImpl(
+	const float3& position, const Scene::EulerAngles& angles) const noexcept
 {
 	return matrix4x3(position).rotated(angles.x, angles.y, angles.z, angles.order);
 }
 
-matrix4x3 Scene::GenerateLocalMatrixImpl(const float3& position, const quaternion& quat) const noexcept
+matrix4x3 Scene::GenerateLocalMatrixImpl(
+	const float3& position, const quaternion& quat) const noexcept
 {
 	return { position, quat };
 }

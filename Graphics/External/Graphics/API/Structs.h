@@ -10,7 +10,7 @@ constexpr uint32_t SHADER_MAGIC_NUMBER = Common::PackChars('c', 'e', 'c', 's');
 */
 struct CompiledShaderMetaData
 {
-	stack_string<64> shaderName;
+	static_string<64> shaderName;
 	ShaderType shaderType;
 	uint64_t memoryOffset;
 };

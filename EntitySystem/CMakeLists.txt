@@ -16,3 +16,5 @@ target_link_libraries(${PROJECT_NAME}
 	PUBLIC absl::flat_hash_map)
 
 add_precompiled_header(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/Precomp.h" "${PROJECT_SOURCE_DIR}/Precomp.cpp")
+
+add_subdirectory(Test)

@@ -39,5 +39,6 @@
 
 # CMake
 build/
+_build/
 out/
 Testing/

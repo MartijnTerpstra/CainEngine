@@ -24,12 +24,12 @@ public:
 private:
 	// Member variables
 
-	static vector<pair<stack_string<64>, API::VertexShader*>> m_vertexShaders;
-	static vector<pair<stack_string<64>, API::PixelShader*>> m_pixelShaders;
-	static vector<pair<stack_string<64>, API::ComputeShader*>> m_computeShaders;
-	static vector<pair<stack_string<64>, API::GeometryShader*>> m_geometryShaders;
-	static vector<pair<stack_string<64>, API::HullShader*>> m_hullShaders;
-	static vector<pair<stack_string<64>, API::DomainShader*>> m_domainShaders;
+	static vector<pair<static_string<64>, API::VertexShader*>> m_vertexShaders;
+	static vector<pair<static_string<64>, API::PixelShader*>> m_pixelShaders;
+	static vector<pair<static_string<64>, API::ComputeShader*>> m_computeShaders;
+	static vector<pair<static_string<64>, API::GeometryShader*>> m_geometryShaders;
+	static vector<pair<static_string<64>, API::HullShader*>> m_hullShaders;
+	static vector<pair<static_string<64>, API::DomainShader*>> m_domainShaders;
 };
 
 }

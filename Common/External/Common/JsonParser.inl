@@ -251,7 +251,7 @@ inline void Common::JsonDeclaration<T>::AddMember(const char* name, optional<T2>
 		}
 		else
 		{
-			(outValue.*member) = none;
+			(outValue.*memberObject) = none;
 		}
 	});
 }
@@ -279,7 +279,7 @@ inline void Common::JsonDeclaration<T>::AddMember(const char* name, optional<T2>
 		}
 		else
 		{
-			(outValue.*member) = none;
+			(outValue.*memberEnum) = none;
 		}
 	});
 }
@@ -491,7 +491,7 @@ inline void Common::JsonDeclaration<T>::AddMember(const char* name, optional<vec
 		}
 		else
 		{
-			(outValue.*member) = none;
+			(outValue.*memberObject) = none;
 		}
 	});
 }

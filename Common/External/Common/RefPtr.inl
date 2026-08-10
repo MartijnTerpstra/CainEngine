@@ -83,7 +83,7 @@ template<typename T>
 template<typename T2>
 inline Common::RefPtr<T>& Common::RefPtr<T>::operator = (RefPtr<T2>&& other) noexcept
 {
-	RefPtr(move(_Right)).swap(*this);
+	RefPtr(move(other)).swap(*this);
 	return (*this);
 }
 

@@ -91,21 +91,21 @@ void Scene::ForEach(Func func) const noexcept
 
 		EntityID id{ index, e.version };
 
-		if constexpr (std::is_invocable_v<Func, EntityID, CTransform3>)
+		if constexpr (std::is_invocable_v<Func, EntityID, CTransform>)
 		{
-			std::invoke(func, id, CTransform3{ this, id });
+			std::invoke(func, id, CTransform{ this, id });
 		}
 		else if constexpr (std::is_invocable_v<Func, EntityID, string_view>)
 		{
 			std::invoke(func, id, e.name);
 		}
-		else if constexpr (std::is_invocable_v<Func, EntityID, CTransform3, string_view>)
+		else if constexpr (std::is_invocable_v<Func, EntityID, CTransform, string_view>)
 		{
-			std::invoke(func, id, CTransform3{ this, id }, e.name);
+			std::invoke(func, id, CTransform{ this, id }, e.name);
 		}
-		else if constexpr (std::is_invocable_v<Func, EntityID, string_view, CTransform3>)
+		else if constexpr (std::is_invocable_v<Func, EntityID, string_view, CTransform>)
 		{
-			std::invoke(func, id, e.name, CTransform3{ this, id });
+			std::invoke(func, id, e.name, CTransform{ this, id });
 		}
 		else // if constexpr (std::is_invocable_v<func, EntityID>)
 		{
@@ -129,21 +129,21 @@ void Scene::ForEach(Func func, Arg&& arg) const noexcept
 
 		EntityID id{ index, e.version };
 
-		if constexpr (std::is_invocable_v<Func, Arg, EntityID, CTransform3>)
+		if constexpr (std::is_invocable_v<Func, Arg, EntityID, CTransform>)
 		{
-			std::invoke(func, std::forward<Arg>(arg), id, CTransform3{ this, id });
+			std::invoke(func, std::forward<Arg>(arg), id, CTransform{ this, id });
 		}
 		else if constexpr (std::is_invocable_v<Func, Arg, EntityID, string_view>)
 		{
 			std::invoke(func, std::forward<Arg>(arg), id, e.name);
 		}
-		else if constexpr (std::is_invocable_v<Func, Arg, EntityID, CTransform3, string_view>)
+		else if constexpr (std::is_invocable_v<Func, Arg, EntityID, CTransform, string_view>)
 		{
-			std::invoke(func, std::forward<Arg>(arg), id, CTransform3{ this, id }, e.name);
+			std::invoke(func, std::forward<Arg>(arg), id, CTransform{ this, id }, e.name);
 		}
-		else if constexpr (std::is_invocable_v<Func, Arg, EntityID, string_view, CTransform3>)
+		else if constexpr (std::is_invocable_v<Func, Arg, EntityID, string_view, CTransform>)
 		{
-			std::invoke(func, std::forward<Arg>(arg), id, e.name, CTransform3{ this, id });
+			std::invoke(func, std::forward<Arg>(arg), id, e.name, CTransform{ this, id });
 		}
 		else // if constexpr (std::is_invocable_v<Func, Arg, EntityID>)
 		{

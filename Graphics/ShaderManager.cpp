@@ -2,12 +2,12 @@
 
 using namespace ::CainEngine::Graphics;
 
-vector<pair<stack_string<64>, API::VertexShader*>> ShaderManager::m_vertexShaders;
-vector<pair<stack_string<64>, API::PixelShader*>> ShaderManager::m_pixelShaders;
-vector<pair<stack_string<64>, API::ComputeShader*>> ShaderManager::m_computeShaders;
-vector<pair<stack_string<64>, API::GeometryShader*>> ShaderManager::m_geometryShaders;
-vector<pair<stack_string<64>, API::HullShader*>> ShaderManager::m_hullShaders;
-vector<pair<stack_string<64>, API::DomainShader*>> ShaderManager::m_domainShaders;
+vector<pair<static_string<64>, API::VertexShader*>> ShaderManager::m_vertexShaders;
+vector<pair<static_string<64>, API::PixelShader*>> ShaderManager::m_pixelShaders;
+vector<pair<static_string<64>, API::ComputeShader*>> ShaderManager::m_computeShaders;
+vector<pair<static_string<64>, API::GeometryShader*>> ShaderManager::m_geometryShaders;
+vector<pair<static_string<64>, API::HullShader*>> ShaderManager::m_hullShaders;
+vector<pair<static_string<64>, API::DomainShader*>> ShaderManager::m_domainShaders;
 
 ShaderManager::ShaderManager()
 {

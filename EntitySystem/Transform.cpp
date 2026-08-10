@@ -114,10 +114,15 @@ void Transform::Reset()
 	m_scene->SetDirty(m_entity);
 }
 
+EntityID Transform::Entity() const noexcept
+{
+	return m_entity;
+}
+
 void Transform::CopyTo(Transform& other) const
 {
 	COMMON_ASSERT(m_entity != other.m_entity);
-	COMMON_ASSERT(m_scene != other.m_scene);
+	COMMON_ASSERT(m_scene == other.m_scene);
 
 	const auto& thisData = GetData();
 	auto& otherData = other.GetData();
@@ -125,7 +130,7 @@ void Transform::CopyTo(Transform& other) const
 	otherData.position = thisData.position;
 	otherData.orientation = thisData.orientation;
 
-	m_scene->SetDirty(other.m_entity);
+	other.m_scene->SetDirty(other.m_entity);
 }
 
 const Scene::EntityData& Transform::GetData() const noexcept

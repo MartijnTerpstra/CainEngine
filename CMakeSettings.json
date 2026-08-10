@@ -5,19 +5,14 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "${projectDir}\\..\\_build\\CainEngine\\${name}",
-      "installRoot": "${projectDir}\\..\\_install\\CainEngine\\${name}",
+      "buildRoot": "${projectDir}\\_build\\CainEngine\\${name}",
+      "installRoot": "${projectDir}\\_install\\CainEngine\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "BUILD_TESTING",
-          "value": "False",
-          "type": "BOOL"
-        },
-        {
-          "name": "MST_RUN_TESTS",
           "value": "True",
           "type": "BOOL"
         }
@@ -30,8 +25,8 @@
       "remoteMachineName": "${defaultRemoteMachineName}",
       "remoteCMakeListsRoot": "/var/tmp/src/${workspaceHash}/${name}",
       "cmakeExecutable": "/usr/local/bin/cmake",
-      "buildRoot": "${projectDir}\\..\\_build\\CainEngine\\${name}",
-      "installRoot": "${projectDir}\\..\\_install\\CainEngine\\${name}",
+      "buildRoot": "${projectDir}\\_build\\CainEngine\\${name}",
+      "installRoot": "${projectDir}\\_install\\CainEngine\\${name}",
       "remoteBuildRoot": "/tmp/projects/CPSC/build/${name}",
       "remoteInstallRoot": "/tmp/projects/CPSC/install/${name}",
       "remoteCopySources": true,
@@ -57,8 +52,8 @@
       "name": "Windows-x64-Release",
       "generator": "Ninja",
       "configurationType": "Release",
-      "buildRoot": "${projectDir}\\..\\_build\\CainEngine\\${name}",
-      "installRoot": "${projectDir}\\..\\_install\\CainEngine\\${name}",
+      "buildRoot": "${projectDir}\\_build\\CainEngine\\${name}",
+      "installRoot": "${projectDir}\\_install\\CainEngine\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",

@@ -97,10 +97,15 @@ euler_rotation_order CTransform::RotationOrder() const noexcept
 	return euler_rotation_order::zxy;
 }
 
+EntityID CTransform::Entity() const noexcept
+{
+	return m_entity;
+}
+
 void CTransform::CopyTo(Transform& other) const
 {
 	COMMON_ASSERT(m_entity != other.m_entity);
-	COMMON_ASSERT(m_scene != other.m_scene);
+	COMMON_ASSERT(m_scene == other.m_scene);
 
 	const auto& thisData = GetData();
 	auto& otherData = other.GetData();

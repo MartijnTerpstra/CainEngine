@@ -57,11 +57,10 @@ inline constexpr ::std::nullopt_t none = ::std::nullopt;
 #include <mflag.h>
 #include <malgorithm.h>
 #include <mthreading_slim.h>
-#include <mstack_string.h>
+#include <mstatic_string.h>
 #include <mcompiletime.h>
 #include <moptional.h>
 #include <mplatform.h>
-#include <mstack_string.h>
 #include <marray_view.h>
 #include <marraymap.h>
 #include <maligned_malloc.h>
@@ -88,9 +87,7 @@ using ::mst::sparse_set;
 using ::mst::colony;
 using ::mst::range;
 using ::mst::crange;
-
-template<size_t MaxElements>
-using stack_string = ::mst::stack_string<char, MaxElements>;
+using ::mst::static_string;
 
 typedef ::mst::math::vector<float, 2> float2;
 typedef ::mst::math::vector<float, 3> float3;
@@ -125,7 +122,7 @@ using absl::node_hash_map;
 
 namespace mst {
 
-template <typename H>
+template<typename H>
 inline H AbslHashValue(H state, const uuid& v)
 {
 	uint8_t bytes[sizeof(v)];
@@ -136,25 +133,40 @@ inline H AbslHashValue(H state, const uuid& v)
 
 }
 
-#define COMMON_DECLARE_NON_COPY(TypeName) \
-TypeName(TypeName&&) = delete; \
-TypeName(const TypeName&) = delete; \
-TypeName& operator = (TypeName&&) = delete; \
-TypeName& operator = (const TypeName&) = delete
+#define COMMON_DECLARE_NON_COPY(TypeName)                                                          \
+	TypeName(TypeName&&) = delete;                                                                 \
+	TypeName(const TypeName&) = delete;                                                            \
+	TypeName& operator=(TypeName&&) = delete;                                                      \
+	TypeName& operator=(const TypeName&) = delete
 
-#define COMMON_DECLARE_INTERFACE(TypeName) \
-protected: \
-TypeName() = default; \
-virtual ~TypeName() = 0; \
-COMMON_DECLARE_NON_COPY(TypeName)
+#define COMMON_DECLARE_INTERFACE(TypeName)                                                         \
+protected:                                                                                         \
+	TypeName() = default;                                                                          \
+	virtual ~TypeName() = 0;                                                                       \
+	COMMON_DECLARE_NON_COPY(TypeName)
 
-#if DEBUG_CHECKS
-#define COMMON_ASSERT(x) [&]() { if(!(x)) [[unlikely]] { Common::FatalError("Assertion failed: " #x); } }()
-#else // !DEBUG_CHECKS
-#define COMMON_ASSERT(x)
-#endif
+using FatalErrorHandlerFn = void (*)(std::string_view);
+
+void SetFatalErrorHandler(FatalErrorHandlerFn handler);
 
 namespace Common {
+
+#if DEBUG_CHECKS
+#define COMMON_ASSERT(x)                                                                           \
+	[&]() {                                                                                        \
+		if(!(x)) [[unlikely]]                                                                      \
+		{                                                                                          \
+			Common::FatalError("Assertion failed: " #x);                                           \
+		}                                                                                          \
+	}()
+void Unreachable();
+#else // !DEBUG_CHECKS
+#define COMMON_ASSERT(x)
+[[noreturn]] inline void Unreachable()
+{
+	std::unreachable();
+}
+#endif
 
 template<typename T>
 class RefPtr;
@@ -166,10 +178,7 @@ class BaseObject;
 
 constexpr uint32_t PackChars(char a, char b, char c, char d)
 {
-	return (uint32_t)d +
-		((uint32_t)c << 8) +
-		((uint32_t)b << 16) +
-		((uint32_t)a << 24);
+	return (uint32_t)d + ((uint32_t)c << 8) + ((uint32_t)b << 16) + ((uint32_t)a << 24);
 }
 
 string CombinePath(const string& left, const string& right);
