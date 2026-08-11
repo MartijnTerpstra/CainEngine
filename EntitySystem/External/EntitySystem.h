@@ -6,8 +6,14 @@ namespace CainEngine::EntitySystem {
 
 class Scene;
 class EntityID;
-class Transform;
-class CTransform;
+
+// Transform (mutable view) and CTransform (read-only view) are two instantiations of the same
+// TransformImpl<bool> template; see EntitySystem/Transform.h.
+template <bool IsConst>
+class TransformImpl;
+
+using Transform = TransformImpl<false>;
+using CTransform = TransformImpl<true>;
 
 };
 

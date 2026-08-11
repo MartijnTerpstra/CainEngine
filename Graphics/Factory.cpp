@@ -1,5 +1,6 @@
 #include "Precomp.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 struct Version
@@ -16,7 +17,7 @@ struct Version
 	{
 	}
 
-	string ToString() const
+	std::string ToString() const
 	{
 		return mst::to_printf_string("%u.%u.%u", Major(), Minor(), Revision());
 	}
@@ -67,7 +68,7 @@ Factory::~Factory()
 {
 }
 
-pair<int32_t, API::ITexture*> Factory::LoadTexture(Common::Source& source)
+std::pair<int32_t, API::ITexture*> Factory::LoadTexture(Common::Source& source)
 {
 	auto header = source.ReadStruct<ImageHeader>();
 
@@ -104,7 +105,7 @@ pair<int32_t, API::ITexture*> Factory::LoadTexture(Common::Source& source)
 		subresourceCount *= 6;
 	}
 
-	inlined_vector<vector<byte>, 16> subresourceDatas;
+	inlined_vector<std::vector<byte>, 16> subresourceDatas;
 	subresourceDatas.reserve(subresourceCount);
 
 	inlined_vector<API::PixelData, 16> subresources(subresourceCount);

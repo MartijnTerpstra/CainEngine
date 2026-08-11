@@ -3,8 +3,8 @@
 using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
-Renderer::Renderer(unique_ptr<API::IRenderer> renderer)
-	: m_renderer(move(renderer))
+Renderer::Renderer(std::unique_ptr<API::IRenderer> renderer)
+	: m_renderer(std::move(renderer))
 {
 }
 
@@ -17,12 +17,12 @@ uint32_t Renderer::ID() const
 	return m_renderer->ID();
 }
 
-string Renderer::ShortName() const
+std::string Renderer::ShortName() const
 {
 	return m_renderer->ShortName();
 }
 
-string Renderer::Name() const
+std::string Renderer::Name() const
 {
 	return m_renderer->Name();
 }
@@ -42,7 +42,7 @@ void Renderer::Flush()
 	m_renderer->Flush();
 }
 
-void Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const optional<SwapChainCreationSettings>& creationSettings)
+void Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	m_renderer->SetMainWindow(mainWindow, creationSettings);
 }

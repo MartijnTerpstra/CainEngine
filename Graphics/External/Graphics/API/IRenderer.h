@@ -13,9 +13,9 @@ public:
 
 	[[nodiscard]] virtual uint32_t ID() const noexcept = 0;
 
-	[[nodiscard]] virtual string ShortName() const noexcept = 0;
+	[[nodiscard]] virtual std::string ShortName() const noexcept = 0;
 
-	[[nodiscard]] virtual string Name() const noexcept = 0;
+	[[nodiscard]] virtual std::string Name() const noexcept = 0;
 
 	virtual void Init(flag<RendererInitFlags> initFlags) = 0;
 
@@ -25,7 +25,7 @@ public:
 
 	virtual void Flush() = 0;
 
-	virtual void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const optional<SwapChainCreationSettings>& creationSettings) = 0;
+	virtual void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) = 0;
 
 	virtual void HandleWindowResize() = 0;
 

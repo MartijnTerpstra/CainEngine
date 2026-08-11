@@ -2,6 +2,7 @@
 
 #include "EnumConverter.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 

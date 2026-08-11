@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 /*
 	Severity of the logging

@@ -16,12 +16,12 @@ uint32_t DX11Renderer::ID() const noexcept
 	return Common::PackChars('d', 'x', '1', '1');
 }
 
-string DX11Renderer::ShortName() const noexcept
+std::string DX11Renderer::ShortName() const noexcept
 {
 	return "DX11";
 }
 
-string DX11Renderer::Name() const noexcept
+std::string DX11Renderer::Name() const noexcept
 {
 	return "DirectX 11";
 }
@@ -134,7 +134,7 @@ void DX11Renderer::Flush()
 	m_context->Flush();
 }
 
-void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const optional<SwapChainCreationSettings>& creationSettings)
+void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	COMMON_CALLSTACK_CALL;
 

@@ -1,10 +1,11 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 class Source
 {
 	COMMON_DECLARE_NON_COPY(Source);
+
 public:
 	// ctor & dtor
 	Source();
@@ -21,7 +22,7 @@ public:
 	inline StructType ReadStruct();
 
 	template<typename T>
-	inline vector<T> ReadVector();
+	inline std::vector<T> ReadVector();
 
 private:
 	virtual bool Read(void* data, size_t dataSize) = 0;
@@ -31,7 +32,7 @@ class FileSource final : public Source
 {
 public:
 	// ctor & dtor
-	FileSource(const string& filePath);
+	FileSource(const std::string& filePath);
 	~FileSource();
 
 private:
@@ -45,4 +46,4 @@ private:
 	std::ifstream m_infile;
 };
 
-}
+} // namespace Common

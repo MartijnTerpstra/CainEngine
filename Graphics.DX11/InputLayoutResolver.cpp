@@ -5,6 +5,7 @@
 #include "DX11Shader.h"
 #include "EnumConverter.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
@@ -99,7 +100,7 @@ ID3D11InputLayout* InputLayoutResolver::Resolve(ID3D11Device* device, API::Verte
 	com_ptr<ID3D11InputLayout> newLayout;
 	CHECK_HRESULT(device->CreateInputLayout(descs.data(), (UINT)descs.size(), vs->ByteCode().data(), vs->ByteCode().size(), mst::initialize(newLayout)));
 
-	shader.resolvedLayouts.emplace_back(std::move(resolvedLayout), move(newLayout));
+	shader.resolvedLayouts.emplace_back(std::move(resolvedLayout), std::move(newLayout));
 
 	m_directResolves.insert({ {shaderHash, vertexLayoutHash}, shader.resolvedLayouts.back().second.get() });
 	return shader.resolvedLayouts.back().second.get();
@@ -126,7 +127,7 @@ void InputLayoutResolver::AddVertexShaderInputRegisters(uint64_t inputRegisterHa
 
 	if (!m_shaders.contains(inputRegisterHash))
 	{
-		m_shaders.insert({ inputRegisterHash, move(info) });
+		m_shaders.insert({ inputRegisterHash, std::move(info) });
 	}
 }
 

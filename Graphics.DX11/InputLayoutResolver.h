@@ -24,10 +24,10 @@ private:
 	struct LayoutInfo
 	{
 		inlined_vector<API::ShaderRegisterInfo, 16> inputRegisters;
-		vector<pair<inlined_vector<API::VertexBufferDesc, 16>, com_ptr<ID3D11InputLayout>>> resolvedLayouts;
+		std::vector<std::pair<inlined_vector<API::VertexBufferDesc, 16>, com_ptr<ID3D11InputLayout>>> resolvedLayouts;
 	};
 
-	mst::arraymap<pair<uint64_t, uint64_t>, ID3D11InputLayout*> m_directResolves;
+	mst::arraymap<std::pair<uint64_t, uint64_t>, ID3D11InputLayout*> m_directResolves;
 	mst::arraymap<uint64_t, LayoutInfo> m_shaders;
 };
 

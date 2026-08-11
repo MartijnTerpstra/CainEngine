@@ -5,27 +5,28 @@
 
 using namespace ::CainEngine;
 
-class Application final : public Platform::ClientInterfaces::IWindowEventListener, public std::enable_shared_from_this<Application>
+class Application final : public Platform::ClientInterfaces::IWindowEventListener,
+						  public std::enable_shared_from_this<Application>
 {
 public:
-
 	Application(Engine& engine, const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
 		: m_platformFactory(platform)
 		, m_engine(engine)
-	{
-	}
+	{ }
 
 	void Run()
 	{
 		m_engine.Init(make_flag(Graphics::RendererInitFlags::ApiDebug));
 
-		m_mainWindow = m_platformFactory->CreateNewWindow("Main Window", uint2(1280, 720), Platform::WindowType::Default, Platform::WindowFlags::Default, shared_from_this());
+		m_mainWindow = m_platformFactory->CreateNewWindow("Main Window", uint2(1280, 720),
+			Platform::WindowType::Default, Platform::WindowFlags::Default, shared_from_this());
 
 		auto rect = m_mainWindow->GetClientRect();
 
 		m_mainWindow->Show();
 
-		m_engine.SetMainWindow(m_mainWindow, Graphics::SwapChainCreationSettings(Graphics::PixelFormat::UnormBGRA8, 144, false, 4));
+		m_engine.SetMainWindow(m_mainWindow,
+			Graphics::SwapChainCreationSettings(Graphics::PixelFormat::UnormBGRA8, 144, false, 4));
 
 		InitScene();
 
@@ -33,7 +34,7 @@ public:
 
 		auto start = clock.now();
 
-		while (m_mainWindow->IsShown())
+		while(m_mainWindow->IsShown())
 		{
 			m_mainWindow->Redraw();
 
@@ -46,7 +47,7 @@ public:
 
 		m_engine.GetScene().Clear();
 
-		m_engine.SetMainWindow(nullptr, none);
+		m_engine.SetMainWindow(nullptr, std::nullopt);
 
 		m_engine.Exit();
 
@@ -63,7 +64,7 @@ public:
 		m_camera = scene.Create("Main camera");
 
 		scene.GetTransform(m_camera).SetPosition(float3(0, 0, 10));
-		//m_camera.AddComponent<Graphics::Camera>(Graphics::Camera(90, 1, 100));
+		// m_camera.AddComponent<Graphics::Camera>(Graphics::Camera(90, 1, 100));
 
 		// just use clip space
 		cameraManager.AddCamera(m_camera);
@@ -79,7 +80,9 @@ public:
 
 		Graphics::Factory factory{ renderer };
 
-		auto material = modelManager.CreateMaterial(renderer, Graphics::ShaderManager::GetVertexShader("VertexShader"), Graphics::ShaderManager::GetPixelShader("PixelShader"));
+		auto material = modelManager.CreateMaterial(renderer,
+			Graphics::ShaderManager::GetVertexShader("VertexShader"),
+			Graphics::ShaderManager::GetPixelShader("PixelShader"));
 
 		auto model = modelManager.CreateModel(renderer, vertexData);
 
@@ -87,7 +90,7 @@ public:
 
 		m_simpleTriangle = scene.Create("Simple triangle");
 		modelManager.AddEntity(model.first, scene, m_simpleTriangle);
-		//m_simpleTriangle.AddComponent<shared_ptr<Graphics::Model>>(move(model));
+		// m_simpleTriangle.AddComponent<shared_ptr<Graphics::Model>>(move(model));
 	}
 
 	void UpdateScene(std::chrono::nanoseconds ns)
@@ -97,16 +100,15 @@ public:
 		auto& transform = m_scene.GetTransform(m_simpleTriangle);
 
 		transform.SetEulerAngles(transform.EulerX() + degrees(5) * dt, 0, 0);*/
+		Graphics::ShaderManager::GetPixelShader("PixelShader");
 	}
 
 private:
-
-
 	// IWindowEventListener overrides
 
 	void OnRedraw(Platform::IWindow* window) override
 	{
-		m_engine.RenderFrame(none);
+		m_engine.RenderFrame(std::nullopt);
 	}
 
 	void OnResize(Platform::IWindow* window, const uint2& newSize) override
@@ -114,14 +116,14 @@ private:
 		m_engine.HandleResize();
 	}
 
-	void OnKeyDown(Platform::IWindow* window, Platform::KeyCodes keyCode, flag<Platform::KeyModifiers> modifiers)
+	void OnKeyDown(Platform::IWindow* window, Platform::KeyCodes keyCode,
+		flag<Platform::KeyModifiers> modifiers)
 	{
-		switch (keyCode)
+		switch(keyCode)
 		{
-		case CainEngine::Platform::KeyCodes::A:
-		{
+		case CainEngine::Platform::KeyCodes::A: {
 			auto fs = m_engine.GetRenderer().DisplaySettings().FullScreen();
-			if (fs.isFullScreen)
+			if(fs.isFullScreen)
 			{
 				m_engine.GetRenderer().DisplaySettings().SetFullScreen(false, fs.outputIndex);
 			}
@@ -131,10 +133,9 @@ private:
 			}
 			return;
 		}
-		case CainEngine::Platform::KeyCodes::S:
-		{
+		case CainEngine::Platform::KeyCodes::S: {
 			auto ms = m_engine.GetRenderer().DisplaySettings().MultiSamplingCount();
-			if (ms == 1)
+			if(ms == 1)
 			{
 				m_engine.GetRenderer().DisplaySettings().SetMultiSamplingCount(4);
 			}
@@ -159,19 +160,19 @@ private:
 
 	EntitySystem::EntityID m_camera;
 	EntitySystem::EntityID m_simpleTriangle;
-
 };
 
 void RunEngine(Engine& engine, const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
 {
-	auto application = make_shared<Application>(engine, platform);
+	auto application = std::make_shared<Application>(engine, platform);
 
 	application->Run();
 }
 
 void InitEngine(const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
 {
-	Engine engine(make_unique<Graphics::Renderer>(Graphics::DX11::CreateInstance()), CONTENT_DIRECTORY);
+	Engine engine(
+		std::make_unique<Graphics::Renderer>(Graphics::DX11::CreateInstance()), CONTENT_DIRECTORY);
 
 	RunEngine(engine, platform);
 }
@@ -180,8 +181,8 @@ extern void RunBenchmark();
 
 int main()
 {
-	//RunBenchmark();
-	//return 0;
+	// RunBenchmark();
+	// return 0;
 
 	auto platform = Platform::Win32::CreateInstance();
 

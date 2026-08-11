@@ -24,31 +24,8 @@
 #include <optional>
 #include <functional>
 #include <map>
+#include <string_view>
 #include <variant>
-
-using ::std::chrono::seconds;
-using ::std::chrono::milliseconds;
-using ::std::future;
-using ::std::unique_ptr;
-using ::std::make_unique;
-using ::std::pair;
-using ::std::make_pair;
-using ::std::shared_ptr;
-using ::std::make_shared;
-using ::std::weak_ptr;
-using ::std::move;
-using ::std::tuple;
-using ::std::lock_guard;
-using ::std::vector;
-using ::std::string;
-using ::std::optional;
-using ::std::string_view;
-using ::std::variant;
-
-template<typename KeyType, typename ValueType>
-using hash_map = ::std::unordered_map<KeyType, ValueType>;
-
-inline constexpr ::std::nullopt_t none = ::std::nullopt;
 
 // mst includes
 #include <mcommon.h>
@@ -68,6 +45,26 @@ inline constexpr ::std::nullopt_t none = ::std::nullopt;
 #include <msparse_set.h>
 #include <mcolony.h>
 #include <mranges.h>
+
+// Abseil includes
+#include <absl/container/inlined_vector.h>
+#include <absl/container/flat_hash_map.h>
+#include <absl/container/node_hash_map.h>
+
+namespace mst {
+
+template<typename H>
+constexpr H AbslHashValue(H state, const uuid& v)
+{
+	uint8_t bytes[sizeof(v)];
+	memcpy(bytes, &v, sizeof(v));
+
+	return H::combine_contiguous(std::move(state), bytes, sizeof(v));
+}
+
+} // namespace mst
+
+namespace CainEngine {
 
 namespace swizzle {
 using namespace ::mst::math::swizzle;
@@ -109,29 +106,11 @@ typedef ::mst::math::degrees<float> degrees;
 
 using ::mst::math::euler_rotation_order;
 
-// Abseil includes
-#include <absl/container/inlined_vector.h>
-#include <absl/container/flat_hash_map.h>
-#include <absl/container/node_hash_map.h>
-
 template<typename T, size_t N>
 using inlined_vector = ::absl::InlinedVector<T, N>;
 
 using absl::flat_hash_map;
 using absl::node_hash_map;
-
-namespace mst {
-
-template<typename H>
-inline H AbslHashValue(H state, const uuid& v)
-{
-	uint8_t bytes[sizeof(v)];
-	memcpy(bytes, &v, sizeof(v));
-
-	return H::combine_contiguous(std::move(state), bytes, sizeof(v));
-}
-
-}
 
 #define COMMON_DECLARE_NON_COPY(TypeName)                                                          \
 	TypeName(TypeName&&) = delete;                                                                 \
@@ -181,9 +160,9 @@ constexpr uint32_t PackChars(char a, char b, char c, char d)
 	return (uint32_t)d + ((uint32_t)c << 8) + ((uint32_t)b << 16) + ((uint32_t)a << 24);
 }
 
-string CombinePath(const string& left, const string& right);
+} // namespace Common
 
-}; // namespace Common
+} // namespace CainEngine
 
 #include "Common/Enums.h"
 #include "Common/Logging.h"

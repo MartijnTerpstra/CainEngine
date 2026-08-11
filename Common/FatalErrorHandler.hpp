@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 void InvokeFatalErrorHandler(std::string_view str);
 

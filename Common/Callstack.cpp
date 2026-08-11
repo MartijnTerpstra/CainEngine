@@ -1,6 +1,6 @@
 #include "Precomp.h"
 
-using namespace Common;
+using namespace CainEngine::Common;
 
 static const size_t STACK_SIZE = 128;
 
@@ -29,9 +29,9 @@ CallstackScope::~CallstackScope()
 	--g_StackIdx;
 }
 
-vector<string> Callstack::Get()
+std::vector<std::string> Callstack::Get()
 {
-	vector<string> retval;
+	std::vector<std::string> retval;
 
 	auto index = g_StackIdx;
 
@@ -39,7 +39,7 @@ vector<string> Callstack::Get()
 	{
 		auto& line = GetCallstack()[index];
 
-		string func = std::get<0>(line);
+		std::string func = std::get<0>(line);
 		/*
 		size_t foundPos;
 		if((foundPos = func.find(" __cdecl ")) != string::npos)

@@ -2,6 +2,7 @@
 
 #include "Win32Monitor.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
@@ -58,7 +59,7 @@ static BOOL __stdcall GetMonitorsProc(HMONITOR monitor, HDC, LPRECT, LPARAM para
 {
 	COMMON_CALLSTACK_CALL;
 
-	auto monitors = reinterpret_cast<vector<HMONITOR>*>(param);
+	auto monitors = reinterpret_cast<std::vector<HMONITOR>*>(param);
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
@@ -79,11 +80,11 @@ static BOOL __stdcall GetMonitorsProc(HMONITOR monitor, HDC, LPRECT, LPARAM para
 	return TRUE;
 }
 
-vector<RefPtr<IMonitor>> Win32Monitor::GetMonitors()
+std::vector<RefPtr<IMonitor>> Win32Monitor::GetMonitors()
 {
 	COMMON_CALLSTACK_CALL;
 
-	vector<HMONITOR> monitors;
+	std::vector<HMONITOR> monitors;
 
 	if (!EnumDisplayMonitors(nullptr, nullptr, GetMonitorsProc, reinterpret_cast<LPARAM>(&monitors)))
 	{
@@ -91,9 +92,9 @@ vector<RefPtr<IMonitor>> Win32Monitor::GetMonitors()
 	}
 
 	if (monitors.empty())
-		return vector<RefPtr<IMonitor>>();
+		return std::vector<RefPtr<IMonitor>>();
 
-	vector<RefPtr<IMonitor>> retvals;
+	std::vector<RefPtr<IMonitor>> retvals;
 	retvals.reserve(monitors.size());
 
 	for (auto monitor : monitors)
@@ -104,7 +105,7 @@ vector<RefPtr<IMonitor>> Win32Monitor::GetMonitors()
 	return retvals;
 }
 
-string Win32Monitor::GetName() const
+std::string Win32Monitor::GetName() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -184,6 +185,6 @@ void* Win32Monitor::_As(uint64_t typeHash) const
 		CHECK_TYPE_AND_RETURN(IMonitor);
 		CHECK_TYPE_AND_RETURN(Win32Monitor);
 	default:
-		Common::FatalError("Invalid cast");
+		return nullptr;
 	}
 }

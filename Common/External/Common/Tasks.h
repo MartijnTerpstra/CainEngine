@@ -1,10 +1,11 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 class TaskManager
 {
-	friend class _Details::Thread;
+	friend class Details::Thread;
+
 public:
 	// ctor & dtor
 	TaskManager(uint32_t initialThreadCount = 0);
@@ -18,12 +19,12 @@ public:
 private:
 	// For Task
 
-	void TaskCompleted(_Details::Thread* thread);
+	void TaskCompleted(Details::Thread* thread);
 
 private:
 	std::mutex m_mutex;
-	std::vector<_Details::Thread*> m_waitingThreads;
-	std::vector<unique_ptr<_Details::Thread>> m_allThreads;
+	std::vector<Details::Thread*> m_waitingThreads;
+	std::vector<std::unique_ptr<Details::Thread>> m_allThreads;
 };
 
-}
+} // namespace CainEngine::Common

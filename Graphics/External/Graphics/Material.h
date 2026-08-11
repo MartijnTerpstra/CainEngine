@@ -25,8 +25,8 @@ private:
 	API::VertexShader* m_vertexShader;
 	API::PixelShader* m_pixelShader;
 	inlined_vector<int32_t, 8> m_textures;
-	shared_ptr<API::IBuffer> m_buffer;
-	vector<int32_t> m_variableOffsets;
+	std::shared_ptr<API::IBuffer> m_buffer;
+	std::vector<int32_t> m_variableOffsets;
 };
 
 }

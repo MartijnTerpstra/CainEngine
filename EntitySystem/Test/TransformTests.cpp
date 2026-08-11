@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::EntitySystem;
 
 namespace {

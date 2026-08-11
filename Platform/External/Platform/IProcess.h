@@ -18,7 +18,7 @@ public:
 		Summary:
 			Returns the process's name
 	*/
-	virtual string GetName() const = 0;
+	virtual std::string GetName() const = 0;
 
 	/**
 		Summary:

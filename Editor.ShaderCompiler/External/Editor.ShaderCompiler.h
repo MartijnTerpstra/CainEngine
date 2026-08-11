@@ -7,20 +7,21 @@ namespace CainEngine::Editor::ShaderCompiler {
 
 struct ShaderDefine
 {
-	string key;
-	string value;
+	std::string key;
+	std::string value;
 };
 
 struct ShaderCompilation
 {
-	string source;
-	string name;
+	std::string source;
+	std::string name;
 	Graphics::ShaderType shaderType;
-	optional<string> entryPoint;
-	vector<string> renderers;
-	vector<ShaderDefine> defines;
+	std::optional<std::string> entryPoint;
+	std::vector<std::string> renderers;
+	std::vector<ShaderDefine> defines;
 };
 
-bool CompileShaders(const vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization);
+bool CompileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory,
+	const char* targetDirectory, bool optization);
 
-}
+} // namespace CainEngine::Editor::ShaderCompiler

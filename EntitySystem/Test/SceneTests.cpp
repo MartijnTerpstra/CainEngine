@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::EntitySystem;
 
 namespace {
@@ -50,7 +51,7 @@ TEST(Scene, CreateWithNameSetsName)
 	const auto entity = scene.Create("Player");
 
 	EXPECT_EQ("Player", scene.GetName(entity));
-	EXPECT_EQ(entity, scene.Find(string_view("Player")));
+	EXPECT_EQ(entity, scene.Find(std::string_view("Player")));
 }
 
 TEST(Scene, FindByNameReturnsNullWhenMissing)
@@ -59,7 +60,7 @@ TEST(Scene, FindByNameReturnsNullWhenMissing)
 
 	scene.Create("Player");
 
-	EXPECT_EQ(EntityID::Null, scene.Find(string_view("NoSuchEntity")));
+	EXPECT_EQ(EntityID::Null, scene.Find(std::string_view("NoSuchEntity")));
 }
 
 TEST(Scene, DestroyMakesEntityNotAlive)
@@ -83,7 +84,7 @@ TEST(Scene, DestroyedNameIsNoLongerFindable)
 
 	scene.Destroy(entity);
 
-	EXPECT_EQ(EntityID::Null, scene.Find(string_view("Player")));
+	EXPECT_EQ(EntityID::Null, scene.Find(std::string_view("Player")));
 }
 
 TEST(Scene, RecreatingAfterDestroyReusesIndexWithNewVersion)
@@ -125,8 +126,8 @@ TEST(Scene, ClearRemovesAllEntitiesAndNames)
 	scene.Clear();
 
 	EXPECT_EQ(0u, scene.LiveEntities());
-	EXPECT_EQ(EntityID::Null, scene.Find(string_view("A")));
-	EXPECT_EQ(EntityID::Null, scene.Find(string_view("B")));
+	EXPECT_EQ(EntityID::Null, scene.Find(std::string_view("A")));
+	EXPECT_EQ(EntityID::Null, scene.Find(std::string_view("B")));
 }
 
 TEST(Scene, ClearOnEmptySceneIsSafe)

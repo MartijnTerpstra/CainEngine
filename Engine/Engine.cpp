@@ -4,9 +4,9 @@ using namespace ::CainEngine;
 
 Engine* Engine::s_singleton = nullptr;
 
-Engine::Engine(unique_ptr<Graphics::Renderer> renderer, string contentDirectory)
-	: m_renderer(move(renderer)),
-	m_contentDirectory(move(contentDirectory))
+Engine::Engine(std::unique_ptr<Graphics::Renderer> renderer, std::string contentDirectory)
+	: m_renderer(std::move(renderer)),
+	m_contentDirectory(std::move(contentDirectory))
 {
 	m_cameraManager.AttachCallbacks(m_scene);
 	m_modelManager.AttachCallbacks(m_scene);
@@ -40,7 +40,7 @@ void Engine::Exit()
 	m_renderer->Exit();
 }
 
-void Engine::SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const optional<Graphics::SwapChainCreationSettings>& creationSettings)
+void Engine::SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const std::optional<Graphics::SwapChainCreationSettings>& creationSettings)
 {
 	m_renderer->SetMainWindow(mainWindow, creationSettings);
 }
@@ -50,7 +50,7 @@ void Engine::HandleResize()
 	m_renderer->HandleWindowResize();
 }
 
-void Engine::RenderFrame(const optional<Graphics::Viewport>& viewport)
+void Engine::RenderFrame(const std::optional<Graphics::Viewport>& viewport)
 {
 	m_renderer->RenderFrame(m_scene, m_cameraManager, m_modelManager, viewport);
 }

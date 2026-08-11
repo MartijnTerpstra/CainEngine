@@ -2,8 +2,8 @@
 
 namespace CainEngine::Editor::ShaderCompiler {
 
-unique_ptr<ICompiler> CreateDX11Compiler();
+std::unique_ptr<ICompiler> CreateDX11Compiler();
 
-unique_ptr<ICompiler> CreateDX12Compiler();
+std::unique_ptr<ICompiler> CreateDX12Compiler();
 
 }

@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME} ${SOURCELIST})
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE CainEngine::EntitySystem
+	PRIVATE Common::TestSupport
 	PRIVATE gtest_main)
 
 include(GoogleTest)

@@ -1,13 +1,13 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 class JsonParser;
 
-namespace _Details {
+namespace Details {
 class JsonEngine;
 class JsonToken;
-}
+} // namespace Details
 
 /**
 	Declare your type for json parsing
@@ -18,6 +18,7 @@ class JsonDeclaration
 	friend class JsonParser;
 	template<typename T>
 	friend class JsonDeclaration;
+
 public:
 	// Main functionality
 
@@ -25,54 +26,64 @@ public:
 	inline void AddMember(const char* name, uint32_t T::* member, bool optional = false);
 	inline void AddMember(const char* name, float T::* member, bool optional = false);
 	inline void AddMember(const char* name, int32_t T::* member, bool optional = false);
-	inline void AddMember(const char* name, string T::* member, bool optional = false);
+	inline void AddMember(const char* name, std::string T::* member, bool optional = false);
 
 	template<typename T2>
 	inline void AddMember(const char* name, T2 T::* memberObject, JsonDeclaration<T2> declaration);
 
 	template<typename T2>
-	inline void AddMember(const char* name, T2 T::* memberEnum, std::map<string, T2> conversionMap, bool optional = false);
+	inline void AddMember(const char* name, T2 T::* memberEnum,
+		std::map<std::string, T2> conversionMap, bool optional = false);
 
-	inline void AddMember(const char* name, optional<bool> T::* member);
-	inline void AddMember(const char* name, optional<uint32_t> T::* member);
-	inline void AddMember(const char* name, optional<float> T::* member);
-	inline void AddMember(const char* name, optional<int32_t> T::* member);
-	inline void AddMember(const char* name, optional<string> T::* member);
-
-	template<typename T2>
-	inline void AddMember(const char* name, optional<T2> T::* memberObject, JsonDeclaration<T2> declaration);
+	inline void AddMember(const char* name, std::optional<bool> T::* member);
+	inline void AddMember(const char* name, std::optional<uint32_t> T::* member);
+	inline void AddMember(const char* name, std::optional<float> T::* member);
+	inline void AddMember(const char* name, std::optional<int32_t> T::* member);
+	inline void AddMember(const char* name, std::optional<std::string> T::* member);
 
 	template<typename T2>
-	inline void AddMember(const char* name, optional<T2> T::* memberEnum, std::map<string, T2> conversionMap);
-
-	inline void AddMember(const char* name, vector<bool> T::* member, bool optional = false);
-	inline void AddMember(const char* name, vector<uint32_t> T::* member, bool optional = false);
-	inline void AddMember(const char* name, vector<float> T::* member, bool optional = false);
-	inline void AddMember(const char* name, vector<int32_t> T::* member, bool optional = false);
-	inline void AddMember(const char* name, vector<string> T::* member, bool optional = false);
+	inline void AddMember(
+		const char* name, std::optional<T2> T::* memberObject, JsonDeclaration<T2> declaration);
 
 	template<typename T2>
-	inline void AddMember(const char* name, vector<T2> T::* memberObject, JsonDeclaration<T2> declaration, bool optional = false);
+	inline void AddMember(const char* name, std::optional<T2> T::* memberEnum,
+		std::map<std::string, T2> conversionMap);
+
+	inline void AddMember(const char* name, std::vector<bool> T::* member, bool optional = false);
+	inline void AddMember(
+		const char* name, std::vector<uint32_t> T::* member, bool optional = false);
+	inline void AddMember(const char* name, std::vector<float> T::* member, bool optional = false);
+	inline void AddMember(
+		const char* name, std::vector<int32_t> T::* member, bool optional = false);
+	inline void AddMember(
+		const char* name, std::vector<std::string> T::* member, bool optional = false);
 
 	template<typename T2>
-	inline void AddMember(const char* name, vector<T2> T::* memberEnum, std::map<string, T2> conversionMap, bool optional = false);
-
-	inline void AddMember(const char* name, optional<vector<bool>> T::* member);
-	inline void AddMember(const char* name, optional<vector<uint32_t>> T::* member);
-	inline void AddMember(const char* name, optional<vector<float>> T::* member);
-	inline void AddMember(const char* name, optional<vector<int32_t>> T::* member);
-	inline void AddMember(const char* name, optional<vector<string>> T::* member);
+	inline void AddMember(const char* name, std::vector<T2> T::* memberObject,
+		JsonDeclaration<T2> declaration, bool optional = false);
 
 	template<typename T2>
-	inline void AddMember(const char* name, optional<vector<T2>> T::* memberObject, JsonDeclaration<T2> declaration);
+	inline void AddMember(const char* name, std::vector<T2> T::* memberEnum,
+		std::map<std::string, T2> conversionMap, bool optional = false);
+
+	inline void AddMember(const char* name, std::optional<std::vector<bool>> T::* member);
+	inline void AddMember(const char* name, std::optional<std::vector<uint32_t>> T::* member);
+	inline void AddMember(const char* name, std::optional<std::vector<float>> T::* member);
+	inline void AddMember(const char* name, std::optional<std::vector<int32_t>> T::* member);
+	inline void AddMember(const char* name, std::optional<std::vector<std::string>> T::* member);
 
 	template<typename T2>
-	inline void AddMember(const char* name, optional<vector<T2>> T::* memberEnum, std::map<string, T2> conversionMap);
+	inline void AddMember(const char* name, std::optional<std::vector<T2>> T::* memberObject,
+		JsonDeclaration<T2> declaration);
+
+	template<typename T2>
+	inline void AddMember(const char* name, std::optional<std::vector<T2>> T::* memberEnum,
+		std::map<std::string, T2> conversionMap);
 
 private:
 	// Internal declarations
 
-	vector<std::function<void(T&, _Details::JsonToken&)>> m_parsingActions;
+	std::vector<std::function<void(T&, Details::JsonToken&)>> m_parsingActions;
 };
 
 class JsonParser
@@ -87,16 +98,18 @@ public:
 	// Main functionality
 
 	template<typename T>
-	optional<T> Parse(const string& jsonFile, const JsonDeclaration<T>& declaration);
+	std::optional<T> Parse(const std::string& jsonFile, const JsonDeclaration<T>& declaration);
 
 	template<typename T>
-	optional<vector<T>> ParseArray(const string& jsonFile, const JsonDeclaration<T>& declaration);
+	std::optional<std::vector<T>> ParseArray(
+		const std::string& jsonFile, const JsonDeclaration<T>& declaration);
 
 private:
 	// Internal functionality
 
-	void ParseImpl(const string& jsonFile, std::function<void(_Details::JsonToken&)> onSuccess);
-	void ParseImpl(const string& jsonFile, std::function<void(vector<_Details::JsonToken>&)> onSuccess);
+	void ParseImpl(const std::string& jsonFile, std::function<void(Details::JsonToken&)> onSuccess);
+	void ParseImpl(const std::string& jsonFile,
+		std::function<void(std::vector<Details::JsonToken>&)> onSuccess);
 
 private:
 	// Member variables
@@ -104,13 +117,13 @@ private:
 	bool m_failure;
 };
 
-namespace _Details {
+namespace Details {
 
 class JsonToken
 {
 public:
 	// ctor & dtor
-	JsonToken(_Details::JsonEngine* engine);
+	JsonToken(Details::JsonEngine* engine);
 	JsonToken(JsonToken&&) noexcept;
 	JsonToken(const JsonToken&);
 	~JsonToken();
@@ -124,21 +137,21 @@ public:
 	uint32_t GetUint32(const char* name);
 	float GetFloat(const char* name);
 	int32_t GetInt32(const char* name);
-	string GetString(const char* name);
+	std::string GetString(const char* name);
 	JsonToken GetObjectToken(const char* name);
 
-	vector<bool> GetBools(const char* name);
-	vector<uint32_t> GetUint32s(const char* name);
-	vector<float> GetFloats(const char* name);
-	vector<int32_t> GetInt32s(const char* name);
-	vector<string> GetStrings(const char* name);
-	vector<JsonToken> GetObjectTokens(const char* name);
+	std::vector<bool> GetBools(const char* name);
+	std::vector<uint32_t> GetUint32s(const char* name);
+	std::vector<float> GetFloats(const char* name);
+	std::vector<int32_t> GetInt32s(const char* name);
+	std::vector<std::string> GetStrings(const char* name);
+	std::vector<JsonToken> GetObjectTokens(const char* name);
 
 private:
 	// Member variables
-	_Details::JsonEngine* m_engine;
+	Details::JsonEngine* m_engine;
 };
 
-} // _Details
+} // namespace Details
 
-}
+} // namespace CainEngine::Common
