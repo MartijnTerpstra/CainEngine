@@ -1,13 +1,17 @@
 #pragma once
 
-#define CHECK_TYPE_AND_RETURN(Type) case mst::hash_of64<Type>(): return static_cast<Type*>(const_cast<std::remove_cv_t<std::remove_reference_t<decltype(*this)>>*>(this))
+#define CHECK_TYPE_AND_RETURN(Type)                                                                \
+	case mst::hash_of64<Type>():                                                                   \
+		return static_cast<Type*>(                                                                 \
+			const_cast<std::remove_cv_t<std::remove_reference_t<decltype(*this)>>*>(this))
 
-namespace Common {
+namespace CainEngine::Common {
 
 class BaseObject
 {
 	template<typename T>
 	friend class RefPtr;
+
 protected:
 	// ctor & dtor
 
@@ -15,7 +19,6 @@ protected:
 	inline virtual ~BaseObject();
 
 public:
-
 	/**
 		Summary:
 			Tries to cast to a different type
@@ -50,7 +53,6 @@ public:
 	inline bool Is() const;
 
 private:
-
 	template<typename T>
 	inline CastHandle<const T> As(std::true_type) const;
 
@@ -69,7 +71,6 @@ private:
 	virtual void* _As(uint64_t) const = 0;
 
 protected:
-
 	std::atomic_uint32_t m_refCount;
 };
 
@@ -83,10 +84,11 @@ template<typename T>
 class CastHandle
 {
 	static_assert(std::is_base_of_v<BaseObject, T>, "T must derive from BaseObject");
+
 public:
 	inline CastHandle(T* ptr);
 
-	inline T* operator -> () const;
+	inline T* operator->() const;
 
 	inline T* get() const;
 

@@ -1,6 +1,6 @@
 #include "Precomp.h"
 
-using namespace Common;
+using namespace CainEngine::Common;
 
 TaskManager::TaskManager(uint32_t initialThreadCount)
 {
@@ -9,7 +9,7 @@ TaskManager::TaskManager(uint32_t initialThreadCount)
 
 	for (uint32_t i = 0; i < initialThreadCount; ++i)
 	{
-		m_allThreads.push_back(make_unique<_Details::Thread>(this));
+		m_allThreads.push_back(std::make_unique<Details::Thread>(this));
 		m_waitingThreads.push_back(m_allThreads.back().get());
 	}
 }
@@ -35,7 +35,7 @@ std::future<void> TaskManager::Run(std::function<void()> job)
 
 	if (m_waitingThreads.empty())
 	{
-		m_allThreads.push_back(make_unique<_Details::Thread>(this));
+		m_allThreads.push_back(std::make_unique<Details::Thread>(this));
 		m_waitingThreads.push_back(m_allThreads.back().get());
 	}
 
@@ -46,32 +46,32 @@ std::future<void> TaskManager::Run(std::function<void()> job)
 
 	auto future = promise.get_future();
 
-	retval->Run(move(promise), move(job));
+	retval->Run(std::move(promise), std::move(job));
 
 	return future;
 }
 
-void TaskManager::TaskCompleted(_Details::Thread* thread)
+void TaskManager::TaskCompleted(Details::Thread* thread)
 {
 	std::lock_guard<std::mutex> l(m_mutex);
 
 	m_waitingThreads.push_back(thread);
 }
 
-_Details::Thread::Thread(TaskManager* manager)
+Details::Thread::Thread(TaskManager* manager)
 	: m_manager(manager)
 {
-	m_thread = make_unique<std::thread>([this]() { ThreadProc(); });
+	m_thread = std::make_unique<std::thread>([this]() { ThreadProc(); });
 }
 
-_Details::Thread::~Thread()
+Details::Thread::~Thread()
 {
 }
 
-void _Details::Thread::Run(std::promise<void>&& promise, std::function<void()>&& job)
+void Details::Thread::Run(std::promise<void>&& promise, std::function<void()>&& job)
 {
-	m_job = move(job);
-	m_promise = move(promise);
+	m_job = std::move(job);
+	m_promise = std::move(promise);
 
 	{
 		std::lock_guard<std::mutex> l(m_mutex);
@@ -80,7 +80,7 @@ void _Details::Thread::Run(std::promise<void>&& promise, std::function<void()>&&
 	m_cv.notify_one();
 }
 
-void _Details::Thread::Stop()
+void Details::Thread::Stop()
 {
 	{
 		std::lock_guard<std::mutex> l(m_mutex);
@@ -89,28 +89,34 @@ void _Details::Thread::Stop()
 	m_cv.notify_one();
 }
 
-void _Details::Thread::Wait()
+void Details::Thread::Wait()
 {
 	m_thread->join();
 	m_thread.reset();
 }
 
-void _Details::Thread::ThreadProc()
+void Details::Thread::ThreadProc()
 {
 	while (true)
 	{
 		std::unique_lock<std::mutex> l(m_mutex);
 		m_cv.wait(l, [this]() { return m_run || m_quit; });
 
+		// A job that was already queued (m_run) must still run to completion
+		// even if m_quit raced ahead and got set too - e.g. TaskManager's
+		// destructor calls Stop() right after Run() queues a job, often
+		// before this thread even gets scheduled. Only treat m_quit as a
+		// reason to exit once there's no pending job left to run.
+		if (!m_run)
+			return;
+
 		m_run = false;
 
-		if (m_quit)
-			return;
+		l.unlock();
 
 		m_job();
 		m_promise.set_value();
 
-		l.unlock();
 		m_manager->TaskCompleted(this);
 	}
 }

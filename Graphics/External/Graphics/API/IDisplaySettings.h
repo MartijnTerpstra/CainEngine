@@ -28,13 +28,13 @@ public:
 
 	virtual void SetDisplayMode(const SwapChainDisplayMode& mode) = 0;
 
-	virtual vector<OutputDisplay> SupportedOutputs() const = 0;
+	virtual std::vector<OutputDisplay> SupportedOutputs() const = 0;
 
-	virtual vector<PixelFormat> SupportedPixelFormats(uint32_t outputIndex) const = 0;
+	virtual std::vector<PixelFormat> SupportedPixelFormats(uint32_t outputIndex) const = 0;
 
-	virtual vector<SwapChainDisplayMode> SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const = 0;
+	virtual std::vector<SwapChainDisplayMode> SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const = 0;
 
-	virtual vector<uint32_t> SupportedMultiSamplingCounts(PixelFormat format) const = 0;
+	virtual std::vector<uint32_t> SupportedMultiSamplingCounts(PixelFormat format) const = 0;
 };
 
 inline IDisplaySettings::~IDisplaySettings() = default;

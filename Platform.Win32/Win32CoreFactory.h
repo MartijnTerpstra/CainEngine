@@ -21,27 +21,27 @@ private:
 public:
 	// IPlatformFactory overrides
 
-	string GetPlatformName() const override;
+	std::string GetPlatformName() const override;
 
-	vector<RefPtr<IProcess>> GetProcesses(const string& name) override;
+	std::vector<RefPtr<IProcess>> GetProcesses(const std::string& name) override;
 
 	RefPtr<IProcess> GetProcess(uint id) override;
 
 	RefPtr<IProcess> GetCurrentProcess() override;
 
-	RefPtr<IProcess> CreateNewProcess(const string& path) override;
+	RefPtr<IProcess> CreateNewProcess(const std::string& path) override;
 
-	RefPtr<IProcess> CreateNewProcess(const string& path, const string& commandLine) override;
+	RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine) override;
 
-	RefPtr<IProcess> CreateNewProcess(const string& path, const string& commandLine, const string& workingDirectory) override;
+	RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory) override;
 
-	vector<RefPtr<IMonitor>> GetMonitors() override;
+	std::vector<RefPtr<IMonitor>> GetMonitors() override;
 
 	RefPtr<IMonitor> GetMainMonitor() override;
 
-	RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
+	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
 
-	RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener) override;
+	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener) override;
 
 	RefPtr<IWindow> GetConsoleWindow() override;
 

@@ -1,19 +1,17 @@
 #include "Precomp.h"
 
-using namespace Common;
+using namespace CainEngine::Common;
 
 Source::Source()
-{
-}
+{ }
 
 Source::~Source()
-{
-}
+{ }
 
 uint32_t Source::ReadUint()
 {
 	uint32_t retval;
-	if (!Read(&retval, sizeof(retval)))
+	if(!Read(&retval, sizeof(retval)))
 	{
 		Common::Error("Failed to read uint32_t value");
 		return 0;
@@ -24,7 +22,7 @@ uint32_t Source::ReadUint()
 int32_t Source::ReadInt()
 {
 	int32_t retval;
-	if (!Read(&retval, sizeof(retval)))
+	if(!Read(&retval, sizeof(retval)))
 	{
 		Common::Error("Failed to read int32_t value");
 		return 0;
@@ -35,7 +33,7 @@ int32_t Source::ReadInt()
 float Source::ReadFloat()
 {
 	float retval;
-	if (!Read(&retval, sizeof(retval)))
+	if(!Read(&retval, sizeof(retval)))
 	{
 		Common::Error("Failed to read float value");
 		return 0;
@@ -43,18 +41,17 @@ float Source::ReadFloat()
 	return retval;
 }
 
-FileSource::FileSource(const string& filePath)
+FileSource::FileSource(const std::string& filePath)
 	: m_infile(filePath, std::ios::binary)
 {
-	if (m_infile.fail())
+	if(m_infile.fail())
 	{
 		Common::Error("Failure to open file: %s", filePath);
 	}
 }
 
 FileSource::~FileSource()
-{
-}
+{ }
 
 bool FileSource::Read(void* data, size_t dataSize)
 {

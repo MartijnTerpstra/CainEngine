@@ -24,9 +24,9 @@ public:
 
 	uint32_t ID() const noexcept override;
 
-	string ShortName() const noexcept override;
+	std::string ShortName() const noexcept override;
 
-	string Name() const noexcept override;
+	std::string Name() const noexcept override;
 
 	void Init(flag<RendererInitFlags> initFlags) override;
 
@@ -36,7 +36,7 @@ public:
 
 	void Flush() override;
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const optional<SwapChainCreationSettings>& creationSettings) override;
+	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) override;
 
 	void HandleWindowResize() override;
 
@@ -61,10 +61,10 @@ private:
 	void SetFormat(PixelFormat format) override;
 	SwapChainDisplayMode DisplayMode() const override;
 	void SetDisplayMode(const SwapChainDisplayMode& mode) override;
-	vector<OutputDisplay> SupportedOutputs() const override;
-	vector<PixelFormat> SupportedPixelFormats(uint32_t outputIndex) const override;
-	vector<SwapChainDisplayMode> SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
-	vector<uint32_t> SupportedMultiSamplingCounts(PixelFormat format) const override;
+	std::vector<OutputDisplay> SupportedOutputs() const override;
+	std::vector<PixelFormat> SupportedPixelFormats(uint32_t outputIndex) const override;
+	std::vector<SwapChainDisplayMode> SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
+	std::vector<uint32_t> SupportedMultiSamplingCounts(PixelFormat format) const override;
 
 private:
 	// Internal functionality

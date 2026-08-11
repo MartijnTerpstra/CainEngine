@@ -11,9 +11,9 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-unique_ptr<API::IRenderer> DX11::CreateInstance()
+std::unique_ptr<API::IRenderer> DX11::CreateInstance()
 {
-	return make_unique<DX11::DX11Renderer>();
+	return std::make_unique<DX11::DX11Renderer>();
 }
 
 DX11Renderer::DX11Renderer()

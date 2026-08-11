@@ -2,10 +2,11 @@
 
 #include "Win32Window.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-Win32Window::Win32Window(HWND hwnd, string name, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
+Win32Window::Win32Window(HWND hwnd, std::string name, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
 	: m_hwnd(hwnd), m_name(std::move(name))
 	, m_minimized(false)
 	, m_eventListener(listener)
@@ -18,7 +19,7 @@ Win32Window::~Win32Window()
 {
 	COMMON_CALLSTACK_CALL;
 
-	auto thisPtr = (weak_ptr<Win32Window>*)GetWindowLongPtrA(m_hwnd, GWLP_USERDATA);
+	auto thisPtr = (std::weak_ptr<Win32Window>*)GetWindowLongPtrA(m_hwnd, GWLP_USERDATA);
 
 	SetWindowLongPtrA(m_hwnd, GWLP_USERDATA, 0);
 
@@ -26,7 +27,7 @@ Win32Window::~Win32Window()
 		delete thisPtr;
 }
 
-RefPtr<IWindow> Win32Window::CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
+RefPtr<IWindow> Win32Window::CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -178,7 +179,7 @@ bool Win32Window::IsShown() const
 	return (IsWindowVisible(m_hwnd) != FALSE);
 }
 
-string Win32Window::GetName() const
+std::string Win32Window::GetName() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -250,6 +251,6 @@ void* Win32Window::_As(uint64_t typeHash) const
 		CHECK_TYPE_AND_RETURN(IWin32Window);
 		CHECK_TYPE_AND_RETURN(Win32Window);
 	default:
-		Common::FatalError("Invalid cast");
+		return nullptr;
 	}
 }

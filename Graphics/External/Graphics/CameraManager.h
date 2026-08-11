@@ -64,7 +64,7 @@ private:
 	struct EntityData
 	{
 		uint16_t renderDataIndex;
-		variant<PerspectiveData, OrthographicData> projectionData;
+		std::variant<PerspectiveData, OrthographicData> projectionData;
 	};
 
 	struct RenderData
@@ -74,7 +74,7 @@ private:
 	};
 
 	sparse_set<EntityData, int32_t> m_entityDatas;
-	vector<RenderData> m_renderDatas;
+	std::vector<RenderData> m_renderDatas;
 };
 
 };

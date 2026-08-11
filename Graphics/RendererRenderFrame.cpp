@@ -7,7 +7,7 @@ void Renderer::BuildFrameData(EntitySystem::Scene& scene, const Graphics::Viewpo
 {
 }
 
-void Renderer::RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const optional<Viewport>& vp)
+void Renderer::RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Viewport>& vp)
 {
 	++m_frameIndex;
 

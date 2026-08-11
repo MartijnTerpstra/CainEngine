@@ -19,12 +19,12 @@ public:
 	// Creation
 
 	static RefPtr<IMonitor> GetMainMonitor();
-	static vector<RefPtr<IMonitor>> GetMonitors();
+	static std::vector<RefPtr<IMonitor>> GetMonitors();
 
 public:
 	// IMonitor overrides
 
-	string GetName() const override;
+	std::string GetName() const override;
 	Rect GetResolution() const override;
 	Rect GetWorkSpace() const override;
 	uint GetRefreshFrequency() const override;

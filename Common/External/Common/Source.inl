@@ -1,10 +1,12 @@
 #pragma once
 
+namespace CainEngine::Common {
+
 template<typename StructType>
-inline StructType Common::Source::ReadStruct()
+inline StructType Source::ReadStruct()
 {
 	StructType retval;
-	if (!Read(&retval, sizeof(StructType)))
+	if(!Read(&retval, sizeof(StructType)))
 	{
 		Common::Error("Unable to read struct");
 		return StructType{};
@@ -13,14 +15,14 @@ inline StructType Common::Source::ReadStruct()
 }
 
 template<typename T>
-inline vector<T> Common::Source::ReadVector()
+inline std::vector<T> Source::ReadVector()
 {
 	uint32_t size = ReadUint();
 
-	vector<T> retval(size);
-	if (size != 0)
+	std::vector<T> retval(size);
+	if(size != 0)
 	{
-		if (!Read(retval.data(), sizeof(T) * size))
+		if(!Read(retval.data(), sizeof(T) * size))
 		{
 			Common::Error("Unable to read vector<T>");
 			return {};
@@ -29,3 +31,5 @@ inline vector<T> Common::Source::ReadVector()
 
 	return retval;
 }
+
+} // namespace CainEngine::Common

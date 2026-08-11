@@ -17,10 +17,10 @@ public:
 		const char* filePath,
 		Graphics::ShaderType shaderType,
 		const char* entryPoint,
-		const vector<ShaderDefine>& defines,
+		const std::vector<ShaderDefine>& defines,
 		bool optimize) const = 0;
 
-	virtual string RendererType() const = 0;
+	virtual std::string RendererType() const = 0;
 
 	virtual uint32_t RendererID() const = 0;
 

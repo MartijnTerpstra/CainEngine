@@ -1,10 +1,10 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 class TaskManager;
 
-namespace _Details {
+namespace Details {
 
 class Thread
 {
@@ -37,7 +37,7 @@ private:
 	std::mutex m_mutex;
 	std::condition_variable m_cv;
 	TaskManager* const m_manager;
-	unique_ptr<std::thread> m_thread;
+	std::unique_ptr<std::thread> m_thread;
 };
 
 }

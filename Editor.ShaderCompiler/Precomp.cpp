@@ -3,19 +3,20 @@
 #include "ICompiler.h"
 #include "DXCompiler.h"
 
+using namespace CainEngine;
 using namespace CainEngine::Graphics;
 using namespace CainEngine::Editor::ShaderCompiler;
 
 template<typename T>
-static const T* ExtractFromMapping(const std::map<string, T>& mapping, const string& key, const char* variableName);
+static const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::string& key, const char* variableName);
 
-bool CainEngine::Editor::ShaderCompiler::CompileShaders(const vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization)
+bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization)
 {
-	std::map<string, unique_ptr<ICompiler>> rendererTypeMap;
+	std::map<std::string, std::unique_ptr<ICompiler>> rendererTypeMap;
 	rendererTypeMap["DX11"] = CreateDX11Compiler();
 	rendererTypeMap["DX12"] = CreateDX12Compiler();
 
-	std::map<ICompiler*, vector<tuple<string, ShaderType, API::CompiledShaderData>>> compiledShaders;
+	std::map<ICompiler*, std::vector<std::tuple<std::string, ShaderType, API::CompiledShaderData>>> compiledShaders;
 
 	bool failure = false;
 
@@ -61,9 +62,9 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const vector<ShaderCompi
 
 	for (auto& byRenderer : compiledShaders)
 	{
-		vector<API::CompiledShaderMetaData> metadata(byRenderer.second.size());
+		std::vector<API::CompiledShaderMetaData> metadata(byRenderer.second.size());
 
-		std::ofstream outfile(string(targetDirectory) + "/" + byRenderer.first->RendererType() + ".shaders", std::ios::binary);
+		std::ofstream outfile(std::string(targetDirectory) + "/" + byRenderer.first->RendererType() + ".shaders", std::ios::binary);
 
 		auto m = API::SHADER_MAGIC_NUMBER;
 		auto id = byRenderer.first->RendererID(); 
@@ -118,13 +119,13 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const vector<ShaderCompi
 }
 
 template<typename T>
-const T* ExtractFromMapping(const std::map<string, T>& mapping, const string& key, const char* variableName)
+const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::string& key, const char* variableName)
 {
 	auto foundIt = mapping.find(key);
 
 	if (foundIt == mapping.end())
 	{
-		string supportedValues;
+		std::string supportedValues;
 
 		Common::Error("%s: '%s' in not a valid value, supported values: ", variableName, key, supportedValues);
 		return nullptr;

@@ -7,7 +7,7 @@ class Engine
 public:
 	// ctor & dtor
 
-	Engine(unique_ptr<Graphics::Renderer> renderer, string contentDirectory);
+	Engine(std::unique_ptr<Graphics::Renderer> renderer, std::string contentDirectory);
 	~Engine();
 
 public:
@@ -34,7 +34,7 @@ public:
 		Summary:
 			Sets the main target window
 	*/
-	void SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const optional<Graphics::SwapChainCreationSettings>& creationSettings);
+	void SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const std::optional<Graphics::SwapChainCreationSettings>& creationSettings);
 
 	/**
 		Summary:
@@ -46,7 +46,7 @@ public:
 		Summary:
 			Renders a new frame
 	*/
-	void RenderFrame(const optional<Graphics::Viewport>& viewport);
+	void RenderFrame(const std::optional<Graphics::Viewport>& viewport);
 
 	/**
 		Summary:
@@ -80,14 +80,14 @@ private:
 private:
 	// Member variables
 
-	const unique_ptr<Graphics::Renderer> m_renderer;
+	const std::unique_ptr<Graphics::Renderer> m_renderer;
 	Common::TaskManager m_taskManager;
 
 	Graphics::CameraManager m_cameraManager;
 	Graphics::ModelManager m_modelManager;
 	EntitySystem::Scene m_scene;
 
-	const string m_contentDirectory;
+	const std::string m_contentDirectory;
 
 	static Engine* s_singleton;
 

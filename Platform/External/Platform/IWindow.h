@@ -65,7 +65,7 @@ public:
 		Summary:
 			Returns the window's name
 	*/
-	virtual string GetName() const = 0;
+	virtual std::string GetName() const = 0;
 
 	/**
 		Summary:

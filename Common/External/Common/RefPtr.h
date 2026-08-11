@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Common {
+namespace CainEngine::Common {
 
 template<typename T>
 class RefPtr
@@ -19,21 +19,19 @@ public:
 	inline RefPtr(RefPtr&& other) noexcept;
 	inline ~RefPtr() noexcept;
 
-	template<class _Ty2,
-		std::enable_if_t<std::is_convertible_v<_Ty2*, T*>, int> = 0>
-		RefPtr(const RefPtr<_Ty2>& _Other) noexcept;
+	template<class _Ty2, std::enable_if_t<std::is_convertible_v<_Ty2*, T*>, int> = 0>
+	RefPtr(const RefPtr<_Ty2>& _Other) noexcept;
 
-	template<class _Ty2,
-		std::enable_if_t<std::is_convertible_v<_Ty2*, T*>, int> = 0>
-		RefPtr(RefPtr<_Ty2>&& _Right) noexcept;
+	template<class _Ty2, std::enable_if_t<std::is_convertible_v<_Ty2*, T*>, int> = 0>
+	RefPtr(RefPtr<_Ty2>&& _Right) noexcept;
 
-	RefPtr& operator = (const RefPtr& other) noexcept;
-	RefPtr& operator = (RefPtr&& other) noexcept;
+	RefPtr& operator=(const RefPtr& other) noexcept;
+	RefPtr& operator=(RefPtr&& other) noexcept;
 
 	template<typename T2>
-	RefPtr& operator = (const RefPtr<T2>& other) noexcept;
+	RefPtr& operator=(const RefPtr<T2>& other) noexcept;
 	template<typename T2>
-	RefPtr& operator = (RefPtr<T2>&& other) noexcept;
+	RefPtr& operator=(RefPtr<T2>&& other) noexcept;
 
 public:
 	// Main functionality
@@ -45,16 +43,17 @@ public:
 
 	inline T* Get() const noexcept;
 
-	inline T* operator -> () const noexcept;
+	inline T* operator->() const noexcept;
 
-	inline T& operator * () const noexcept;
+	inline T& operator*() const noexcept;
 
 	inline explicit operator bool() const noexcept;
 
 private:
 	// Internal functionality
 
-	struct InternalInit {};
+	struct InternalInit
+	{ };
 	inline RefPtr(InternalInit, T* ptr) noexcept;
 
 	inline void AddRef() noexcept;
@@ -67,4 +66,4 @@ private:
 
 }; // class RefPtr<T>
 
-}; // namespace Common
+}; // namespace CainEngine::Common

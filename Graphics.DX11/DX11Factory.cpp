@@ -35,7 +35,7 @@ API::VertexShader* DX11Factory::CreateVertexShader(API::IRenderer* renderer, API
 
 	dx11Renderer->AddVertexShaderInputRegisters(inputRegisterHash, shaderData.inputRegisters);
 
-	const auto iter = m_vertexShaders.emplace(dx11Renderer->D3DDevice(), move(shaderData), move(shaderData.byteCode), inputRegisterHash);
+	const auto iter = m_vertexShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData), std::move(shaderData.byteCode), inputRegisterHash);
 
 	return iter.ptr();
 }
@@ -46,7 +46,7 @@ API::PixelShader* DX11Factory::CreatePixelShader(API::IRenderer* renderer, API::
 
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
-	const auto iter = m_pixelShaders.emplace(dx11Renderer->D3DDevice(), move(shaderData), shaderData.byteCode);
+	const auto iter = m_pixelShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData), shaderData.byteCode);
 
 	return iter.ptr();
 }
@@ -87,7 +87,7 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 		float2 uv;
 	};
 
-	vector<VertexItem> vertices(creationInfo.positions.size());
+	std::vector<VertexItem> vertices(creationInfo.positions.size());
 
 	for (size_t i = 0; i < vertices.size(); ++i)
 	{
@@ -134,7 +134,7 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 	}
 	else
 	{
-		vector<uint16_t> indices(creationInfo.indices.size());
+		std::vector<uint16_t> indices(creationInfo.indices.size());
 
 		for (size_t i = 0; i < indices.size(); ++i)
 		{
@@ -171,17 +171,17 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 	return vertexData.ptr();
 }
 
-shared_ptr<API::IBuffer> DX11Factory::CreateBuffer(API::IRenderer* renderer, ResourceType type, size_t dataSize, memory_view memory, uint structSize, API::Usage usage)
+std::shared_ptr<API::IBuffer> DX11Factory::CreateBuffer(API::IRenderer* renderer, ResourceType type, size_t dataSize, memory_view memory, uint structSize, API::Usage usage)
 {
 	return nullptr;
 }
 
-pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
+std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
 {
 	return { -1, nullptr };
 }
 
-pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, array_view<API::PixelData> initialData, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
+std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, array_view<API::PixelData> initialData, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
 {
 	COMMON_CALLSTACK_CALL;
 

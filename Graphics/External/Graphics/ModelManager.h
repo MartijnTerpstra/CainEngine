@@ -17,13 +17,13 @@ public:
 public:
 	// Main functionality
 
-	[[nodiscard]] pair<int32_t, Material*> CreateMaterial(Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps);
+	[[nodiscard]] std::pair<int32_t, Material*> CreateMaterial(Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps);
 
 	[[nodiscard]] Material* GetMaterial(int32_t materialID) noexcept;
 
 	void RemoveMaterial(int32_t materialID) noexcept;
 
-	[[nodiscard]] pair<int32_t, Model*> CreateModel(Renderer& renderer, const VertexDataCreationInfo& vertexData);
+	[[nodiscard]] std::pair<int32_t, Model*> CreateModel(Renderer& renderer, const VertexDataCreationInfo& vertexData);
 
 	[[nodiscard]] Model* GetModel(int32_t modelID) noexcept;
 
@@ -49,7 +49,7 @@ private:
 	{
 		Model model;
 		inlined_vector<matrix4x4, 1> matrices;
-		vector<EntityID> entities;
+		std::vector<EntityID> entities;
 	};
 
 	struct EntityData
@@ -61,7 +61,7 @@ private:
 
 	colony<ModelData> m_models;
 	colony<Material> m_materials;
-	hash_map<int32_t, EntityData> m_entityMapping;
+	flat_hash_map<int32_t, EntityData> m_entityMapping;
 };
 
 }

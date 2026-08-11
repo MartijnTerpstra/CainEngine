@@ -14,7 +14,7 @@ struct CameraData
 struct MeshData
 {
 	matrix globalMatrix;
-	shared_ptr<Model> data;
+	std::shared_ptr<Model> data;
 };
 
 struct FrameData

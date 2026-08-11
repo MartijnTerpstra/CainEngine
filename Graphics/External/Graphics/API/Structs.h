@@ -159,10 +159,10 @@ struct ShaderRegisterInfo
 */
 struct ShaderReflectionData
 {
-	vector<ShaderBufferInfo> buffers;
-	vector<ShaderTextureInfo> textures;
-	vector<ShaderRegisterInfo> inputRegisters;
-	vector<ShaderRegisterInfo> outputRegisters;
+	std::vector<ShaderBufferInfo> buffers;
+	std::vector<ShaderTextureInfo> textures;
+	std::vector<ShaderRegisterInfo> inputRegisters;
+	std::vector<ShaderRegisterInfo> outputRegisters;
 };
 
 /**
@@ -171,7 +171,7 @@ struct ShaderReflectionData
 */
 struct CompiledShaderData : ShaderReflectionData
 {
-	vector<byte> byteCode;
+	std::vector<byte> byteCode;
 };
 
 /**

@@ -14,7 +14,7 @@ inline void CheckHResult(HRESULT hr, const char* errorMessage)
 {
 	if (FAILED(hr))
 	{
-		Common::FatalError("%s HRESULT: 0x%x", errorMessage, (uint32_t)hr);
+		CainEngine::Common::FatalError("%s HRESULT: 0x%x", errorMessage, (uint32_t)hr);
 	}
 }
 

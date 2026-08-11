@@ -14,7 +14,7 @@ public:
 		Summary:
 			Returns the name of the monitor
 	*/
-	virtual string GetName() const = 0;
+	virtual std::string GetName() const = 0;
 
 	/**
 		Summary:

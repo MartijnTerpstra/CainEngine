@@ -7,6 +7,7 @@
 #include <mcom_ptr.h>
 using mst::com_ptr;
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Editor::ShaderCompiler;
 
@@ -29,10 +30,10 @@ public:
 		const char* filePath,
 		ShaderType shaderType,
 		const char* entryPoint,
-		const vector<ShaderDefine>& defines,
+		const std::vector<ShaderDefine>& defines,
 		bool optimize) const override;
 
-	string RendererType() const override;
+	std::string RendererType() const override;
 
 	uint32_t RendererID() const override;
 
@@ -48,18 +49,18 @@ private:
 	decltype(&D3DCompileFromFile) m_d3dCompileFunc;
 	decltype(&D3DReflect) m_d3dReflectFunc;
 	const char* const m_hlslFeatureLevel;
-	const string m_type;
+	const std::string m_type;
 	const uint32_t m_rendererID;
 };
 
-unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX11Compiler()
+std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX11Compiler()
 {
-	return make_unique<DXCompiler>("DX11", DX11_ID, "_5_0");
+	return std::make_unique<DXCompiler>("DX11", DX11_ID, "_5_0");
 }
 
-unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX12Compiler()
+std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX12Compiler()
 {
-	return make_unique<DXCompiler>("DX12", DX12_ID, "_5_1");
+	return std::make_unique<DXCompiler>("DX12", DX12_ID, "_5_1");
 }
 
 DXCompiler::DXCompiler(const char* rendererType, uint32_t rendererID, const char* featureLevel)
@@ -85,14 +86,14 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	const char* filePath,
 	ShaderType shaderType,
 	const char* entryPoint,
-	const vector<ShaderDefine>& defines,
+	const std::vector<ShaderDefine>& defines,
 	bool optimize) const
 {
 	COMMON_CALLSTACK_CALL;
 
 	std::wstring wpath;
 	{
-		string path = string(sourceDirectory) + "\\" + filePath;
+		std::string path = std::string(sourceDirectory) + "\\" + filePath;
 
 		std::ifstream local(path);
 		if (!local)
@@ -142,9 +143,9 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	}
 	target.append(m_hlslFeatureLevel);
 
-	vector<D3D_SHADER_MACRO> macros(defines.size() + 2);
+	std::vector<D3D_SHADER_MACRO> macros(defines.size() + 2);
 
-	string rendererDefine = "IS_" + m_type + "_RENDERER";
+	std::string rendererDefine = "IS_" + m_type + "_RENDERER";
 
 	macros[0].Name = rendererDefine.c_str();
 	macros[0].Definition = "1";
@@ -163,14 +164,14 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 
 	if (FAILED(hr))
 	{
-		string error = (const char*)errorMesg->GetBufferPointer();
+		std::string error = (const char*)errorMesg->GetBufferPointer();
 
 		size_t fromIndex = 0;
 		while (fromIndex < error.length())
 		{
 			size_t newlineIndex = error.find('\n', fromIndex);
 
-			if (newlineIndex == string::npos)
+			if (newlineIndex == std::string::npos)
 				break;
 
 			Common::Error(error.substr(fromIndex, newlineIndex - fromIndex).c_str());
@@ -218,7 +219,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 			++sem.variableElementCount;
 		}
 
-		r.inputRegisters.push_back(move(sem));
+		r.inputRegisters.push_back(std::move(sem));
 	}
 
 	std::sort(r.inputRegisters.begin(), r.inputRegisters.end(), [](const API::ShaderRegisterInfo& l, const API::ShaderRegisterInfo& r)
@@ -243,7 +244,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 			++sem.variableElementCount;
 		}
 
-		r.outputRegisters.push_back(move(sem));
+		r.outputRegisters.push_back(std::move(sem));
 	}
 
 	for (uint i = 0; i < desc.BoundResources; ++i)
@@ -289,7 +290,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 			}
 			tex.nameHash = mst::hash64(inputDesc.Name);
 			tex.slot = inputDesc.BindPoint;
-			r.textures.push_back(move(tex));
+			r.textures.push_back(std::move(tex));
 			continue;
 		case D3D_SIT_CBUFFER:
 			buf.type = ResourceType::ConstantBuffer;
@@ -317,13 +318,13 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 		buf.nameHash = mst::hash64(inputDesc.Name);
 		buf.slot = inputDesc.BindPoint;
 
-		r.buffers.push_back(move(buf));
+		r.buffers.push_back(std::move(buf));
 	}
 
 	return r;
 }
 
-string DXCompiler::RendererType() const
+std::string DXCompiler::RendererType() const
 {
 	return m_type;
 }

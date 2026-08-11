@@ -1,9 +1,9 @@
 #include "Precomp.h"
 #include "FatalErrorHandler.hpp"
 
-namespace Common {
+namespace CainEngine::Common {
 
-void Log(LogSeverity severity, string str)
+void Log(LogSeverity severity, std::string str)
 {
 	switch(severity)
 	{

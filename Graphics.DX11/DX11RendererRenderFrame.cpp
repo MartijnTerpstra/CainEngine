@@ -18,7 +18,7 @@ void DX11Renderer::RenderFrame(std::function<void(API::IRenderContext*)> onRende
 {
 	COMMON_CALLSTACK_CALL;
 
-	m_context->ClearRenderTargetView(m_backBufferRTV.get(), float4::zero.data());
+	m_context->ClearRenderTargetView(m_backBufferRTV.get(), float4{ 0.5f, 0.5f, 0.5f, 1 }.data());
 
 	m_context->OMSetRenderTargets(1, &m_backBufferRTV, nullptr);
 
@@ -26,7 +26,7 @@ void DX11Renderer::RenderFrame(std::function<void(API::IRenderContext*)> onRende
 
 	onRender(&renderContext);
 
-	if (m_msBackBuffer)
+	if(m_msBackBuffer)
 	{
 		D3D11_TEXTURE2D_DESC desc;
 		m_backbuffer->GetDesc(&desc);

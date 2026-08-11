@@ -8,7 +8,7 @@ class Renderer
 public:
 	// ctor & dtor
 
-	Renderer(unique_ptr<API::IRenderer> renderer);
+	Renderer(std::unique_ptr<API::IRenderer> renderer);
 	~Renderer();
 
 public:
@@ -19,19 +19,19 @@ public:
 	*/
 	uint32_t ID() const;
 
-	string ShortName() const;
+	std::string ShortName() const;
 
-	string Name() const;
+	std::string Name() const;
 
 	void Init(flag<RendererInitFlags> initFlags);
 
 	void Exit();
 
-	void RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const optional<Graphics::Viewport>& viewport);
+	void RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Graphics::Viewport>& viewport);
 
 	void Flush();
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const optional<SwapChainCreationSettings>& creationSettings);
+	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings);
 
 	void HandleWindowResize();
 
@@ -50,7 +50,7 @@ private:
 
 private:
 
-	const unique_ptr<API::IRenderer> m_renderer;
+	const std::unique_ptr<API::IRenderer> m_renderer;
 	uint32_t m_frameIndex = 0;
 
 };

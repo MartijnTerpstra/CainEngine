@@ -1,13 +1,14 @@
 #include "Precomp.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
-vector<pair<static_string<64>, API::VertexShader*>> ShaderManager::m_vertexShaders;
-vector<pair<static_string<64>, API::PixelShader*>> ShaderManager::m_pixelShaders;
-vector<pair<static_string<64>, API::ComputeShader*>> ShaderManager::m_computeShaders;
-vector<pair<static_string<64>, API::GeometryShader*>> ShaderManager::m_geometryShaders;
-vector<pair<static_string<64>, API::HullShader*>> ShaderManager::m_hullShaders;
-vector<pair<static_string<64>, API::DomainShader*>> ShaderManager::m_domainShaders;
+std::vector<std::pair<static_string<64>, API::VertexShader*>> ShaderManager::m_vertexShaders;
+std::vector<std::pair<static_string<64>, API::PixelShader*>> ShaderManager::m_pixelShaders;
+std::vector<std::pair<static_string<64>, API::ComputeShader*>> ShaderManager::m_computeShaders;
+std::vector<std::pair<static_string<64>, API::GeometryShader*>> ShaderManager::m_geometryShaders;
+std::vector<std::pair<static_string<64>, API::HullShader*>> ShaderManager::m_hullShaders;
+std::vector<std::pair<static_string<64>, API::DomainShader*>> ShaderManager::m_domainShaders;
 
 ShaderManager::ShaderManager()
 {
@@ -40,7 +41,7 @@ void ShaderManager::Init(Renderer* renderer, Common::Source& source)
 
 	auto metadatas = source.ReadVector<API::CompiledShaderMetaData>();
 
-	vector<API::CompiledShaderData> shaders(metadatas.size());
+	std::vector<API::CompiledShaderData> shaders(metadatas.size());
 
 	for (size_t i = 0; i < metadatas.size(); ++i)
 	{
@@ -57,10 +58,10 @@ void ShaderManager::Init(Renderer* renderer, Common::Source& source)
 		switch (metadata.shaderType)
 		{
 		case ShaderType::Vertex:
-			m_vertexShaders.push_back({ metadata.shaderName, factory->CreateVertexShader(impl, move(data)) });
+			m_vertexShaders.push_back({ metadata.shaderName, factory->CreateVertexShader(impl, std::move(data)) });
 			break;
 		case ShaderType::Pixel:
-			m_pixelShaders.push_back({ metadata.shaderName, factory->CreatePixelShader(impl, move(data)) });
+			m_pixelShaders.push_back({ metadata.shaderName, factory->CreatePixelShader(impl, std::move(data)) });
 			break;
 		default:
 			Common::FatalError("metadata.shaderType corrupted/unimplemented");
@@ -78,7 +79,7 @@ void ShaderManager::Exit()
 	m_domainShaders.clear();
 }
 
-API::VertexShader* ShaderManager::GetVertexShader(const string& name)
+API::VertexShader* ShaderManager::GetVertexShader(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -94,7 +95,7 @@ API::VertexShader* ShaderManager::GetVertexShader(const string& name)
 	return nullptr;
 }
 
-API::PixelShader* ShaderManager::GetPixelShader(const string& name)
+API::PixelShader* ShaderManager::GetPixelShader(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 

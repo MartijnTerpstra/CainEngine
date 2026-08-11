@@ -2,16 +2,14 @@
 
 namespace CainEngine::EntitySystem {
 
-class Transform;
-class CTransform;
-
 class Scene
 {
 	COMMON_DECLARE_NON_COPY(Scene);
 
 	struct EntityData;
-	friend class Transform;
-	friend class CTransform;
+	template<bool>
+	friend class TransformImpl;
+
 public:
 	// ctor & dtor
 
@@ -23,9 +21,9 @@ public:
 
 	EntityID Create();
 
-	EntityID Create(string name);
+	EntityID Create(std::string name);
 
-	EntityID Find(string_view name) const noexcept;
+	EntityID Find(std::string_view name) const noexcept;
 
 	EntityID Find(const uuid& id) const noexcept;
 
@@ -57,9 +55,9 @@ public:
 public:
 	// Built-in components
 
-	void SetName(EntityID entity, string name);
+	void SetName(EntityID entity, std::string name);
 
-	string_view GetName(EntityID entity) const noexcept;
+	std::string_view GetName(EntityID entity) const noexcept;
 
 	Transform GetTransform(EntityID entity) noexcept;
 
@@ -78,9 +76,13 @@ public:
 public:
 	// Event management
 
-	void AddCreateCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate);
-	void AddDestroyCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy);
-	void AddTransformChangeCallback(void* managerPtr, std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)> onTransformChange);
+	void AddCreateCallback(
+		void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate);
+	void AddDestroyCallback(
+		void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy);
+	void AddTransformChangeCallback(void* managerPtr,
+		std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)>
+			onTransformChange);
 	void RemoveAllCallbacks(void* managerPtr) noexcept;
 
 public:
@@ -112,15 +114,17 @@ private:
 		euler_rotation_order order;
 	};
 
-	matrix4x3 GenerateLocalMatrixImpl(const float3& position, const EulerAngles& angles) const noexcept;
-	matrix4x3 GenerateLocalMatrixImpl(const float3& position, const quaternion& quat) const noexcept;
+	matrix4x3 GenerateLocalMatrixImpl(
+		const float3& position, const EulerAngles& angles) const noexcept;
+	matrix4x3 GenerateLocalMatrixImpl(
+		const float3& position, const quaternion& quat) const noexcept;
 
 private:
 	// Member variables
 
 	struct alignas(64) EntityData
 	{
-		//uint32_t unused
+		// uint32_t unused
 		EntityID parent;
 		flag<EntityFlags> flags;
 		uint16_t version = 0;
@@ -129,7 +133,7 @@ private:
 		matrix4x3 globalMatrix;
 		float3 position;
 		std::variant<quaternion, EulerAngles> orientation;
-		string_view name;
+		std::string_view name;
 		const uuid* uniqueId;
 		int32_t freeListPrev;
 		int32_t freeListNext;
@@ -141,14 +145,18 @@ private:
 	int32_t m_entityCount = 0, m_capacity = 0;
 	int32_t m_freeListHead = -1;
 	flat_hash_map<int32_t, inlined_vector<EntityID, 16>> m_hierarchy;
-	node_hash_map<string, EntityID> m_names;
+	node_hash_map<std::string, EntityID> m_names;
 	node_hash_map<uuid, EntityID> m_uniqueIds;
-	vector<EntityID> m_dirtyTransforms;
+	std::vector<EntityID> m_dirtyTransforms;
 	int32_t* m_entitySkips = nullptr;
-	vector<pair<void*, std::function<void(Scene& scene, EntityID entity)>>> m_destroyHandlers;
-	vector<pair<void*, std::function<void(Scene& scene, EntityID entity)>>> m_createHandlers;
-	vector<pair<void*, std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)>>> m_transformChangeHandlers;
+	std::vector<std::pair<void*, std::function<void(Scene& scene, EntityID entity)>>>
+		m_destroyHandlers;
+	std::vector<std::pair<void*, std::function<void(Scene& scene, EntityID entity)>>>
+		m_createHandlers;
+	std::vector<std::pair<void*,
+		std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)>>>
+		m_transformChangeHandlers;
 	uint32_t m_liveEntityCount = 0, m_deadEntityCount = 0;
 };
 
-};
+}; // namespace CainEngine::EntitySystem

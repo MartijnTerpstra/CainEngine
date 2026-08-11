@@ -4,6 +4,7 @@
 
 #include <Psapi.h>
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
@@ -23,11 +24,11 @@ Win32Process::~Win32Process()
 	}
 }
 
-vector<RefPtr<IProcess>> Win32Process::GetProcesses(const string& name)
+std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
-	vector<RefPtr<IProcess>> retval;
+	std::vector<RefPtr<IProcess>> retval;
 
 	DWORD processes[1024];
 	DWORD needed;
@@ -96,12 +97,12 @@ RefPtr<IProcess> Win32Process::GetCurrentProcess()
 	return nullptr;
 }
 
-RefPtr<IProcess> Win32Process::CreateNewProcess(const string& path, const string& commandLine, const string& workingDirectory)
+RefPtr<IProcess> Win32Process::CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
 
-	string cmdLine;
-	if (path.find(' ') != string::npos)
+	std::string cmdLine;
+	if (path.find(' ') != std::string::npos)
 	{
 		cmdLine = "\"" + path + "\"" + commandLine;
 	}
@@ -110,23 +111,23 @@ RefPtr<IProcess> Win32Process::CreateNewProcess(const string& path, const string
 		cmdLine = path + commandLine;
 	}
 
-	string workingDir;
+	std::string workingDir;
 	if (workingDirectory.empty())
 	{
 		size_t lastbackslash = path.find_last_of('\\');
 		size_t lastforwardslash = path.find_last_of('/');
 
-		if (lastbackslash != string::npos && lastforwardslash != string::npos)
+		if (lastbackslash != std::string::npos && lastforwardslash != std::string::npos)
 		{
 			size_t foundPos = std::max(lastbackslash, lastforwardslash);
 
 			workingDir = path.substr(0, foundPos);
 		}
-		else if (lastbackslash != string::npos)
+		else if (lastbackslash != std::string::npos)
 		{
 			workingDir = path.substr(0, lastbackslash);
 		}
-		else if (lastforwardslash != string::npos)
+		else if (lastforwardslash != std::string::npos)
 		{
 			workingDir = path.substr(0, lastforwardslash);
 		}
@@ -154,7 +155,7 @@ RefPtr<IProcess> Win32Process::CreateNewProcess(const string& path, const string
 	return nullptr;
 }
 
-string Win32Process::GetName() const
+std::string Win32Process::GetName() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -240,6 +241,6 @@ void* Win32Process::_As(uint64_t typeHash) const
 		CHECK_TYPE_AND_RETURN(IProcess);
 		CHECK_TYPE_AND_RETURN(Win32Process);
 	default:
-		Common::FatalError("Invalid cast");
+		return nullptr;
 	}
 }

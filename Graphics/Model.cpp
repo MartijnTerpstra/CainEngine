@@ -1,5 +1,6 @@
 #include "Precomp.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 Model::Model()

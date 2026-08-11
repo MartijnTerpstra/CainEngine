@@ -18,15 +18,15 @@ private:
 public:
 	// Creation
 
-	static vector<RefPtr<IProcess>> GetProcesses(const string& name);
+	static std::vector<RefPtr<IProcess>> GetProcesses(const std::string& name);
 	static RefPtr<IProcess> GetProcess(uint id);
 	static RefPtr<IProcess> GetCurrentProcess();
-	static RefPtr<IProcess> CreateNewProcess(const string& path, const string& commandLine, const string& workingDirectory);
+	static RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory);
 
 public:
 	// IProcess overrides
 
-	string GetName() const override;
+	std::string GetName() const override;
 	uint GetID() const override;
 	uint GetSessionID() const override;
 	std::chrono::time_point<std::chrono::system_clock> GetCreationTime() const override;

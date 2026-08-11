@@ -48,7 +48,7 @@ BreakBeforeBraces: Custom
 BreakConstructorInitializers: BeforeComma
 ColumnLimit: 100
 Cpp11BracedListStyle: false
-FixNamespaceComments: false
+FixNamespaceComments: true
 IndentCaseLabels: false
 IndentPPDirectives: None
 IndentWidth: 4

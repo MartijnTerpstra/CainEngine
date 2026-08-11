@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #ifndef COMMON_MONITOR_CALLSTACK
 #if _DEBUG
 #define COMMON_MONITOR_CALLSTACK 1
@@ -7,12 +10,16 @@
 #endif
 
 #if COMMON_MONITOR_CALLSTACK
-#define COMMON_CALLSTACK_CALL ::Common::CallstackScope _MST_ANONYMOUS_VAR {__FUNCTION__, __FILE__, __LINE__}
+#define COMMON_CALLSTACK_CALL                                                                      \
+	::CainEngine::Common::CallstackScope _MST_ANONYMOUS_VAR                                        \
+	{                                                                                              \
+		__FUNCTION__, __FILE__, __LINE__                                                           \
+	}
 #else
 #define COMMON_CALLSTACK_CALL
 #endif
 
-namespace Common {
+namespace CainEngine::Common {
 
 class CallstackScope
 {
@@ -28,9 +35,7 @@ public:
 class Callstack
 {
 public:
-
-	static vector<string> Get();
-
+	static std::vector<std::string> Get();
 };
 
-}; // namespace Common
+}; // namespace CainEngine::Common

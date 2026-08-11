@@ -29,7 +29,7 @@ public:
 			- structSize: the size of the struct inside the buffer, only used for structured buffers and vertex buffers
 			- usage: the read and writability on the CPU and GPU
 	*/
-	virtual shared_ptr<IBuffer> CreateBuffer(IRenderer* renderer, ResourceType type, size_t dataSize, memory_view memory = memory_view(nullptr, 0),
+	virtual std::shared_ptr<IBuffer> CreateBuffer(IRenderer* renderer, ResourceType type, size_t dataSize, memory_view memory = memory_view(nullptr, 0),
 		uint structSize = 0, Usage usage = Usage::Default) = 0;
 
 	/**
@@ -45,7 +45,7 @@ public:
 			- arraySize: the amount of textures in the texture array, use 1 for non-arrays
 			- mipLevels: the amount of mip levels to create, use GRAPHICS_CORE_GENERATE_MAX_MIPS to let the api generate the maximal amount
 	*/
-	virtual pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type, const uint3& size,
+	virtual std::pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type, const uint3& size,
 		PixelFormat format = PixelFormat::Default,
 		flag<BindFlags> bindFlags = BindFlags::ShaderResource,
 		Usage usage = Usage::Default,
@@ -66,7 +66,7 @@ public:
 			- arraySize: the amount of textures in the texture array, use 1 for non-arrays
 			- mipLevels: the amount of mip levels to create, use GRAPHICS_CORE_GENERATE_MAX_MIPS to let the api generate the maximal amount
 	*/
-	virtual pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type, const uint3& size,
+	virtual std::pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type, const uint3& size,
 		array_view<API::PixelData> initialData,
 		PixelFormat format = PixelFormat::Default,
 		flag<BindFlags> bindFlags = BindFlags::ShaderResource,

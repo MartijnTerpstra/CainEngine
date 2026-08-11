@@ -9,7 +9,7 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
 DX11Texture::DX11Texture(com_ptr<ID3D11Resource>&& texture)
-	: m_texture(move(texture))
+	: m_texture(std::move(texture))
 {
 }
 

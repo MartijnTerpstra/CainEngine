@@ -168,9 +168,9 @@ void DX11Renderer::SetDisplayMode(const SwapChainDisplayMode& mode)
 	Common::FatalError("unimplemented");
 }
 
-vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
+std::vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
 {
-	vector<OutputDisplay> outputs;
+	std::vector<OutputDisplay> outputs;
 
 	uint32_t index = 0;
 	com_ptr<IDXGIOutput> o;
@@ -182,7 +182,7 @@ vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
 		auto charCount = WideCharToMultiByte(CP_UTF8, 0, od.DeviceName, (int)wcslen(od.DeviceName), nullptr, 0, nullptr, nullptr);
 
 
-		string result;
+		std::string result;
 		if(charCount > 0)
 		{
 			result.resize((size_t)charCount, ' ');
@@ -197,9 +197,9 @@ vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
 	return outputs;
 }
 
-vector<PixelFormat> DX11Renderer::SupportedPixelFormats(uint32_t output) const
+std::vector<PixelFormat> DX11Renderer::SupportedPixelFormats(uint32_t output) const
 {
-	vector<PixelFormat> retval;
+	std::vector<PixelFormat> retval;
 
 	UINT formatSupport;
 	CHECK_HRESULT(m_device->CheckFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, &formatSupport));
@@ -218,7 +218,7 @@ vector<PixelFormat> DX11Renderer::SupportedPixelFormats(uint32_t output) const
 	return retval;
 }
 
-vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
+std::vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
 {
 	com_ptr<IDXGIOutput> output;
 	CHECK_HRESULT(m_adapter->EnumOutputs((UINT)outputIndex, mst::initialize(output)));
@@ -228,10 +228,10 @@ vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t output
 	UINT numModes;
 	CHECK_HRESULT(output->GetDisplayModeList(dxformat, 0, &numModes, nullptr));
 
-	vector<DXGI_MODE_DESC> descs(numModes);
+	std::vector<DXGI_MODE_DESC> descs(numModes);
 	CHECK_HRESULT(output->GetDisplayModeList(dxformat, 0, &numModes, descs.data()));
 
-	vector<SwapChainDisplayMode> displayModes;
+	std::vector<SwapChainDisplayMode> displayModes;
 	displayModes.reserve(numModes);
 
 	for (auto& desc : descs)
@@ -244,9 +244,9 @@ vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t output
 	return displayModes;
 }
 
-vector<uint32_t> DX11Renderer::SupportedMultiSamplingCounts(PixelFormat format) const
+std::vector<uint32_t> DX11Renderer::SupportedMultiSamplingCounts(PixelFormat format) const
 {
-	vector<uint32_t> modes;
+	std::vector<uint32_t> modes;
 
 	auto dxformat = EnumConverter::Convert(format);
 

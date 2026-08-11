@@ -10,7 +10,7 @@ class Win32Window final : public Win32::IWin32Window
 private:
 	// ctor & dtor
 
-	Win32Window(HWND hwnd, string name, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
+	Win32Window(HWND hwnd, std::string name, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
 	~Win32Window();
 
 	COMMON_DECLARE_NON_COPY(Win32Window);
@@ -18,7 +18,7 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
+	static RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
 
 	static RefPtr<IWindow> GetConsole();
 
@@ -39,7 +39,7 @@ public:
 
 	bool IsShown() const override;
 
-	string GetName() const override;
+	std::string GetName() const override;
 
 	int GetWidth() const override;
 
@@ -74,8 +74,8 @@ private:
 	bool m_minimized;
 
 	const HWND m_hwnd;
-	const string m_name;
-	const weak_ptr<ClientInterfaces::IWindowEventListener> m_eventListener;
+	const std::string m_name;
+	const std::weak_ptr<ClientInterfaces::IWindowEventListener> m_eventListener;
 	ClientInterfaces::IWindowEventListener* const m_eventListenerPointer;
 
 }; // namespace Win32Window

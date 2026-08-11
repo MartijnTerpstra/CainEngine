@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::EntitySystem;
 
 Scene::Scene()
@@ -58,15 +59,15 @@ EntityID Scene::Create()
 	return entityId;
 }
 
-EntityID Scene::Create(string name)
+EntityID Scene::Create(std::string name)
 {
 	const auto id = Create();
-	SetName(id, move(name));
+	SetName(id, std::move(name));
 
 	return id;
 }
 
-EntityID Scene::Find(string_view name) const noexcept
+EntityID Scene::Find(std::string_view name) const noexcept
 {
 	const auto iter = m_names.find(name);
 
@@ -154,7 +155,7 @@ void Scene::Clear() noexcept
 	m_dirtyTransforms.clear();
 }
 
-void Scene::SetName(EntityID entity, string name)
+void Scene::SetName(EntityID entity, std::string name)
 {
 	COMMON_ASSERT(IsAlive(entity));
 	COMMON_ASSERT(!m_names.contains(name));
@@ -177,7 +178,7 @@ void Scene::SetName(EntityID entity, string name)
 	}
 }
 
-string_view Scene::GetName(EntityID entity) const noexcept
+std::string_view Scene::GetName(EntityID entity) const noexcept
 {
 	COMMON_ASSERT(IsAlive(entity));
 

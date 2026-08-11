@@ -30,10 +30,10 @@ struct Viewport
 
 struct VertexDataCreationInfo
 {
-	vector<float3> positions;
-	vector<float3> normals;
-	vector<float2> uvs;
-	vector<uint32_t> indices;
+	std::vector<float3> positions;
+	std::vector<float3> normals;
+	std::vector<float2> uvs;
+	std::vector<uint32_t> indices;
 	PrimitiveTopology topology = PrimitiveTopology::TriangleList;
 };
 
@@ -174,14 +174,14 @@ struct SwapChainCreationSettings
 struct OutputDisplay
 {
 	OutputDisplay(uint32_t index,
-		string name)
+		std::string name)
 		: index(index),
 		name(name)
 	{
 	}
 
 	uint32_t index;
-	string name;
+	std::string name;
 };
 
 struct FullScreenState

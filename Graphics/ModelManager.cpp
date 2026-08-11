@@ -1,5 +1,6 @@
 #include "Precomp.h"
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 ModelManager::ModelManager()
@@ -10,7 +11,7 @@ ModelManager::~ModelManager()
 {
 }
 
-pair<int32_t, Material*> ModelManager::CreateMaterial(Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps)
+std::pair<int32_t, Material*> ModelManager::CreateMaterial(Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps)
 {
 	const auto iter = m_materials.emplace(vs, ps);
 
@@ -27,7 +28,7 @@ void ModelManager::RemoveMaterial(int32_t materialID) noexcept
 	m_materials.erase(materialID);
 }
 
-pair<int32_t, Model*> ModelManager::CreateModel(Renderer& renderer, const VertexDataCreationInfo& vertexData)
+std::pair<int32_t, Model*> ModelManager::CreateModel(Renderer& renderer, const VertexDataCreationInfo& vertexData)
 {
 	const auto impl = renderer.Implementation();
 	const auto factory = impl->GetFactory();
