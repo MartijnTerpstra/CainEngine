@@ -1,0 +1,48 @@
+name: Unit tests
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: CainEngine unit tests (Windows, Debug)
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Dependencies/{mst,Abseil,googletest,nlohmann_json} are real git
+          # submodules (see .gitmodules) - nothing under Dependencies/ is
+          # vendored/committed directly, so this is required for the configure
+          # step below to have anything to build.
+          submodules: recursive
+
+      - name: Set up MSVC dev environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Configure
+        # BUILD_TESTING must be set on this initial configure call, not added
+        # later - Dependencies/CMakeLists.txt only add_subdirectory()s
+        # googletest while BUILD_TESTING is already true, and nothing earlier
+        # in the configure sets it by default.
+        #
+        # Debug specifically (not Release): Release adds /EHs-c- to
+        # CMAKE_CXX_FLAGS_RELEASE (see top-level CMakeLists.txt), which
+        # disables C++ exception handling at the compiler level. The test
+        # suite's FatalErrorTest fixture (Common/TestSupport) relies on being
+        # able to throw/catch, so it (and by extension anything using it)
+        # only works in a Debug build.
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+
+      - name: Build test targets
+        run: cmake --build build
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure --timeout 120
