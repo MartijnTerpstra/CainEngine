@@ -28,10 +28,10 @@ jobs:
         uses: seanmiddleditch/gha-setup-ninja@v4
 
       - name: Configure
-        # BUILD_TESTING must be set on this initial configure call, not added
-        # later - Dependencies/CMakeLists.txt only add_subdirectory()s
-        # googletest while BUILD_TESTING is already true, and nothing earlier
-        # in the configure sets it by default.
+        # ci-windows-debug (CMakePresets.json) pins BUILD_TESTING=ON on this
+        # initial configure call, not added later - Dependencies/CMakeLists.txt
+        # only add_subdirectory()s googletest while BUILD_TESTING is already
+        # true, and nothing earlier in the configure sets it by default.
         #
         # Debug specifically (not Release): Release adds /EHs-c- to
         # CMAKE_CXX_FLAGS_RELEASE (see top-level CMakeLists.txt), which
@@ -39,10 +39,10 @@ jobs:
         # suite's FatalErrorTest fixture (Common/TestSupport) relies on being
         # able to throw/catch, so it (and by extension anything using it)
         # only works in a Debug build.
-        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+        run: cmake --preset ci-windows-debug
 
       - name: Build test targets
-        run: cmake --build build
+        run: cmake --build --preset ci-windows-debug
 
       - name: Run tests
-        run: ctest --test-dir build --output-on-failure --timeout 120
+        run: ctest --preset ci-windows-debug
