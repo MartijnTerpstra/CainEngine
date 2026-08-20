@@ -5,7 +5,7 @@ namespace CainEngine::Common {
 /*
 	Severity of the logging
 */
-enum class LogSeverity : byte
+enum class LogSeverity : uint8_t
 {
 	/* Fatal error, system is in a state of undefined behaviour */
 	FatalError = 0,
@@ -20,4 +20,4 @@ enum class LogSeverity : byte
 	Message = 3
 };
 
-}; // namespace Common
+}; // namespace CainEngine::Common

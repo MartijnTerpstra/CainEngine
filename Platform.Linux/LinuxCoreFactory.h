@@ -8,7 +8,8 @@ namespace Internal {
 	Summary:
 		Linux implementation of the IPlatformFactory
 */
-class LinuxCoreFactory final : public Linux::ILinuxCoreFactory, public Common::Castable<LinuxCoreFactory>
+class LinuxCoreFactory final : public Linux::ILinuxCoreFactory,
+							   public Common::Castable<LinuxCoreFactory>
 {
 public:
 	// ctor & dtor
@@ -25,7 +26,7 @@ public:
 
 	vector<shared_ptr<IProcess>> GetProcesses(const string& name) override;
 
-	shared_ptr<IProcess> GetProcess(uint id) override;
+	shared_ptr<IProcess> GetProcess(uint32_t id) override;
 
 	shared_ptr<IProcess> GetCurrentProcess() override;
 
@@ -33,13 +34,16 @@ public:
 
 	shared_ptr<IProcess> CreateNewProcess(const string& path, const string& commandLine) override;
 
-	shared_ptr<IProcess> CreateNewProcess(const string& path, const string& commandLine, const string& workingDirectory) override;
+	shared_ptr<IProcess> CreateNewProcess(
+		const string& path, const string& commandLine, const string& workingDirectory) override;
 
 	vector<shared_ptr<IMonitor>> GetMonitors() override;
 
 	shared_ptr<IMonitor> GetMainMonitor() override;
 
-	shared_ptr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
+	shared_ptr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type,
+		flag<WindowFlags> flags,
+		const weak_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
 
 	shared_ptr<IWindow> GetConsoleWindow() override;
 

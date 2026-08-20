@@ -12,16 +12,16 @@ using namespace ::CainEngine::Common;
 namespace {
 
 template<typename T>
-std::vector<byte> ToBytes(const T& value)
+std::vector<uint8_t> ToBytes(const T& value)
 {
-	std::vector<byte> bytes(sizeof(T));
+	std::vector<uint8_t> bytes(sizeof(T));
 	std::memcpy(bytes.data(), &value, sizeof(T));
 	return bytes;
 }
 
-std::vector<byte> Concat(std::initializer_list<std::vector<byte>> chunks)
+std::vector<uint8_t> Concat(std::initializer_list<std::vector<uint8_t>> chunks)
 {
-	std::vector<byte> result;
+	std::vector<uint8_t> result;
 	for(auto& chunk : chunks)
 		result.insert(result.end(), chunk.begin(), chunk.end());
 	return result;
@@ -32,7 +32,7 @@ std::vector<byte> Concat(std::initializer_list<std::vector<byte>> chunks)
 class MemorySource : public Source
 {
 public:
-	explicit MemorySource(std::vector<byte> bytes)
+	explicit MemorySource(std::vector<uint8_t> bytes)
 		: m_bytes(std::move(bytes))
 	{ }
 
@@ -48,7 +48,7 @@ private:
 	}
 
 private:
-	std::vector<byte> m_bytes;
+	std::vector<uint8_t> m_bytes;
 	size_t m_offset = 0;
 };
 
@@ -97,7 +97,8 @@ TEST(Source, ReadUintOnEmptySourceReturnsZeroWithoutCrashing)
 
 TEST(Source, SuccessiveReadsAdvanceThroughTheBuffer)
 {
-	MemorySource source(Concat({ToBytes(uint32_t(1)), ToBytes(uint32_t(2)), ToBytes(uint32_t(3))}));
+	MemorySource source(
+		Concat({ ToBytes(uint32_t(1)), ToBytes(uint32_t(2)), ToBytes(uint32_t(3)) }));
 
 	EXPECT_EQ(1u, source.ReadUint());
 	EXPECT_EQ(2u, source.ReadUint());
@@ -108,7 +109,7 @@ TEST(Source, SuccessiveReadsAdvanceThroughTheBuffer)
 
 TEST(Source, ReadStructReturnsWrittenFields)
 {
-	PodStruct value{42, 1.25f};
+	PodStruct value{ 42, 1.25f };
 	MemorySource source(ToBytes(value));
 
 	EXPECT_EQ(value, source.ReadStruct<PodStruct>());
@@ -118,7 +119,7 @@ TEST(Source, ReadStructOnTruncatedSourceReturnsZeroedStruct)
 {
 	MemorySource source(ToBytes(int32_t(1))); // too short for PodStruct
 
-	EXPECT_EQ((PodStruct{0, 0.0f}), source.ReadStruct<PodStruct>());
+	EXPECT_EQ((PodStruct{ 0, 0.0f }), source.ReadStruct<PodStruct>());
 }
 
 // -- ReadVector -------------------------------------------------------------------
@@ -126,10 +127,10 @@ TEST(Source, ReadStructOnTruncatedSourceReturnsZeroedStruct)
 TEST(Source, ReadVectorRoundTripsElements)
 {
 	auto bytes = Concat(
-		{ToBytes(uint32_t(3)), ToBytes(int32_t(10)), ToBytes(int32_t(20)), ToBytes(int32_t(30))});
+		{ ToBytes(uint32_t(3)), ToBytes(int32_t(10)), ToBytes(int32_t(20)), ToBytes(int32_t(30)) });
 	MemorySource source(std::move(bytes));
 
-	EXPECT_EQ((std::vector<int32_t>{10, 20, 30}), source.ReadVector<int32_t>());
+	EXPECT_EQ((std::vector<int32_t>{ 10, 20, 30 }), source.ReadVector<int32_t>());
 }
 
 TEST(Source, ReadVectorWithZeroSizeReturnsEmptyVector)
@@ -142,7 +143,7 @@ TEST(Source, ReadVectorWithZeroSizeReturnsEmptyVector)
 TEST(Source, ReadVectorFailsGracefullyWhenTruncated)
 {
 	// Header claims 5 elements, but only one is actually present.
-	auto bytes = Concat({ToBytes(uint32_t(5)), ToBytes(int32_t(1))});
+	auto bytes = Concat({ ToBytes(uint32_t(5)), ToBytes(int32_t(1)) });
 	MemorySource source(std::move(bytes));
 
 	EXPECT_TRUE(source.ReadVector<int32_t>().empty());
@@ -155,10 +156,10 @@ namespace {
 class FileSourceTest : public ::testing::Test
 {
 protected:
-	std::filesystem::path WriteTempFile(const std::vector<byte>& bytes)
+	std::filesystem::path WriteTempFile(const std::vector<uint8_t>& bytes)
 	{
 		auto path = std::filesystem::temp_directory_path() /
-			("CainEngine_CommonTests_Source_" + std::to_string(m_fileCounter++) + ".bin");
+					("CainEngine_CommonTests_Source_" + std::to_string(m_fileCounter++) + ".bin");
 
 		std::ofstream file(path, std::ios::binary);
 		file.write(reinterpret_cast<const char*>(bytes.data()), (std::streamsize)bytes.size());
@@ -183,7 +184,7 @@ private:
 
 TEST_F(FileSourceTest, ReadsBackValuesWrittenToDisk)
 {
-	auto path = WriteTempFile(Concat({ToBytes(uint32_t(7)), ToBytes(int32_t(-3))}));
+	auto path = WriteTempFile(Concat({ ToBytes(uint32_t(7)), ToBytes(int32_t(-3)) }));
 
 	FileSource source(path.string());
 
@@ -193,8 +194,8 @@ TEST_F(FileSourceTest, ReadsBackValuesWrittenToDisk)
 
 TEST_F(FileSourceTest, MissingFileFailsGracefullyOnRead)
 {
-	FileSource source((std::filesystem::temp_directory_path() /
-		"CainEngine_CommonTests_Source_DoesNotExist.bin")
+	FileSource source(
+		(std::filesystem::temp_directory_path() / "CainEngine_CommonTests_Source_DoesNotExist.bin")
 			.string());
 
 	// Construction logs an error (file failed to open) but doesn't throw or

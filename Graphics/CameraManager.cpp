@@ -3,12 +3,31 @@
 using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
-CameraManager::CameraManager()
+CameraManager::CameraManager(Scene& scene)
+	: m_scene(scene)
 {
+	m_scene.AddDestroyCallback(this, [this](Scene&, EntityID entity) {
+		if(HasCamera(entity))
+		{
+			RemoveCamera(entity);
+		}
+	});
+	m_scene.AddTransformChangeCallback(
+		this, [this](Scene&, EntityID entity, const matrix3x4& matrix) {
+			auto dataIt = m_entityDatas.find(entity.Index());
+			if(dataIt == m_entityDatas.end())
+			{
+				return;
+			}
+			auto& renderData = m_renderDatas[dataIt->second.renderDataIndex];
+			renderData.inverseView = matrix4x4(matrix, float4(0, 0, 0, 1));
+			renderData.view = renderData.inverseView.get_inverse();
+		});
 }
 
 CameraManager::~CameraManager()
 {
+	m_scene.RemoveAllCallbacks(this);
 }
 
 void CameraManager::AddCamera(EntityID entity)
@@ -17,7 +36,7 @@ void CameraManager::AddCamera(EntityID entity)
 
 	const auto index = entity.Index();
 
-	auto& data = m_entityDatas.emplace(index).second;
+	auto& data = m_entityDatas[index];
 
 	data.renderDataIndex = AddRenderData();
 	data.projectionData = PerspectiveData{ degrees(45), 0.1f, 10000.f };
@@ -29,11 +48,11 @@ void CameraManager::RemoveCamera(EntityID entity) noexcept
 
 	const auto index = entity.Index();
 
-	const auto renderDataIndex = m_entityDatas.at(index).renderDataIndex;
+	const auto renderDataIndex = m_entityDatas.extract(index).mapped().renderDataIndex;
 
 	m_entityDatas.erase(index);
 
-	RemoveRenderData(index);
+	RemoveRenderData(renderDataIndex);
 }
 
 void CameraManager::MoveCamera(EntityID entityFrom, EntityID entityTo)
@@ -55,29 +74,20 @@ bool CameraManager::HasCamera(EntityID entity) const noexcept
 	return m_entityDatas.contains(entity.Index());
 }
 
-void CameraManager::AttachCallbacks(Scene& scene)
-{
-	scene.AddDestroyCallback(this, [this](Scene& scene, EntityID entity)
-	{
-		if (HasCamera(entity))
-		{
-			RemoveCamera(entity);
-		}
-	});
-}
-
-void CameraManager::SetPerspectiveProjection(EntityID entity, degrees fov, float nearDepth, float farDepth) noexcept
+void CameraManager::SetPerspectiveProjection(
+	EntityID entity, degrees fov, float nearDepth, float farDepth) noexcept
 {
 	COMMON_ASSERT(HasCamera(entity));
 
 	const auto index = entity.Index();
 
 	auto& data = m_entityDatas.at(index);
-	
+
 	data.projectionData = PerspectiveData{ fov, nearDepth, farDepth };
 }
 
-void CameraManager::SetOrthographicProjection(EntityID entity, const float2& min, const float2& max, float nearDepth, float farDepth) noexcept
+void CameraManager::SetOrthographicProjection(
+	EntityID entity, const float2& min, const float2& max, float nearDepth, float farDepth) noexcept
 {
 	COMMON_ASSERT(HasCamera(entity));
 
@@ -101,37 +111,35 @@ void CameraManager::RemoveRenderData(uint16_t index) noexcept
 {
 	COMMON_ASSERT(index < m_renderDatas.size());
 
-	if (m_renderDatas.size() == 1)
-	{
-		m_renderDatas.clear();
-		return;
-	}
-
 	const auto lastIndex = m_renderDatas.size() - 1;
 
-	m_renderDatas.pop_back();
-
-	for (auto& data : m_entityDatas)
+	if(index != lastIndex)
 	{
-		if (data.second.renderDataIndex == lastIndex)
-		{
-			data.second.renderDataIndex = index;
-			return;
-		}
+		auto& entityData = m_entityDatas[m_renderDataToEntities.back()];
+		entityData.renderDataIndex = index;
 	}
+
+	m_renderDatas.pop_back();
+	m_renderDataToEntities.pop_back();
 }
 
-matrix CameraManager::CreateProjectionMatrix(const EntityData& entityData, const float2& viewport) const
+matrix CameraManager::CreateProjectionMatrix(
+	const EntityData& entityData, const float2& viewport) const
 {
-	return std::visit([&](const auto& data) { return CreateProjectionMatrixImpl(data, viewport); }, entityData.projectionData);
+	return std::visit([&](const auto& data) { return CreateProjectionMatrixImpl(data, viewport); },
+		entityData.projectionData);
 }
 
-matrix CameraManager::CreateProjectionMatrixImpl(const PerspectiveData& data, const float2& viewport) const
+matrix CameraManager::CreateProjectionMatrixImpl(
+	const PerspectiveData& data, const float2& viewport) const
 {
-	return matrix::create_perspective(data.fov, viewport.x, viewport.y, data.nearDepth, data.farDepth);
+	return matrix::create_perspective(
+		data.fov, viewport.x, viewport.y, data.nearDepth, data.farDepth);
 }
 
-matrix CameraManager::CreateProjectionMatrixImpl(const OrthographicData& data, const float2& viewport) const
+matrix CameraManager::CreateProjectionMatrixImpl(
+	const OrthographicData& data, const float2& viewport) const
 {
-	return matrix::create_orthographic(aabb(float3(data.min, data.nearDepth), float3(data.max, data.farDepth)));
+	return matrix::create_orthographic(
+		aabb(float3(data.min, data.nearDepth), float3(data.max, data.farDepth)));
 }

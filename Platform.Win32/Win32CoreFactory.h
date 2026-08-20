@@ -12,6 +12,7 @@ class Win32CoreFactory final : public ICoreFactory
 {
 	COMMON_DECLARE_NON_COPY(Win32CoreFactory);
 	friend class Common::RefPtr<Win32CoreFactory>;
+
 private:
 	// ctor & dtor
 
@@ -25,23 +26,28 @@ public:
 
 	std::vector<RefPtr<IProcess>> GetProcesses(const std::string& name) override;
 
-	RefPtr<IProcess> GetProcess(uint id) override;
+	RefPtr<IProcess> GetProcess(uint32_t id) override;
 
 	RefPtr<IProcess> GetCurrentProcess() override;
 
 	RefPtr<IProcess> CreateNewProcess(const std::string& path) override;
 
-	RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine) override;
+	RefPtr<IProcess> CreateNewProcess(
+		const std::string& path, const std::string& commandLine) override;
 
-	RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory) override;
+	RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine,
+		const std::string& workingDirectory) override;
 
 	std::vector<RefPtr<IMonitor>> GetMonitors() override;
 
 	RefPtr<IMonitor> GetMainMonitor() override;
 
-	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
+	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type,
+		flag<WindowFlags> flags,
+		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
 
-	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener) override;
+	RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type,
+		flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener) override;
 
 	RefPtr<IWindow> GetConsoleWindow() override;
 

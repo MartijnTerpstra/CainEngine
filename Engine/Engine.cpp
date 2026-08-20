@@ -5,16 +5,15 @@ using namespace ::CainEngine;
 Engine* Engine::s_singleton = nullptr;
 
 Engine::Engine(std::unique_ptr<Graphics::Renderer> renderer, std::string contentDirectory)
-	: m_renderer(std::move(renderer)),
-	m_contentDirectory(std::move(contentDirectory))
+	: m_renderer(std::move(renderer))
+	, m_contentDirectory(std::move(contentDirectory))
+	, m_cameraManager(m_scene)
 {
-	m_cameraManager.AttachCallbacks(m_scene);
 	m_modelManager.AttachCallbacks(m_scene);
 }
 
 Engine::~Engine()
-{
-}
+{ }
 
 Engine& Engine::Get()
 {
@@ -40,7 +39,8 @@ void Engine::Exit()
 	m_renderer->Exit();
 }
 
-void Engine::SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const std::optional<Graphics::SwapChainCreationSettings>& creationSettings)
+void Engine::SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow,
+	const std::optional<Graphics::SwapChainCreationSettings>& creationSettings)
 {
 	m_renderer->SetMainWindow(mainWindow, creationSettings);
 }
@@ -77,9 +77,9 @@ EntitySystem::Scene& Engine::GetScene()
 
 std::future<void> Engine::LoadShaders()
 {
-	return m_taskManager.Run([this]()
-	{
-		Common::FileSource shaderFile(m_contentDirectory + "/Shaders/" + m_renderer->ShortName() + ".shaders");
+	return m_taskManager.Run([this]() {
+		Common::FileSource shaderFile(
+			m_contentDirectory + "/Shaders/" + m_renderer->ShortName() + ".shaders");
 
 		Graphics::ShaderManager::Init(m_renderer.get(), shaderFile);
 	});

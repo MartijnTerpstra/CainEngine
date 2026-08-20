@@ -14,62 +14,65 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
 CainEngine::Graphics::API::VertexData::~VertexData()
-{
-}
+{ }
 
 DX11Factory::DX11Factory()
-{
-}
+{ }
 
 DX11Factory::~DX11Factory()
-{
-}
+{ }
 
-API::VertexShader* DX11Factory::CreateVertexShader(API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
+API::VertexShader* DX11Factory::CreateVertexShader(
+	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
 	COMMON_CALLSTACK_CALL;
 
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
-	auto inputRegisterHash = mst::hash64(memory_view(shaderData.inputRegisters.data(), shaderData.inputRegisters.size()));
+	auto inputRegisterHash = mst::hash64(
+		memory_view(shaderData.inputRegisters.data(), shaderData.inputRegisters.size()));
 
 	dx11Renderer->AddVertexShaderInputRegisters(inputRegisterHash, shaderData.inputRegisters);
 
-	const auto iter = m_vertexShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData), std::move(shaderData.byteCode), inputRegisterHash);
+	const auto iter = m_vertexShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData),
+		std::move(shaderData.byteCode), inputRegisterHash);
 
 	return iter.ptr();
 }
 
-API::PixelShader* DX11Factory::CreatePixelShader(API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
+API::PixelShader* DX11Factory::CreatePixelShader(
+	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
 	COMMON_CALLSTACK_CALL;
 
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
-	const auto iter = m_pixelShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData), shaderData.byteCode);
+	const auto iter = m_pixelShaders.emplace(
+		dx11Renderer->D3DDevice(), std::move(shaderData), shaderData.byteCode);
 
 	return iter.ptr();
 }
 
-API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const VertexDataCreationInfo& creationInfo)
+API::VertexData* DX11Factory::CreateVertexData(
+	API::IRenderer* renderer, const VertexDataCreationInfo& creationInfo)
 {
 	COMMON_CALLSTACK_CALL;
 
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
-	if (creationInfo.positions.empty())
+	if(creationInfo.positions.empty())
 	{
 		Common::Error("Invalid call to CreateVertexData: positions is empty");
 		return nullptr;
 	}
 
-	if (creationInfo.indices.empty())
+	if(creationInfo.indices.empty())
 	{
 		Common::Error("Invalid call to CreateVertexData: indices is empty");
 		return nullptr;
 	}
 
-	if (creationInfo.positions.size() != creationInfo.normals.size() ||
+	if(creationInfo.positions.size() != creationInfo.normals.size() ||
 		creationInfo.positions.size() != creationInfo.uvs.size())
 	{
 		Common::Error("Invalid call to CreateVertexData: positions is empty");
@@ -89,7 +92,7 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 
 	std::vector<VertexItem> vertices(creationInfo.positions.size());
 
-	for (size_t i = 0; i < vertices.size(); ++i)
+	for(size_t i = 0; i < vertices.size(); ++i)
 	{
 		vertices[i].position = creationInfo.positions[i];
 		vertices[i].normal = creationInfo.normals[i];
@@ -110,14 +113,16 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 
 		data.pSysMem = vertices.data();
 
-		CHECK_HRESULT(device->CreateBuffer(&desc, &data, mst::initialize(vertexData->vertexBuffers[0])));
+		CHECK_HRESULT(
+			device->CreateBuffer(&desc, &data, mst::initialize(vertexData->vertexBuffers[0])));
 	}
 
 
 	vertexData->indexCount = (uint32_t)creationInfo.indices.size();
 	vertexData->indexFormat = DXGI_FORMAT_R16_UINT;
 
-	if (std::any_of(creationInfo.indices.begin(), creationInfo.indices.end(), [](uint32_t index) { return index >= USHRT_MAX; }))
+	if(std::any_of(creationInfo.indices.begin(), creationInfo.indices.end(),
+		   [](uint32_t index) { return index >= USHRT_MAX; }))
 	{
 		vertexData->indexFormat = DXGI_FORMAT_R32_UINT;
 
@@ -136,7 +141,7 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 	{
 		std::vector<uint16_t> indices(creationInfo.indices.size());
 
-		for (size_t i = 0; i < indices.size(); ++i)
+		for(size_t i = 0; i < indices.size(); ++i)
 		{
 			indices[i] = static_cast<uint16_t>(creationInfo.indices[i]);
 		}
@@ -154,34 +159,44 @@ API::VertexData* DX11Factory::CreateVertexData(API::IRenderer* renderer, const V
 	}
 
 	vertexData->vertexLayout.reserve(3);
-	vertexData->vertexLayout.push_back(API::VertexBufferDesc(API::ShaderSemanticName::Position, 0, API::ShaderVariableType::Float, 3, 0));
-	vertexData->vertexLayout.push_back(API::VertexBufferDesc(API::ShaderSemanticName::Normal, 0, API::ShaderVariableType::Float, 3, 12));
-	vertexData->vertexLayout.push_back(API::VertexBufferDesc(API::ShaderSemanticName::Texcoord, 0, API::ShaderVariableType::Float, 2, 24));
+	vertexData->vertexLayout.push_back(API::VertexBufferDesc(
+		API::ShaderSemanticName::Position, 0, API::ShaderVariableType::Float, 3, 0));
+	vertexData->vertexLayout.push_back(API::VertexBufferDesc(
+		API::ShaderSemanticName::Normal, 0, API::ShaderVariableType::Float, 3, 12));
+	vertexData->vertexLayout.push_back(API::VertexBufferDesc(
+		API::ShaderSemanticName::Texcoord, 0, API::ShaderVariableType::Float, 2, 24));
 
-	std::sort(vertexData->vertexLayout.begin(), vertexData->vertexLayout.end(), [](const API::VertexBufferDesc& l, const API::VertexBufferDesc& r)
-	{
-		if (l.semanticName != r.semanticName)
-			return l.semanticName < r.semanticName;
+	std::sort(vertexData->vertexLayout.begin(), vertexData->vertexLayout.end(),
+		[](const API::VertexBufferDesc& l, const API::VertexBufferDesc& r) {
+			if(l.semanticName != r.semanticName)
+				return l.semanticName < r.semanticName;
 
-		return l.semanticIndex < r.semanticIndex;
-	});
+			return l.semanticIndex < r.semanticIndex;
+		});
 
-	vertexData->vertexLayoutHash = mst::hash64(memory_view(vertexData->vertexLayout.begin(), vertexData->vertexLayout.size()));
+	vertexData->vertexLayoutHash =
+		mst::hash64(memory_view(vertexData->vertexLayout.begin(), vertexData->vertexLayout.size()));
 
 	return vertexData.ptr();
 }
 
-std::shared_ptr<API::IBuffer> DX11Factory::CreateBuffer(API::IRenderer* renderer, ResourceType type, size_t dataSize, memory_view memory, uint structSize, API::Usage usage)
+std::shared_ptr<API::IBuffer> DX11Factory::CreateBuffer(API::IRenderer* renderer, ResourceType type,
+	size_t dataSize, memory_view memory, uint32_t structSize, API::Usage usage)
 {
 	return nullptr;
 }
 
-std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
+std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer,
+	ResourceType type, const uint3& size, PixelFormat format, flag<API::BindFlags> bindFlags,
+	API::Usage usage, uint32_t arraySize, uint32_t mipLevels)
 {
 	return { -1, nullptr };
 }
 
-std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer, ResourceType type, const uint3& size, array_view<API::PixelData> initialData, PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint arraySize, uint mipLevels)
+std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer,
+	ResourceType type, const uint3& size, array_view<API::PixelData> initialData,
+	PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint32_t arraySize,
+	uint32_t mipLevels)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -191,7 +206,7 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 
 	inlined_vector<D3D11_SUBRESOURCE_DATA, 16> subResourceData(initialData.size());
 
-	for (size_t i = 0; i < subResourceData.size(); ++i)
+	for(size_t i = 0; i < subResourceData.size(); ++i)
 	{
 		subResourceData[i].pSysMem = initialData[i].pixels;
 		subResourceData[i].SysMemPitch = initialData[i].pitch;
@@ -199,13 +214,13 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 	}
 
 	const D3D11_SUBRESOURCE_DATA* dataPtr = nullptr;
-	if (!initialData.empty())
+	if(!initialData.empty())
 	{
 		dataPtr = subResourceData.data();
 	}
 
 	com_ptr<ID3D11Resource> resource;
-	switch (type)
+	switch(type)
 	{
 	case CainEngine::Graphics::ResourceType::VertexBuffer:
 	case CainEngine::Graphics::ResourceType::IndexBuffer:
@@ -213,8 +228,7 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 	case CainEngine::Graphics::ResourceType::ByteAddressBuffer:
 	case CainEngine::Graphics::ResourceType::StructuredBuffer:
 		Common::FatalError("Invalid argument: type");
-	case CainEngine::Graphics::ResourceType::Tex1D:
-	{
+	case CainEngine::Graphics::ResourceType::Tex1D: {
 		D3D11_TEXTURE1D_DESC desc = {};
 		desc.ArraySize = arraySize;
 		desc.BindFlags = EnumConverter::Convert(bindFlags);

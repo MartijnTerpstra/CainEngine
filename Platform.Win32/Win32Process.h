@@ -7,6 +7,7 @@ namespace Internal {
 class Win32Process final : public IProcess
 {
 	friend class Common::RefPtr<Win32Process>;
+
 private:
 	// ctor & dtor
 
@@ -19,22 +20,23 @@ public:
 	// Creation
 
 	static std::vector<RefPtr<IProcess>> GetProcesses(const std::string& name);
-	static RefPtr<IProcess> GetProcess(uint id);
+	static RefPtr<IProcess> GetProcess(uint32_t id);
 	static RefPtr<IProcess> GetCurrentProcess();
-	static RefPtr<IProcess> CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory);
+	static RefPtr<IProcess> CreateNewProcess(const std::string& path,
+		const std::string& commandLine, const std::string& workingDirectory);
 
 public:
 	// IProcess overrides
 
 	std::string GetName() const override;
-	uint GetID() const override;
-	uint GetSessionID() const override;
+	uint32_t GetID() const override;
+	uint32_t GetSessionID() const override;
 	std::chrono::time_point<std::chrono::system_clock> GetCreationTime() const override;
 
 private:
 	// BaseObject overrides
 
-	virtual void * _As(uint64_t) const override;
+	virtual void* _As(uint64_t) const override;
 
 private:
 	// Member variables

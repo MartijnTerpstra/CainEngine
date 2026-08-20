@@ -12,9 +12,11 @@ public:
 public:
 	// Main functionality
 
-	ID3D11InputLayout* Resolve(ID3D11Device* device, API::VertexShader* vs, uint64_t vertexLayoutHash, array_view<API::VertexBufferDesc> vertexLayout);
+	ID3D11InputLayout* Resolve(ID3D11Device* device, API::VertexShader* vs,
+		uint64_t vertexLayoutHash, array_view<API::VertexBufferDesc> vertexLayout);
 
-	void AddVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
+	void AddVertexShaderInputRegisters(
+		uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
 
 	void Clear();
 
@@ -24,11 +26,13 @@ private:
 	struct LayoutInfo
 	{
 		inlined_vector<API::ShaderRegisterInfo, 16> inputRegisters;
-		std::vector<std::pair<inlined_vector<API::VertexBufferDesc, 16>, com_ptr<ID3D11InputLayout>>> resolvedLayouts;
+		std::vector<
+			std::pair<inlined_vector<API::VertexBufferDesc, 16>, com_ptr<ID3D11InputLayout>>>
+			resolvedLayouts;
 	};
 
-	mst::arraymap<std::pair<uint64_t, uint64_t>, ID3D11InputLayout*> m_directResolves;
-	mst::arraymap<uint64_t, LayoutInfo> m_shaders;
+	array_map<std::pair<uint64_t, uint64_t>, ID3D11InputLayout*> m_directResolves;
+	array_map<uint64_t, LayoutInfo> m_shaders;
 };
 
-}
+} // namespace CainEngine::Graphics::DX11

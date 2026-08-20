@@ -10,7 +10,7 @@ PixelFormat EnumConverter::Convert(DXGI_FORMAT format)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (format)
+	switch(format)
 	{
 	case DXGI_FORMAT_R8G8B8A8_UNORM:
 		return PixelFormat::UnormRGBA8;
@@ -35,7 +35,7 @@ DXGI_FORMAT EnumConverter::Convert(PixelFormat format)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (format)
+	switch(format)
 	{
 	case PixelFormat::UnormRGBA8:
 		return DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -79,7 +79,7 @@ D3D11_FILTER EnumConverter::Convert(TextureSamplingMode sampler, UINT& maxAnisot
 
 	maxAnisotropy = 0;
 
-	switch (sampler)
+	switch(sampler)
 	{
 	case Graphics::TextureSamplingMode::Nearest:
 		return D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -109,7 +109,7 @@ D3D11_TEXTURE_ADDRESS_MODE EnumConverter::Convert(TextureAddressMode address)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (address)
+	switch(address)
 	{
 	case Graphics::TextureAddressMode::Wrap:
 		return D3D11_TEXTURE_ADDRESS_WRAP;
@@ -129,7 +129,7 @@ API::ShaderVariableType EnumConverter::Convert(D3D_REGISTER_COMPONENT_TYPE type)
 
 	using API::ShaderVariableType;
 
-	switch (type)
+	switch(type)
 	{
 	case D3D_REGISTER_COMPONENT_UINT32:
 		return ShaderVariableType::Uint32;
@@ -146,16 +146,16 @@ API::ShaderVariableType EnumConverter::Convert(D3D_REGISTER_COMPONENT_TYPE type)
 	}
 }
 
-DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint elementCount)
+DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint32_t elementCount)
 {
 	COMMON_CALLSTACK_CALL;
 
 	using API::ShaderVariableType;
 
-	switch (type)
+	switch(type)
 	{
 	case ShaderVariableType::Float:
-		switch (elementCount)
+		switch(elementCount)
 		{
 		case 1:
 			return DXGI_FORMAT_R32_FLOAT;
@@ -170,7 +170,7 @@ DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint elementCou
 			return (DXGI_FORMAT)-1;
 		}
 	case ShaderVariableType::Int32:
-		switch (elementCount)
+		switch(elementCount)
 		{
 		case 1:
 			return DXGI_FORMAT_R32_SINT;
@@ -185,7 +185,7 @@ DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint elementCou
 			return (DXGI_FORMAT)-1;
 		}
 	case ShaderVariableType::Uint32:
-		switch (elementCount)
+		switch(elementCount)
 		{
 		case 1:
 			return DXGI_FORMAT_R32_UINT;
@@ -209,7 +209,7 @@ D3D11_CULL_MODE EnumConverter::Convert(CullingMode culling)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (culling)
+	switch(culling)
 	{
 	case Graphics::CullingMode::None:
 		return D3D11_CULL_NONE;
@@ -227,7 +227,7 @@ D3D11_FILL_MODE EnumConverter::Convert(FillingMode filling)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (filling)
+	switch(filling)
 	{
 	case Graphics::FillingMode::Wireframe:
 		return D3D11_FILL_WIREFRAME;
@@ -243,7 +243,7 @@ D3D11_PRIMITIVE_TOPOLOGY EnumConverter::Convert(PrimitiveTopology topology)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (topology)
+	switch(topology)
 	{
 	case Graphics::PrimitiveTopology::TriangleList:
 		return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -261,13 +261,13 @@ UINT EnumConverter::Convert(flag<API::BindFlags> bindFlags)
 {
 	UINT retval = 0;
 
-	if (!bindFlags.is_enabled(API::BindFlags::ShaderResource))
+	if(!bindFlags.is_enabled(API::BindFlags::ShaderResource))
 		retval |= D3D11_BIND_SHADER_RESOURCE;
 
-	if (!bindFlags.is_enabled(API::BindFlags::RenderTarget))
+	if(!bindFlags.is_enabled(API::BindFlags::RenderTarget))
 		retval |= D3D11_BIND_RENDER_TARGET;
 
-	if (!bindFlags.is_enabled(API::BindFlags::DepthStencil))
+	if(!bindFlags.is_enabled(API::BindFlags::DepthStencil))
 		retval |= D3D11_BIND_DEPTH_STENCIL;
 
 	return retval;
@@ -277,17 +277,17 @@ flag<API::BindFlags> EnumConverter::ConvertBindFlags(UINT bindFlags)
 {
 	flag<API::BindFlags> retval;
 
-	if (bindFlags & D3D11_BIND_SHADER_RESOURCE)
+	if(bindFlags & D3D11_BIND_SHADER_RESOURCE)
 	{
 		retval.enable(API::BindFlags::ShaderResource);
 	}
 
-	if (bindFlags & D3D11_BIND_RENDER_TARGET)
+	if(bindFlags & D3D11_BIND_RENDER_TARGET)
 	{
 		retval.enable(API::BindFlags::RenderTarget);
 	}
 
-	if (bindFlags & D3D11_BIND_DEPTH_STENCIL)
+	if(bindFlags & D3D11_BIND_DEPTH_STENCIL)
 	{
 		retval.enable(API::BindFlags::DepthStencil);
 	}
@@ -296,7 +296,7 @@ flag<API::BindFlags> EnumConverter::ConvertBindFlags(UINT bindFlags)
 
 API::Usage EnumConverter::Convert(D3D11_USAGE usage)
 {
-	switch (usage)
+	switch(usage)
 	{
 	case D3D11_USAGE_DEFAULT:
 		return API::Usage::GpuReadWrite;
@@ -314,7 +314,7 @@ API::Usage EnumConverter::Convert(D3D11_USAGE usage)
 
 EnumConverter::UsageConvertResult EnumConverter::Convert(API::Usage usage)
 {
-	switch (usage)
+	switch(usage)
 	{
 	case CainEngine::Graphics::API::Usage::Constant:
 		return { D3D11_USAGE_IMMUTABLE, 0 };
@@ -337,9 +337,9 @@ API::ShaderSemanticName EnumConverter::Convert(const char* semantic)
 	using API::ShaderSemanticName;
 
 	// Integral constant overflow because of compiletime hashing
-#pragma warning (push)
-#pragma warning (disable : 4307)
-	switch (mst::hash32(semantic))
+#pragma warning(push)
+#pragma warning(disable : 4307)
+	switch(mst::hash32(semantic))
 	{
 	case mst::compiletime::hash32("POSITION"):
 	case mst::compiletime::hash32("SV_POSITION"):
@@ -352,7 +352,7 @@ API::ShaderSemanticName EnumConverter::Convert(const char* semantic)
 		Common::FatalError("semantic name not found");
 		return (ShaderSemanticName)-1;
 	}
-#pragma warning (pop)
+#pragma warning(pop)
 }
 
 const char* EnumConverter::Convert(API::ShaderSemanticName semantic)
@@ -361,7 +361,7 @@ const char* EnumConverter::Convert(API::ShaderSemanticName semantic)
 
 	using API::ShaderSemanticName;
 
-	switch (semantic)
+	switch(semantic)
 	{
 	case ShaderSemanticName::Position:
 		return "POSITION";

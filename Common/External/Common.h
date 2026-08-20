@@ -36,10 +36,9 @@
 #include <mthreading_slim.h>
 #include <mstatic_string.h>
 #include <mcompiletime.h>
-#include <moptional.h>
 #include <mplatform.h>
 #include <marray_view.h>
-#include <marraymap.h>
+#include <marray_map.h>
 #include <maligned_malloc.h>
 #include <muuid.h>
 #include <msparse_set.h>
@@ -78,7 +77,7 @@ using ::mst::flag;
 using ::mst::make_flag;
 using ::mst::memory_view;
 using ::mst::array_view;
-using ::mst::arraymap;
+using ::mst::array_map;
 using ::mst::uuid;
 using ::mst::sparse_set;
 using ::mst::colony;
@@ -91,7 +90,7 @@ typedef ::mst::math::vector<float, 3> float3;
 typedef ::mst::math::vector<float, 4> float4;
 
 typedef ::mst::math::matrix<float, 4, 4> matrix, matrix4x4;
-typedef ::mst::math::matrix<float, 4, 3> matrix4x3;
+typedef ::mst::math::matrix<float, 3, 4> matrix3x4;
 
 typedef ::mst::math::quaternion<float> quaternion;
 

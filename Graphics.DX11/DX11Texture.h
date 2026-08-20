@@ -17,7 +17,7 @@ public:
 	API::Usage Usage() const override;
 	uint3 Size() const override;
 	PixelFormat Format() const override;
-	uint ArraySize() const override;
+	uint32_t ArraySize() const override;
 	flag<API::BindFlags> BindFlags() const override;
 
 private:
@@ -26,4 +26,4 @@ private:
 	com_ptr<ID3D11Resource> m_texture;
 };
 
-}
+} // namespace CainEngine::Graphics::DX11

@@ -34,7 +34,8 @@ public:
 		Summary:
 			Sets the main target window
 	*/
-	void SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow, const std::optional<Graphics::SwapChainCreationSettings>& creationSettings);
+	void SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<Graphics::SwapChainCreationSettings>& creationSettings);
 
 	/**
 		Summary:
@@ -83,9 +84,9 @@ private:
 	const std::unique_ptr<Graphics::Renderer> m_renderer;
 	Common::TaskManager m_taskManager;
 
+	EntitySystem::Scene m_scene;
 	Graphics::CameraManager m_cameraManager;
 	Graphics::ModelManager m_modelManager;
-	EntitySystem::Scene m_scene;
 
 	const std::string m_contentDirectory;
 
@@ -93,4 +94,4 @@ private:
 
 }; // class Engine
 
-};
+}; // namespace CainEngine

@@ -18,7 +18,7 @@ Win32Process::~Win32Process()
 {
 	COMMON_CALLSTACK_CALL;
 
-	if (m_process)
+	if(m_process)
 	{
 		CloseHandle(m_process);
 	}
@@ -33,14 +33,14 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 	DWORD processes[1024];
 	DWORD needed;
 
-	if (!EnumProcesses(processes, sizeof(processes), &needed))
+	if(!EnumProcesses(processes, sizeof(processes), &needed))
 	{
 		Common::FatalError("IPlatformFactory::GetProcesses(): failure getting processes");
 	}
 
 	DWORD count = needed / sizeof(DWORD);
 
-	for (DWORD i = 0; i < count; ++i)
+	for(DWORD i = 0; i < count; ++i)
 	{
 		TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
 
@@ -49,14 +49,13 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 		HMODULE hMod;
 		DWORD cbNeeded;
 
-		if (EnumProcessModules(processModule, &hMod, sizeof(hMod),
-			&cbNeeded))
+		if(EnumProcessModules(processModule, &hMod, sizeof(hMod), &cbNeeded))
 		{
-			GetModuleBaseNameA(processModule, hMod, szProcessName,
-				sizeof(szProcessName) / sizeof(TCHAR));
+			GetModuleBaseNameA(
+				processModule, hMod, szProcessName, sizeof(szProcessName) / sizeof(TCHAR));
 		}
 
-		if (szProcessName == name)
+		if(szProcessName == name)
 		{
 			retval.push_back(RefPtr<Win32Process>::Create(processModule));
 		}
@@ -69,13 +68,13 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 	return retval;
 }
 
-RefPtr<IProcess> Win32Process::GetProcess(uint id)
+RefPtr<IProcess> Win32Process::GetProcess(uint32_t id)
 {
 	COMMON_CALLSTACK_CALL;
 
 	auto handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)id);
 
-	if (handle)
+	if(handle)
 	{
 		return RefPtr<Win32Process>::Create(handle);
 	}
@@ -89,7 +88,7 @@ RefPtr<IProcess> Win32Process::GetCurrentProcess()
 
 	auto process = ::GetCurrentProcess();
 
-	if (process != nullptr)
+	if(process != nullptr)
 	{
 		return RefPtr<Win32Process>::Create(process);
 	}
@@ -97,12 +96,13 @@ RefPtr<IProcess> Win32Process::GetCurrentProcess()
 	return nullptr;
 }
 
-RefPtr<IProcess> Win32Process::CreateNewProcess(const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
+RefPtr<IProcess> Win32Process::CreateNewProcess(
+	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
 
 	std::string cmdLine;
-	if (path.find(' ') != std::string::npos)
+	if(path.find(' ') != std::string::npos)
 	{
 		cmdLine = "\"" + path + "\"" + commandLine;
 	}
@@ -112,22 +112,22 @@ RefPtr<IProcess> Win32Process::CreateNewProcess(const std::string& path, const s
 	}
 
 	std::string workingDir;
-	if (workingDirectory.empty())
+	if(workingDirectory.empty())
 	{
 		size_t lastbackslash = path.find_last_of('\\');
 		size_t lastforwardslash = path.find_last_of('/');
 
-		if (lastbackslash != std::string::npos && lastforwardslash != std::string::npos)
+		if(lastbackslash != std::string::npos && lastforwardslash != std::string::npos)
 		{
 			size_t foundPos = std::max(lastbackslash, lastforwardslash);
 
 			workingDir = path.substr(0, foundPos);
 		}
-		else if (lastbackslash != std::string::npos)
+		else if(lastbackslash != std::string::npos)
 		{
 			workingDir = path.substr(0, lastbackslash);
 		}
-		else if (lastforwardslash != std::string::npos)
+		else if(lastforwardslash != std::string::npos)
 		{
 			workingDir = path.substr(0, lastforwardslash);
 		}
@@ -146,7 +146,8 @@ RefPtr<IProcess> Win32Process::CreateNewProcess(const std::string& path, const s
 
 
 
-	if (CreateProcessA(path.c_str(), &cmdLine[0], nullptr, nullptr, FALSE, 0, nullptr, workingDir.c_str(), &startupInfo, &processInfo))
+	if(CreateProcessA(path.c_str(), &cmdLine[0], nullptr, nullptr, FALSE, 0, nullptr,
+		   workingDir.c_str(), &startupInfo, &processInfo))
 	{
 		CloseHandle(processInfo.hThread);
 		return RefPtr<Win32Process>::Create(processInfo.hProcess);
@@ -164,34 +165,32 @@ std::string Win32Process::GetName() const
 	HMODULE hMod;
 	DWORD cbNeeded;
 
-	if (EnumProcessModules(m_process, &hMod, sizeof(hMod),
-		&cbNeeded))
+	if(EnumProcessModules(m_process, &hMod, sizeof(hMod), &cbNeeded))
 	{
-		GetModuleBaseNameA(m_process, hMod, szProcessName,
-			sizeof(szProcessName) / sizeof(CHAR));
+		GetModuleBaseNameA(m_process, hMod, szProcessName, sizeof(szProcessName) / sizeof(CHAR));
 	}
 
 	return szProcessName;
 }
 
-uint Win32Process::GetID() const
+uint32_t Win32Process::GetID() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	return (uint)GetProcessId(m_process);
+	return (uint32_t)GetProcessId(m_process);
 }
 
-uint Win32Process::GetSessionID() const
+uint32_t Win32Process::GetSessionID() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	DWORD sessionId = (DWORD)-1;
-	if (ProcessIdToSessionId(GetID(), &sessionId))
+	if(ProcessIdToSessionId(GetID(), &sessionId))
 	{
-		return (uint)sessionId;
+		return (uint32_t)sessionId;
 	}
 
-	return (uint)-1;
+	return (uint32_t)-1;
 }
 
 
@@ -199,7 +198,7 @@ static std::chrono::system_clock::time_point FT2TP(const FILETIME& ft)
 {
 	COMMON_CALLSTACK_CALL;
 
-	// number of seconds 
+	// number of seconds
 	ULARGE_INTEGER ull;
 	ull.LowPart = ft.dwLowDateTime;
 	ull.HighPart = ft.dwHighDateTime;
@@ -217,15 +216,17 @@ std::chrono::time_point<std::chrono::system_clock> Win32Process::GetCreationTime
 	COMMON_CALLSTACK_CALL;
 
 	FILETIME creation, exit, kernel, user;
-	if (!GetProcessTimes(m_process, &creation, &exit, &kernel, &user))
+	if(!GetProcessTimes(m_process, &creation, &exit, &kernel, &user))
 	{
-		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, GetProcessTimes failed");
+		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
+						   "GetProcessTimes failed");
 	}
 
 	SYSTEMTIME systime;
-	if (!FileTimeToSystemTime(&creation, &systime))
+	if(!FileTimeToSystemTime(&creation, &systime))
 	{
-		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, FileTimeToSystemTime failed");
+		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
+						   "FileTimeToSystemTime failed");
 	}
 
 	return FT2TP(creation);
@@ -235,7 +236,7 @@ void* Win32Process::_As(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(IProcess);

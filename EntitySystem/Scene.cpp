@@ -42,7 +42,7 @@ EntityID Scene::Create()
 	e.parent = EntityID::Null;
 	e.position = { 0, 0, 0 };
 	e.orientation = EulerAngles{ 0, 0, 0, euler_rotation_order::zxy };
-	e.globalMatrix = matrix4x3::identity;
+	e.globalMatrix = matrix3x4::identity;
 	e.hasDirtyTransform = false;
 	e.name = {};
 	e.freeListPrev = -1;
@@ -299,7 +299,7 @@ void Scene::AddDestroyCallback(
 }
 
 void Scene::AddTransformChangeCallback(void* managerPtr,
-	std::function<void(Scene& scene, EntityID entity, const matrix4x3& matrix)> onTransformChange)
+	std::function<void(Scene& scene, EntityID entity, const matrix3x4& matrix)> onTransformChange)
 {
 	m_transformChangeHandlers.emplace_back(managerPtr, std::move(onTransformChange));
 }
@@ -338,7 +338,7 @@ void Scene::BuildMatrices() noexcept
 	m_dirtyTransforms.clear();
 }
 
-const matrix4x3& Scene::GetGlobalMatrix(EntityID entity) const noexcept
+const matrix3x4& Scene::GetGlobalMatrix(EntityID entity) const noexcept
 {
 	COMMON_ASSERT(IsAlive(entity));
 
@@ -658,13 +658,13 @@ bool Scene::HasParent(EntityID entity, EntityID parent) const noexcept
 	return false;
 }
 
-matrix4x3 Scene::GenerateLocalMatrixImpl(
+matrix3x4 Scene::GenerateLocalMatrixImpl(
 	const float3& position, const Scene::EulerAngles& angles) const noexcept
 {
-	return matrix4x3(position).rotated(angles.x, angles.y, angles.z, angles.order);
+	return matrix3x4(position).rotated(angles.x, angles.y, angles.z, angles.order);
 }
 
-matrix4x3 Scene::GenerateLocalMatrixImpl(
+matrix3x4 Scene::GenerateLocalMatrixImpl(
 	const float3& position, const quaternion& quat) const noexcept
 {
 	return { position, quat };
