@@ -8,12 +8,10 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX12;
 
 DX12Renderer::DX12Renderer()
-{
-}
+{ }
 
 DX12Renderer::~DX12Renderer()
-{
-}
+{ }
 
 void DX12Renderer::Init(flag<RendererInitFlags> initFlags)
 {
@@ -26,7 +24,7 @@ void DX12Renderer::Init(flag<RendererInitFlags> initFlags)
 	flags |= DXGI_CREATE_FACTORY_DEBUG;
 
 	com_ptr<ID3D12Debug> debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(MST_IID_PPV_ARGS(debugController))))
+	if(SUCCEEDED(D3D12GetDebugInterface(MST_IID_PPV_ARGS(debugController))))
 	{
 		debugController->EnableDebugLayer();
 	}
@@ -35,12 +33,13 @@ void DX12Renderer::Init(flag<RendererInitFlags> initFlags)
 
 	CHECK_HRESULT(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, MST_IID_PPV_ARGS(m_factory)));
 
-	CHECK_HRESULT(m_factory->EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, MST_IID_PPV_ARGS(m_adapter)));
+	CHECK_HRESULT(m_factory->EnumAdapterByGpuPreference(
+		0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, MST_IID_PPV_ARGS(m_adapter)));
 
-	CHECK_HRESULT(D3D12CreateDevice(m_adapter.get(), D3D_FEATURE_LEVEL_11_0, MST_IID_PPV_ARGS(m_device)));
+	CHECK_HRESULT(
+		D3D12CreateDevice(m_adapter.get(), D3D_FEATURE_LEVEL_11_0, MST_IID_PPV_ARGS(m_device)));
 
-	D3D_FEATURE_LEVEL lvls[]
-	{
+	D3D_FEATURE_LEVEL lvls[]{
 		D3D_FEATURE_LEVEL_11_0,
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_12_0,
@@ -51,7 +50,8 @@ void DX12Renderer::Init(flag<RendererInitFlags> initFlags)
 	featureLevelInfo.pFeatureLevelsRequested = lvls;
 	featureLevelInfo.NumFeatureLevels = (UINT)extentof(lvls);
 
-	CHECK_HRESULT(m_device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelInfo, sizeof(featureLevelInfo)));
+	CHECK_HRESULT(m_device->CheckFeatureSupport(
+		D3D12_FEATURE_FEATURE_LEVELS, &featureLevelInfo, sizeof(featureLevelInfo)));
 
 	m_featureLvl = featureLevelInfo.MaxSupportedFeatureLevel;
 
@@ -66,28 +66,32 @@ void DX12Renderer::Init(flag<RendererInitFlags> initFlags)
 
 	CHECK_HRESULT(m_device->CreateCommandQueue(&desc, MST_IID_PPV_ARGS(m_queue)));
 
-	m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, MST_IID_PPV_ARGS(m_allocators[0]));
-	m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, MST_IID_PPV_ARGS(m_allocators[1]));
+	m_device->CreateCommandAllocator(
+		D3D12_COMMAND_LIST_TYPE_DIRECT, MST_IID_PPV_ARGS(m_allocators[0]));
+	m_device->CreateCommandAllocator(
+		D3D12_COMMAND_LIST_TYPE_DIRECT, MST_IID_PPV_ARGS(m_allocators[1]));
 
-	for (auto& evt : m_commandQueueCompletedEvents)
+	for(auto& evt : m_commandQueueCompletedEvents)
 	{
 		evt.Init(m_device.get());
 	}
 
-	m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_allocators[0].get(), null, MST_IID_PPV_ARGS(m_commandLists[0]));
-	m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_allocators[1].get(), null, MST_IID_PPV_ARGS(m_commandLists[1]));
+	m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_allocators[0].get(), null,
+		MST_IID_PPV_ARGS(m_commandLists[0]));
+	m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_allocators[1].get(), null,
+		MST_IID_PPV_ARGS(m_commandLists[1]));
 }
 
 void DX12Renderer::RenderFrame()
 {
 	COMMON_CALLSTACK_CALL;
 
-	if (m_swapChain == null)
+	if(m_swapChain == null)
 		return;
 
-	uint previousRenderIndex = (m_renderIndex + 1) & 1;
+	uint32_t previousRenderIndex = (m_renderIndex + 1) & 1;
 
-	uint currentBackBufferIndex = m_swapChain->GetCurrentBackBufferIndex();
+	uint32_t currentBackBufferIndex = m_swapChain->GetCurrentBackBufferIndex();
 
 	m_commandQueueCompletedEvents[m_renderIndex].WaitTillCompletion();
 
@@ -97,7 +101,8 @@ void DX12Renderer::RenderFrame()
 
 	CHECK_HRESULT(renderQueue->Reset(m_allocators[m_renderIndex].get(), null));
 
-	auto trans = CD3DX12_RESOURCE_BARRIER::Transition(m_backbuffers[currentBackBufferIndex].get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	auto trans = CD3DX12_RESOURCE_BARRIER::Transition(m_backbuffers[currentBackBufferIndex].get(),
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	renderQueue->ResourceBarrier(1, &trans);
 	/*
@@ -117,7 +122,8 @@ void DX12Renderer::RenderFrame()
 	}
 	*/
 
-	trans = CD3DX12_RESOURCE_BARRIER::Transition(m_backbuffers[currentBackBufferIndex].get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	trans = CD3DX12_RESOURCE_BARRIER::Transition(m_backbuffers[currentBackBufferIndex].get(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	renderQueue->ResourceBarrier(1, &trans);
 
@@ -129,7 +135,7 @@ void DX12Renderer::RenderFrame()
 
 	m_commandQueueCompletedEvents->SignalFence(m_queue.get());
 
-	//m_gpuStream->Flush();
+	// m_gpuStream->Flush();
 
 	m_swapChain->Present(1, 0);
 
@@ -137,8 +143,7 @@ void DX12Renderer::RenderFrame()
 }
 
 void DX12Renderer::Exit()
-{
-}
+{ }
 
 void DX12Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow)
 {
@@ -148,7 +153,7 @@ void DX12Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 
 	auto hwnd = window->GetHwnd();
 
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { };
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 	swapChainDesc.BufferCount = 2; // double buffering
 	swapChainDesc.Width = 0;
 	swapChainDesc.Height = 0;
@@ -158,7 +163,8 @@ void DX12Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 	swapChainDesc.SampleDesc.Count = 1;
 
 	com_ptr<IDXGISwapChain1> swapChain;
-	CHECK_HRESULT(m_factory->CreateSwapChainForHwnd(m_device.get(), hwnd, &swapChainDesc, null, null, mst::initialize(swapChain)));
+	CHECK_HRESULT(m_factory->CreateSwapChainForHwnd(
+		m_device.get(), hwnd, &swapChainDesc, null, null, mst::initialize(swapChain)));
 
 	m_swapChain = swapChain.as<IDXGISwapChain3>();
 

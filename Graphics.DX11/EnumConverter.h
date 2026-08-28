@@ -5,7 +5,6 @@ namespace CainEngine::Graphics::DX11 {
 class EnumConverter
 {
 public:
-
 	static PixelFormat Convert(DXGI_FORMAT format);
 
 	static DXGI_FORMAT Convert(PixelFormat format);
@@ -16,7 +15,7 @@ public:
 
 	static API::ShaderVariableType Convert(D3D_REGISTER_COMPONENT_TYPE type);
 
-	static DXGI_FORMAT Convert(API::ShaderVariableType type, uint elementCount);
+	static DXGI_FORMAT Convert(API::ShaderVariableType type, uint32_t elementCount);
 
 	static D3D11_CULL_MODE Convert(CullingMode culling);
 
@@ -40,7 +39,6 @@ public:
 	static API::ShaderSemanticName Convert(const char* semantic);
 
 	static const char* Convert(API::ShaderSemanticName semantic);
-
 };
 
-}
+} // namespace CainEngine::Graphics::DX11

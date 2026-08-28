@@ -83,7 +83,7 @@ ResourceSystem                -> standalone, depends only on Common (not current
   reader used for shader blobs and resources; `Common::TaskManager` provides the task system.
   `Common/External/Common.h` is included by every module's PCH and defines the vocabulary types
   used unqualified everywhere: `string`, `vector`, `RefPtr<T>`, `flag<T>`, `float2/3/4`,
-  `matrix4x3`, `quaternion`, `uuid`, `stack_string<N>`, `inlined_vector`, `flat_hash_map`, etc.
+  `matrix3x4`, `quaternion`, `uuid`, `stack_string<N>`, `inlined_vector`, `flat_hash_map`, etc.
   (aliased from `mst` and `Abseil`). Don't re-`#include <vector>`/qualify `std::` for these —
   follow the existing unqualified style.
 - **Interface/implementation split**: `Platform` and `Graphics` define pure-virtual interfaces

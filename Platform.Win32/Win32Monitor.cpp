@@ -23,12 +23,12 @@ static BOOL __stdcall GetMainMonitorProc(HMONITOR monitor, HDC, LPRECT, LPARAM p
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(monitor, &info))
+	if(!GetMonitorInfoA(monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetResolution(): call failed: GetMonitorInfoA");
 	}
 
-	if (info.dwFlags & MONITORINFOF_PRIMARY)
+	if(info.dwFlags & MONITORINFOF_PRIMARY)
 	{
 		*reinterpret_cast<HMONITOR*>(param) = monitor;
 		return FALSE;
@@ -42,12 +42,13 @@ RefPtr<IMonitor> Win32Monitor::GetMainMonitor()
 	COMMON_CALLSTACK_CALL;
 
 	HMONITOR monitor = 0;
-	if (!EnumDisplayMonitors(nullptr, nullptr, GetMainMonitorProc, reinterpret_cast<LPARAM>(&monitor)))
+	if(!EnumDisplayMonitors(
+		   nullptr, nullptr, GetMainMonitorProc, reinterpret_cast<LPARAM>(&monitor)))
 	{
 		Common::FatalError("Win32Monitor::GetMainMonitor(): call failed: EnumDisplayMonitors");
 	}
 
-	if (monitor)
+	if(monitor)
 	{
 		return RefPtr<Win32Monitor>::Create(monitor);
 	}
@@ -63,14 +64,14 @@ static BOOL __stdcall GetMonitorsProc(HMONITOR monitor, HDC, LPRECT, LPARAM para
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(monitor, &info))
+	if(!GetMonitorInfoA(monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetResolution(): call failed: GetMonitorInfoA");
 	}
 
-	if (info.dwFlags & MONITORINFOF_PRIMARY)
+	if(info.dwFlags & MONITORINFOF_PRIMARY)
 	{
-		monitors->insert(monitors->begin(),monitor);
+		monitors->insert(monitors->begin(), monitor);
 	}
 	else
 	{
@@ -86,18 +87,18 @@ std::vector<RefPtr<IMonitor>> Win32Monitor::GetMonitors()
 
 	std::vector<HMONITOR> monitors;
 
-	if (!EnumDisplayMonitors(nullptr, nullptr, GetMonitorsProc, reinterpret_cast<LPARAM>(&monitors)))
+	if(!EnumDisplayMonitors(nullptr, nullptr, GetMonitorsProc, reinterpret_cast<LPARAM>(&monitors)))
 	{
 		Common::FatalError("Win32Monitor::GetMainMonitor(): call failed: EnumDisplayMonitors");
 	}
 
-	if (monitors.empty())
+	if(monitors.empty())
 		return std::vector<RefPtr<IMonitor>>();
 
 	std::vector<RefPtr<IMonitor>> retvals;
 	retvals.reserve(monitors.size());
 
-	for (auto monitor : monitors)
+	for(auto monitor : monitors)
 	{
 		retvals.push_back(RefPtr<Win32Monitor>::Create(monitor));
 	}
@@ -111,16 +112,17 @@ std::string Win32Monitor::GetName() const
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(m_monitor, &info))
+	if(!GetMonitorInfoA(m_monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetRefreshFrequency(): call failed: GetMonitorInfoA");
 	}
 
 	DEVMODEA devMode;
 
-	if (!EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
+	if(!EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
 	{
-		Common::FatalError("Win32Monitor::GetRefreshFrequency(): call failed: EnumDisplaySettingsA");
+		Common::FatalError(
+			"Win32Monitor::GetRefreshFrequency(): call failed: EnumDisplaySettingsA");
 	}
 
 	return (const char*)devMode.dmFormName;
@@ -132,12 +134,13 @@ Rect Win32Monitor::GetResolution() const
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(m_monitor, &info))
+	if(!GetMonitorInfoA(m_monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetResolution(): call failed: GetMonitorInfoA");
 	}
 
-	return Rect(info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right, info.rcMonitor.bottom);
+	return Rect(
+		info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right, info.rcMonitor.bottom);
 }
 
 Rect Win32Monitor::GetWorkSpace() const
@@ -146,7 +149,7 @@ Rect Win32Monitor::GetWorkSpace() const
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(m_monitor, &info))
+	if(!GetMonitorInfoA(m_monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetWorkSpace(): call failed: GetMonitorInfoA");
 	}
@@ -154,22 +157,23 @@ Rect Win32Monitor::GetWorkSpace() const
 	return Rect(info.rcWork.left, info.rcWork.top, info.rcWork.right, info.rcWork.bottom);
 }
 
-uint Win32Monitor::GetRefreshFrequency() const
+uint32_t Win32Monitor::GetRefreshFrequency() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
-	if (!GetMonitorInfoA(m_monitor, &info))
+	if(!GetMonitorInfoA(m_monitor, &info))
 	{
 		Common::FatalError("Win32Monitor::GetRefreshFrequency(): call failed: GetMonitorInfoA");
 	}
 
 	DEVMODEA devMode;
 
-	if (!EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
+	if(!EnumDisplaySettingsA(info.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
 	{
-		Common::FatalError("Win32Monitor::GetRefreshFrequency(): call failed: EnumDisplaySettingsA");
+		Common::FatalError(
+			"Win32Monitor::GetRefreshFrequency(): call failed: EnumDisplaySettingsA");
 	}
 
 	return devMode.dmDisplayFrequency;
@@ -179,7 +183,7 @@ void* Win32Monitor::_As(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(IMonitor);

@@ -3,7 +3,7 @@
 namespace CainEngine {
 namespace Platform {
 
-enum class WindowType : byte
+enum class WindowType : uint8_t
 {
 	Sizable = 1,
 	Borderless,
@@ -13,7 +13,7 @@ enum class WindowType : byte
 
 }; // enum class WindowType
 
-enum class WindowFlags : byte
+enum class WindowFlags : uint8_t
 {
 	NoMinimizeButton = 1,
 	NoMaximizeButton = 2,

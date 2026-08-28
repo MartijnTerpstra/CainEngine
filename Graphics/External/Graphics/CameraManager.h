@@ -11,9 +11,10 @@ class CameraManager final
 	struct OrthographicData;
 	using Scene = EntitySystem::Scene;
 	using EntityID = EntitySystem::EntityID;
+
 public:
 	// ctor & dtor
-	CameraManager();
+	CameraManager(Scene& scene);
 	~CameraManager();
 
 public:
@@ -27,13 +28,13 @@ public:
 
 	[[nodiscard]] bool HasCamera(EntityID entity) const noexcept;
 
-	void AttachCallbacks(Scene& scene);
-
 public:
 	// Component settings
 
-	void SetPerspectiveProjection(EntityID entity, degrees fov, float nearDepth, float farDepth) noexcept;
-	void SetOrthographicProjection(EntityID entity, const float2& min, const float2& max, float nearDepth, float farDepth) noexcept;
+	void SetPerspectiveProjection(
+		EntityID entity, degrees fov, float nearDepth, float farDepth) noexcept;
+	void SetOrthographicProjection(EntityID entity, const float2& min, const float2& max,
+		float nearDepth, float farDepth) noexcept;
 
 private:
 	// Internal functionality
@@ -73,8 +74,10 @@ private:
 		matrix4x4 view, inverseView;
 	};
 
-	sparse_set<EntityData, int32_t> m_entityDatas;
+	absl::flat_hash_map<int32_t, EntityData> m_entityDatas;
 	std::vector<RenderData> m_renderDatas;
+	std::vector<int32_t> m_renderDataToEntities;
+	Scene& m_scene;
 };
 
-};
+}; // namespace CainEngine::Graphics

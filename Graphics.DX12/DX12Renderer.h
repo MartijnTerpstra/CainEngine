@@ -25,16 +25,18 @@ public:
 
 	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow) override;
 
-	unique_ptr<VertexShader> CreateVertexShader(Implementation::CompiledShaderData&& shaderData) override;
+	unique_ptr<VertexShader> CreateVertexShader(
+		Implementation::CompiledShaderData&& shaderData) override;
 
-	unique_ptr<PixelShader> CreatePixelShader(Implementation::CompiledShaderData&& shaderData) override;
+	unique_ptr<PixelShader> CreatePixelShader(
+		Implementation::CompiledShaderData&& shaderData) override;
 
 	bool HasFeature(RendererFeature feature) const override;
 
 private:
 	// Member variables
 
-	uint m_renderIndex = 0;
+	uint32_t m_renderIndex = 0;
 
 	D3D_FEATURE_LEVEL m_featureLvl;
 	com_ptr<IDXGIFactory6> m_factory;

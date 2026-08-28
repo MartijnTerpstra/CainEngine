@@ -4,7 +4,7 @@ namespace CainEngine {
 namespace Graphics {
 
 #define GRAPHICS_CORE_MAXIMUM_SHADER_STRLEN		(63)
-#define GRAPHICS_CORE_MAX_SWAPCHAIN_BACKBUFFERS	(16)
+#define GRAPHICS_CORE_MAX_SWAPCHAIN_BACKBUFFERS (16)
 #define GRAPHICS_CORE_MAX_RENDER_TARGETS		(8)
 #define GRAPHICS_CORE_MAX_VIEWPORTS				(16)
 #define GRAPHICS_CORE_MAX_VERTEX_BUFFERS		(16)
@@ -16,7 +16,7 @@ namespace Graphics {
 	Summary:
 		Triangle culling setting
 */
-enum class CullingMode : byte
+enum class CullingMode : uint8_t
 {
 	/** do not use culling */
 	None = 1,
@@ -36,7 +36,7 @@ enum class CullingMode : byte
 	Summary:
 		Triangle filling setting
 */
-enum class FillingMode : byte
+enum class FillingMode : uint8_t
 {
 	/** Show only the wireframes of the triangles */
 	Wireframe = 1,
@@ -49,7 +49,7 @@ enum class FillingMode : byte
 
 }; // enum class FillingMode
 
-enum class PrimitiveTopology : byte
+enum class PrimitiveTopology : uint8_t
 {
 	/** A 3-vertex primitive list */
 	TriangleList = 1,
@@ -65,7 +65,7 @@ enum class PrimitiveTopology : byte
 	Summary:
 		Texture sampling setting
 */
-enum class TextureSamplingMode : byte
+enum class TextureSamplingMode : uint8_t
 {
 	/** Good for when textures match the resolution perfectly */
 	Nearest = 1,
@@ -94,7 +94,7 @@ enum class TextureSamplingMode : byte
 	Summary:
 		The way the texture read
 */
-enum class TextureAddressMode : byte
+enum class TextureAddressMode : uint8_t
 {
 	/** Wraps around the texture uv address */
 	Wrap = 1,
@@ -114,7 +114,7 @@ enum class TextureAddressMode : byte
 	Summary:
 		The pixel format of the texture
 */
-enum class PixelFormat : byte
+enum class PixelFormat : uint8_t
 {
 	/** RGBA 8 bits per pixel */
 	UnormRGBA8 = 1,
@@ -157,7 +157,7 @@ enum class PixelFormat : byte
 
 	/** BC7: r4g4b4a0 - r7g7b7b8 adaptive compression */
 	BlockCompression7,
-	
+
 	/** RGBA 16 bit floats per pixel */
 	FloatRGBA16,
 
@@ -174,7 +174,7 @@ enum class PixelFormat : byte
 	Summary:
 		The type of shader
 */
-enum class ShaderType : byte
+enum class ShaderType : uint8_t
 {
 	/** Vertex shader */
 	Vertex = 1,
@@ -199,7 +199,7 @@ enum class ShaderType : byte
 	Summary:
 		The type of resource
 */
-enum class ResourceType : byte
+enum class ResourceType : uint8_t
 {
 	/** A buffer containing vertex data */
 	VertexBuffer = 1,
@@ -234,7 +234,7 @@ enum class ResourceType : byte
 	Summary:
 		The types of vertex variables
 */
-enum class VertexBufferVariableType : byte
+enum class VertexBufferVariableType : uint8_t
 {
 	Position = 1,
 	Normal,
@@ -249,7 +249,7 @@ enum class VertexBufferVariableType : byte
 	Summary:
 		Option flags to pass to the renderer on creation
 */
-enum class RendererInitFlags : byte
+enum class RendererInitFlags : uint8_t
 {
 	/** Graphics debugging */
 	ApiDebug,
@@ -258,7 +258,7 @@ enum class RendererInitFlags : byte
 	PipelineDebug,
 };
 
-enum class RendererFeature : byte
+enum class RendererFeature : uint8_t
 {
 	/** Allows shader loading in a background thread */
 	AsyncShaderLoading = 1,

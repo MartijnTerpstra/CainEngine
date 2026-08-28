@@ -7,6 +7,7 @@ namespace Internal {
 class Win32Monitor final : public IMonitor
 {
 	friend class RefPtr<Win32Monitor>;
+
 private:
 	// ctor & dtor
 
@@ -27,12 +28,12 @@ public:
 	std::string GetName() const override;
 	Rect GetResolution() const override;
 	Rect GetWorkSpace() const override;
-	uint GetRefreshFrequency() const override;
+	uint32_t GetRefreshFrequency() const override;
 
 private:
 	// BaseObject overrides
 
-	virtual void * _As(uint64_t) const override;
+	virtual void* _As(uint64_t) const override;
 
 private:
 	// Member variables

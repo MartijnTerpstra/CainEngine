@@ -34,7 +34,7 @@ std::vector<RefPtr<IProcess>> Win32CoreFactory::GetProcesses(const std::string& 
 	return Win32Process::GetProcesses(name);
 }
 
-RefPtr<IProcess> Win32CoreFactory::GetProcess(uint id)
+RefPtr<IProcess> Win32CoreFactory::GetProcess(uint32_t id)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -48,22 +48,23 @@ RefPtr<IProcess> Win32CoreFactory::GetCurrentProcess()
 	return Win32Process::GetCurrentProcess();
 }
 
-RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(const std::string & path)
+RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(const std::string& path)
 {
 	COMMON_CALLSTACK_CALL;
 
 	return Win32Process::CreateNewProcess(path, "", "");
 }
 
-RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(const std::string & path, const std::string & commandLine)
+RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(
+	const std::string& path, const std::string& commandLine)
 {
 	COMMON_CALLSTACK_CALL;
 
 	return Win32Process::CreateNewProcess(path, commandLine, "");
 }
 
-RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(const std::string & path, const std::string & commandLine,
-	const std::string & workingDirectory)
+RefPtr<IProcess> Win32CoreFactory::CreateNewProcess(
+	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -84,14 +85,17 @@ RefPtr<IMonitor> Win32CoreFactory::GetMainMonitor()
 	return Win32Monitor::GetMainMonitor();
 }
 
-RefPtr<IWindow> Win32CoreFactory::CreateNewWindow(const std::string & name, const uint2 & size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+RefPtr<IWindow> Win32CoreFactory::CreateNewWindow(const std::string& name, const uint2& size,
+	WindowType type, flag<WindowFlags> flags,
+	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
 	COMMON_CALLSTACK_CALL;
 
 	return Win32Window::CreateNewWindow(name, size, type, flags, listener, nullptr);
 }
 
-RefPtr<IWindow> Win32CoreFactory::CreateNewWindow(const std::string & name, const uint2 & size, WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener)
+RefPtr<IWindow> Win32CoreFactory::CreateNewWindow(const std::string& name, const uint2& size,
+	WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -109,7 +113,7 @@ void* CainEngine::Platform::Internal::Win32CoreFactory::_As(uint64_t typeHash) c
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(ICoreFactory);

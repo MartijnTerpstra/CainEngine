@@ -11,12 +11,10 @@ std::vector<std::pair<static_string<64>, API::HullShader*>> ShaderManager::m_hul
 std::vector<std::pair<static_string<64>, API::DomainShader*>> ShaderManager::m_domainShaders;
 
 ShaderManager::ShaderManager()
-{
-}
+{ }
 
 ShaderManager::~ShaderManager()
-{
-}
+{ }
 
 void ShaderManager::Init(Renderer* renderer, Common::Source& source)
 {
@@ -26,14 +24,14 @@ void ShaderManager::Init(Renderer* renderer, Common::Source& source)
 	size_t index = 0;
 
 	uint32_t magicNumber = source.ReadUint();
-	if (magicNumber != API::SHADER_MAGIC_NUMBER)
+	if(magicNumber != API::SHADER_MAGIC_NUMBER)
 	{
 		Common::Error("Unable to parse shader file: magic number missmatch");
 		return;
 	}
 
 	uint32_t rendererID = source.ReadUint();
-	if (rendererID != renderer->ID())
+	if(rendererID != renderer->ID())
 	{
 		Common::Error("Unable to parse shader file: unknown renderer ID");
 		return;
@@ -43,25 +41,27 @@ void ShaderManager::Init(Renderer* renderer, Common::Source& source)
 
 	std::vector<API::CompiledShaderData> shaders(metadatas.size());
 
-	for (size_t i = 0; i < metadatas.size(); ++i)
+	for(size_t i = 0; i < metadatas.size(); ++i)
 	{
 		auto& metadata = metadatas[i];
 
 		API::CompiledShaderData data;
 
-		data.byteCode = source.ReadVector<byte>();
+		data.byteCode = source.ReadVector<uint8_t>();
 		data.buffers = source.ReadVector<ShaderBufferInfo>();
 		data.textures = source.ReadVector<ShaderTextureInfo>();
 		data.inputRegisters = source.ReadVector<API::ShaderRegisterInfo>();
 		data.outputRegisters = source.ReadVector<API::ShaderRegisterInfo>();
 
-		switch (metadata.shaderType)
+		switch(metadata.shaderType)
 		{
 		case ShaderType::Vertex:
-			m_vertexShaders.push_back({ metadata.shaderName, factory->CreateVertexShader(impl, std::move(data)) });
+			m_vertexShaders.push_back(
+				{ metadata.shaderName, factory->CreateVertexShader(impl, std::move(data)) });
 			break;
 		case ShaderType::Pixel:
-			m_pixelShaders.push_back({ metadata.shaderName, factory->CreatePixelShader(impl, std::move(data)) });
+			m_pixelShaders.push_back(
+				{ metadata.shaderName, factory->CreatePixelShader(impl, std::move(data)) });
 			break;
 		default:
 			Common::FatalError("metadata.shaderType corrupted/unimplemented");
@@ -83,9 +83,9 @@ API::VertexShader* ShaderManager::GetVertexShader(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
-	for (auto& shader : m_vertexShaders)
+	for(auto& shader : m_vertexShaders)
 	{
-		if (shader.first == name)
+		if(shader.first == name)
 		{
 			return shader.second;
 		}
@@ -99,9 +99,9 @@ API::PixelShader* ShaderManager::GetPixelShader(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
-	for (auto& shader : m_pixelShaders)
+	for(auto& shader : m_pixelShaders)
 	{
-		if (shader.first == name)
+		if(shader.first == name)
 		{
 			return shader.second;
 		}

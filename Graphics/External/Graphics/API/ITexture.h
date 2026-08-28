@@ -23,7 +23,7 @@ public:
 		Summary:
 			Returns array elements in this texture
 	*/
-	virtual uint ArraySize() const = 0;
+	virtual uint32_t ArraySize() const = 0;
 
 	/**
 		Summary:
@@ -35,4 +35,4 @@ public:
 
 inline ITexture::~ITexture() = default;
 
-}; // namespace Renderer
+}; // namespace CainEngine::Graphics::API

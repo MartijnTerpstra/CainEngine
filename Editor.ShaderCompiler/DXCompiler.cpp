@@ -26,11 +26,8 @@ public:
 public:
 	// ICompiler overrides
 
-	API::CompiledShaderData Compile(const char* sourceDirectory,
-		const char* filePath,
-		ShaderType shaderType,
-		const char* entryPoint,
-		const std::vector<ShaderDefine>& defines,
+	API::CompiledShaderData Compile(const char* sourceDirectory, const char* filePath,
+		ShaderType shaderType, const char* entryPoint, const std::vector<ShaderDefine>& defines,
 		bool optimize) const override;
 
 	std::string RendererType() const override;
@@ -38,7 +35,6 @@ public:
 	uint32_t RendererID() const override;
 
 private:
-
 	static API::ShaderVariableType Convert(D3D_REGISTER_COMPONENT_TYPE type);
 	static API::ShaderSemanticName Convert(const char* semantic);
 
@@ -64,17 +60,19 @@ std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX12Compile
 }
 
 DXCompiler::DXCompiler(const char* rendererType, uint32_t rendererID, const char* featureLevel)
-	: m_type(rendererType),
-	m_rendererID(rendererID),
-	m_hlslFeatureLevel(featureLevel)
+	: m_type(rendererType)
+	, m_rendererID(rendererID)
+	, m_hlslFeatureLevel(featureLevel)
 {
 	m_d3dCompiler = LoadLibraryA(D3DCOMPILER_DLL_A);
 
-	if (!m_d3dCompiler)
+	if(!m_d3dCompiler)
 		Common::FatalError("LoadLibraryA failed, ErrorCode: %u", GetLastError());
 
-	m_d3dCompileFunc = reinterpret_cast<decltype(m_d3dCompileFunc)>(GetProcAddress(m_d3dCompiler, "D3DCompileFromFile"));
-	m_d3dReflectFunc = reinterpret_cast<decltype(m_d3dReflectFunc)>(GetProcAddress(m_d3dCompiler, "D3DReflect"));
+	m_d3dCompileFunc = reinterpret_cast<decltype(m_d3dCompileFunc)>(
+		GetProcAddress(m_d3dCompiler, "D3DCompileFromFile"));
+	m_d3dReflectFunc =
+		reinterpret_cast<decltype(m_d3dReflectFunc)>(GetProcAddress(m_d3dCompiler, "D3DReflect"));
 }
 
 DXCompiler::~DXCompiler()
@@ -82,11 +80,8 @@ DXCompiler::~DXCompiler()
 	FreeLibrary(m_d3dCompiler);
 }
 
-API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
-	const char* filePath,
-	ShaderType shaderType,
-	const char* entryPoint,
-	const std::vector<ShaderDefine>& defines,
+API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const char* filePath,
+	ShaderType shaderType, const char* entryPoint, const std::vector<ShaderDefine>& defines,
 	bool optimize) const
 {
 	COMMON_CALLSTACK_CALL;
@@ -96,7 +91,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 		std::string path = std::string(sourceDirectory) + "\\" + filePath;
 
 		std::ifstream local(path);
-		if (!local)
+		if(!local)
 		{
 			path = filePath;
 		}
@@ -108,7 +103,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 
 	DWORD flags = D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR;
 
-	if (optimize)
+	if(optimize)
 	{
 		flags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
 	}
@@ -118,7 +113,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	}
 
 	std::string target;
-	switch (shaderType)
+	switch(shaderType)
 	{
 	case ShaderType::Vertex:
 		target = "vs";
@@ -150,7 +145,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	macros[0].Name = rendererDefine.c_str();
 	macros[0].Definition = "1";
 
-	for (size_t i = 0; i < defines.size(); ++i)
+	for(size_t i = 0; i < defines.size(); ++i)
 	{
 		macros[i + 1].Name = defines[i].key.c_str();
 		macros[i + 1].Definition = defines[i].value.c_str();
@@ -160,18 +155,20 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	macros.back().Definition = nullptr;
 
 	com_ptr<ID3DBlob> byteCode, errorMesg;
-	auto hr = m_d3dCompileFunc(wpath.c_str(), macros.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, target.c_str(), flags, 0, mst::initialize(byteCode), mst::initialize(errorMesg));
+	auto hr = m_d3dCompileFunc(wpath.c_str(), macros.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entryPoint, target.c_str(), flags, 0, mst::initialize(byteCode),
+		mst::initialize(errorMesg));
 
-	if (FAILED(hr))
+	if(FAILED(hr))
 	{
 		std::string error = (const char*)errorMesg->GetBufferPointer();
 
 		size_t fromIndex = 0;
-		while (fromIndex < error.length())
+		while(fromIndex < error.length())
 		{
 			size_t newlineIndex = error.find('\n', fromIndex);
 
-			if (newlineIndex == std::string::npos)
+			if(newlineIndex == std::string::npos)
 				break;
 
 			Common::Error(error.substr(fromIndex, newlineIndex - fromIndex).c_str());
@@ -190,7 +187,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	byteCode.reset();
 
 	com_ptr<ID3D12ShaderReflection> reflection;
-	if (FAILED(m_d3dReflectFunc(r.byteCode.data(), r.byteCode.size(), MST_IID_PPV_ARGS(reflection))))
+	if(FAILED(m_d3dReflectFunc(r.byteCode.data(), r.byteCode.size(), MST_IID_PPV_ARGS(reflection))))
 	{
 		Common::Error("Unable to reflect shader");
 		return {};
@@ -199,7 +196,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 	D3D12_SHADER_DESC desc;
 	reflection->GetDesc(&desc);
 
-	for (uint i = 0; i < desc.InputParameters; ++i)
+	for(uint32_t i = 0; i < desc.InputParameters; ++i)
 	{
 		D3D12_SIGNATURE_PARAMETER_DESC inputDesc;
 		reflection->GetInputParameterDesc(i, &inputDesc);
@@ -214,7 +211,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 
 		int idx = 0;
 		sem.variableElementCount = 0;
-		while (inputDesc.Mask & (1 << idx++))
+		while(inputDesc.Mask & (1 << idx++))
 		{
 			++sem.variableElementCount;
 		}
@@ -222,12 +219,12 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 		r.inputRegisters.push_back(std::move(sem));
 	}
 
-	std::sort(r.inputRegisters.begin(), r.inputRegisters.end(), [](const API::ShaderRegisterInfo& l, const API::ShaderRegisterInfo& r)
-	{
-		return l.registerSlot < r.registerSlot;
-	});
+	std::sort(r.inputRegisters.begin(), r.inputRegisters.end(),
+		[](const API::ShaderRegisterInfo& l, const API::ShaderRegisterInfo& r) {
+			return l.registerSlot < r.registerSlot;
+		});
 
-	for (uint i = 0; i < desc.OutputParameters; ++i)
+	for(uint32_t i = 0; i < desc.OutputParameters; ++i)
 	{
 		D3D12_SIGNATURE_PARAMETER_DESC inputDesc;
 		reflection->GetOutputParameterDesc(i, &inputDesc);
@@ -239,7 +236,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 
 		int idx = 0;
 		sem.variableElementCount = 0;
-		while (inputDesc.Mask & (1 << idx++))
+		while(inputDesc.Mask & (1 << idx++))
 		{
 			++sem.variableElementCount;
 		}
@@ -247,7 +244,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 		r.outputRegisters.push_back(std::move(sem));
 	}
 
-	for (uint i = 0; i < desc.BoundResources; ++i)
+	for(uint32_t i = 0; i < desc.BoundResources; ++i)
 	{
 
 		D3D12_SHADER_INPUT_BIND_DESC inputDesc;
@@ -256,10 +253,10 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory,
 		ShaderTextureInfo tex;
 		ShaderBufferInfo buf;
 
-		switch (inputDesc.Type)
+		switch(inputDesc.Type)
 		{
 		case D3D_SIT_TEXTURE:
-			switch (inputDesc.Dimension)
+			switch(inputDesc.Dimension)
 			{
 			case D3D_SRV_DIMENSION_TEXTURE1D:
 				tex.type = ResourceType::Tex1D;
@@ -338,7 +335,7 @@ API::ShaderVariableType DXCompiler::Convert(D3D_REGISTER_COMPONENT_TYPE type)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (type)
+	switch(type)
 	{
 	case D3D_REGISTER_COMPONENT_UINT32:
 		return API::ShaderVariableType::Uint32;
@@ -360,7 +357,7 @@ API::ShaderSemanticName DXCompiler::Convert(const char* semantic)
 	COMMON_CALLSTACK_CALL;
 
 	// Integral constant overflow because of compiletime hashing
-	switch (mst::hash32(semantic))
+	switch(mst::hash32(semantic))
 	{
 	case mst::compiletime::hash32("POSITION"):
 	case mst::compiletime::hash32("SV_POSITION"):

@@ -6,7 +6,7 @@ namespace CainEngine::Graphics::API {
 	Summary:
 		Types of variables available in shaders
 */
-enum class ShaderVariableType : byte
+enum class ShaderVariableType : uint8_t
 {
 	/** A 32 bit IEEE 754 float value */
 	Float,
@@ -22,7 +22,7 @@ enum class ShaderVariableType : byte
 	Summary:
 		Shader semantic names
 */
-enum class ShaderSemanticName : byte
+enum class ShaderSemanticName : uint8_t
 {
 	/** The POSITION semantic */
 	Position,
@@ -39,7 +39,7 @@ enum class ShaderSemanticName : byte
 	Summary:
 		The CPU<->GPU read/write behaviour of the resource
 */
-enum class Usage : byte
+enum class Usage : uint8_t
 {
 	/** GPU readonly */
 	Constant = 1,
@@ -62,7 +62,7 @@ enum class Usage : byte
 	Summary:
 		The binding of the texture to the graphics pipeline
 */
-enum class BindFlags : byte
+enum class BindFlags : uint8_t
 {
 	/** This object will by used by shaders */
 	ShaderResource,
@@ -74,4 +74,4 @@ enum class BindFlags : byte
 	DepthStencil,
 };
 
-}
+} // namespace CainEngine::Graphics::API

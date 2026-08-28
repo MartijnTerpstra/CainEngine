@@ -18,20 +18,16 @@ struct CompiledShaderMetaData
 struct VertexBufferDesc
 {
 	VertexBufferDesc() = default;
-	explicit VertexBufferDesc(ShaderSemanticName semanticName,
-		uint32_t semanticIndex = 0,
-		ShaderVariableType type = ShaderVariableType::Float,
-		uint32_t elementCount = 1,
-		uint32_t byteOffset = UINT_MAX,
-		uint8_t vertexBufferIndex = 0)
-		: semanticName(semanticName),
-		semanticIndex(semanticIndex),
-		type(type),
-		elementCount(elementCount),
-		byteOffset(byteOffset),
-		vertexBufferIndex(vertexBufferIndex)
-	{
-	}
+	explicit VertexBufferDesc(ShaderSemanticName semanticName, uint32_t semanticIndex = 0,
+		ShaderVariableType type = ShaderVariableType::Float, uint32_t elementCount = 1,
+		uint32_t byteOffset = UINT_MAX, uint8_t vertexBufferIndex = 0)
+		: semanticName(semanticName)
+		, semanticIndex(semanticIndex)
+		, type(type)
+		, elementCount(elementCount)
+		, byteOffset(byteOffset)
+		, vertexBufferIndex(vertexBufferIndex)
+	{ }
 
 	/**
 		Summary:
@@ -83,14 +79,12 @@ struct VertexBufferDesc
 struct VertexBufferData
 {
 	VertexBufferData() = default;
-	VertexBufferData(memory_view vertexData,
-		uint32_t strideInBytes,
+	VertexBufferData(memory_view vertexData, uint32_t strideInBytes,
 		inlined_vector<VertexBufferDesc, 16> vertexLayout)
-		: vertexData(vertexData),
-		strideInBytes(strideInBytes),
-		vertexLayout(std::move(vertexLayout))
-	{
-	}
+		: vertexData(vertexData)
+		, strideInBytes(strideInBytes)
+		, vertexLayout(std::move(vertexLayout))
+	{ }
 
 	memory_view vertexData;
 	uint32_t strideInBytes;
@@ -104,19 +98,15 @@ struct VertexBufferData
 struct ShaderRegisterInfo
 {
 	ShaderRegisterInfo() = default;
-	explicit ShaderRegisterInfo(uint32_t registerSlot,
-		ShaderSemanticName semanticName,
-		uint32_t semanticIndex = 0,
-		ShaderVariableType variableType = ShaderVariableType::Float,
-		uint32_t variableElementCount = 1,
-		uint32_t registerSpace = 0)
-		: registerSlot(registerSlot),
-		semanticName(semanticName),
-		semanticIndex(semanticIndex),
-		variableType(variableType),
-		variableElementCount(variableElementCount)
-	{
-	}
+	explicit ShaderRegisterInfo(uint32_t registerSlot, ShaderSemanticName semanticName,
+		uint32_t semanticIndex = 0, ShaderVariableType variableType = ShaderVariableType::Float,
+		uint32_t variableElementCount = 1, uint32_t registerSpace = 0)
+		: registerSlot(registerSlot)
+		, semanticName(semanticName)
+		, semanticIndex(semanticIndex)
+		, variableType(variableType)
+		, variableElementCount(variableElementCount)
+	{ }
 
 	/**
 		Summary:
@@ -171,7 +161,7 @@ struct ShaderReflectionData
 */
 struct CompiledShaderData : ShaderReflectionData
 {
-	std::vector<byte> byteCode;
+	std::vector<uint8_t> byteCode;
 };
 
 /**
@@ -182,7 +172,7 @@ struct PixelData
 {
 	uint32_t pitch;
 	uint32_t size;
-	const byte* pixels;
+	const uint8_t* pixels;
 };
 
-}
+} // namespace CainEngine::Graphics::API

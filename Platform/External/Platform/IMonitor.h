@@ -38,7 +38,7 @@ public:
 		Notes:
 			This is usually 60Hz, but it could be in the range of [50, 144]
 	*/
-	virtual uint GetRefreshFrequency() const = 0;
+	virtual uint32_t GetRefreshFrequency() const = 0;
 
 }; // class IMonitor
 

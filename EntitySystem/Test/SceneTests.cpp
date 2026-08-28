@@ -7,16 +7,16 @@ using namespace ::CainEngine::EntitySystem;
 
 namespace {
 
-// matrix4x3 has no operator==, so matrices are compared row-by-row instead.
+// matrix3x4 has no operator==, so matrices are compared row-by-row instead.
 //
 // NOTE: this deliberately uses operator[] rather than the (equivalent, per
 // EntitySystem/Dependencies/mst/mst/mx_math_matrix.h) get_row(): get_row()
-// crashes for matrix<float, 4, 3> in this vendored build of mst (a
+// crashes for matrix<float, 3, 4> in this vendored build of mst (a
 // third-party dependency, not CainEngine code), while operator[] returns the
 // same row data without crashing.
-void ExpectMatricesEqual(const matrix4x3& actual, const matrix4x3& expected)
+void ExpectMatricesEqual(const matrix3x4& actual, const matrix3x4& expected)
 {
-	for(size_t row = 0; row < 3; ++row)
+	for(size_t row = 0; row < 4; ++row)
 	{
 		const auto& a = actual[row];
 		const auto& e = expected[row];
@@ -24,7 +24,6 @@ void ExpectMatricesEqual(const matrix4x3& actual, const matrix4x3& expected)
 		EXPECT_FLOAT_EQ(e.x, a.x) << "row " << row;
 		EXPECT_FLOAT_EQ(e.y, a.y) << "row " << row;
 		EXPECT_FLOAT_EQ(e.z, a.z) << "row " << row;
-		EXPECT_FLOAT_EQ(e.w, a.w) << "row " << row;
 	}
 }
 
@@ -301,7 +300,7 @@ TEST(Scene, GlobalMatrixIsIdentityForFreshEntity)
 
 	const auto entity = scene.Create();
 
-	ExpectMatricesEqual(scene.GetGlobalMatrix(entity), matrix4x3::identity);
+	ExpectMatricesEqual(scene.GetGlobalMatrix(entity), matrix3x4::identity);
 }
 
 TEST(Scene, BuildMatricesAppliesPositionForRootEntity)
@@ -316,7 +315,7 @@ TEST(Scene, BuildMatricesAppliesPositionForRootEntity)
 
 	// No parent and the default (zero) orientation, so the global matrix should
 	// match the same position-only local matrix Scene::BuildMatrices computes.
-	const matrix4x3 expected(position);
+	const matrix3x4 expected(position);
 
 	ExpectMatricesEqual(scene.GetGlobalMatrix(entity), expected);
 }

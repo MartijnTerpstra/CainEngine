@@ -9,6 +9,7 @@ class ModelManager final
 	using Scene = EntitySystem::Scene;
 	using EntityID = EntitySystem::EntityID;
 	struct ModelData;
+
 public:
 	// ctor & dtor
 	ModelManager();
@@ -17,13 +18,15 @@ public:
 public:
 	// Main functionality
 
-	[[nodiscard]] std::pair<int32_t, Material*> CreateMaterial(Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps);
+	[[nodiscard]] std::pair<int32_t, Material*> CreateMaterial(
+		Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps);
 
 	[[nodiscard]] Material* GetMaterial(int32_t materialID) noexcept;
 
 	void RemoveMaterial(int32_t materialID) noexcept;
 
-	[[nodiscard]] std::pair<int32_t, Model*> CreateModel(Renderer& renderer, const VertexDataCreationInfo& vertexData);
+	[[nodiscard]] std::pair<int32_t, Model*> CreateModel(
+		Renderer& renderer, const VertexDataCreationInfo& vertexData);
 
 	[[nodiscard]] Model* GetModel(int32_t modelID) noexcept;
 
@@ -44,7 +47,6 @@ public:
 	[[nodiscard]] const colony<ModelData>& GetModels() const noexcept;
 
 private:
-
 	struct ModelData
 	{
 		Model model;
@@ -56,7 +58,7 @@ private:
 	{
 		int32_t modelID;
 		float scale = 1;
-		matrix4x3 matrix;
+		matrix3x4 matrix;
 	};
 
 	colony<ModelData> m_models;
@@ -64,4 +66,4 @@ private:
 	flat_hash_map<int32_t, EntityData> m_entityMapping;
 };
 
-}
+} // namespace CainEngine::Graphics

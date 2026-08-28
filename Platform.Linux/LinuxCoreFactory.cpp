@@ -28,60 +28,63 @@ vector<shared_ptr<IProcess>> LinuxCoreFactory::GetProcesses(const string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::GetProcesses(name);
+	return {}; // return Win32Process::GetProcesses(name);
 }
 
-shared_ptr<IProcess> LinuxCoreFactory::GetProcess(uint id)
+shared_ptr<IProcess> LinuxCoreFactory::GetProcess(uint32_t id)
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::GetProcess(id);
+	return {}; // return Win32Process::GetProcess(id);
 }
 
 shared_ptr<IProcess> LinuxCoreFactory::GetCurrentProcess()
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::GetCurrentProcess();
+	return {}; // return Win32Process::GetCurrentProcess();
 }
 
-shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(const string & path)
+shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(const string& path)
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::CreateNewProcess(path, "", "");
+	return {}; // return Win32Process::CreateNewProcess(path, "", "");
 }
 
-shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(const string & path, const string & commandLine)
+shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(
+	const string& path, const string& commandLine)
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::CreateNewProcess(path, commandLine, "");
+	return {}; // return Win32Process::CreateNewProcess(path, commandLine, "");
 }
 
-shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(const string & path, const string & commandLine,
-	const string & workingDirectory)
+shared_ptr<IProcess> LinuxCoreFactory::CreateNewProcess(
+	const string& path, const string& commandLine, const string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Process::CreateNewProcess(path, commandLine, workingDirectory);
+	return {}; // return Win32Process::CreateNewProcess(path, commandLine, workingDirectory);
 }
 
 vector<shared_ptr<IMonitor>> LinuxCoreFactory::GetMonitors()
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Monitor::GetMonitors();
+	return {}; // return Win32Monitor::GetMonitors();
 }
 
 shared_ptr<IMonitor> LinuxCoreFactory::GetMainMonitor()
 {
 	COMMON_CALLSTACK_CALL;
 
-	return {};//return Win32Monitor::GetMainMonitor();
+	return {}; // return Win32Monitor::GetMainMonitor();
 }
 
-shared_ptr<IWindow> LinuxCoreFactory::CreateNewWindow(const string & name, const uint2 & size, WindowType type, flag<WindowFlags> flags, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener)
+shared_ptr<IWindow> LinuxCoreFactory::CreateNewWindow(const string& name, const uint2& size,
+	WindowType type, flag<WindowFlags> flags,
+	const weak_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
 	COMMON_CALLSTACK_CALL;
 

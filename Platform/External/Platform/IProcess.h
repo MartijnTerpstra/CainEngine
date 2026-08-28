@@ -24,13 +24,13 @@ public:
 		Summary:
 			Returns the process's unique ID number
 	*/
-	virtual uint GetID() const = 0;
+	virtual uint32_t GetID() const = 0;
 
 	/**
 		Summary:
 			Returns the ID of the session where this process is running
 	*/
-	virtual uint GetSessionID() const = 0;
+	virtual uint32_t GetSessionID() const = 0;
 
 	/**
 		Summary:
