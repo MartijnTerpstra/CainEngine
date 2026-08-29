@@ -4,19 +4,30 @@ namespace CainEngine {
 namespace Platform {
 namespace Internal {
 
-class LinuxWindow final : public Linux::ILinuxWindow, public Common::Castable<LinuxWindow>
+class XorgWindow final : public Xorg::IXorgWindow
 {
-public:
-	LinuxWindow(Display* display, ::Window window, string name, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener);
-	~LinuxWindow();
+	friend class Common::RefPtr<XorgWindow>;
+
+private:
+	// ctor & dtor
+
+	XorgWindow(Display* display, ::Window window, string name,
+		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+		ClientInterfaces::IWindowEventListener* listenerPointer);
+	~XorgWindow();
+
+	COMMON_DECLARE_NON_COPY(XorgWindow);
 
 public:
 	// Creation
 
-	static shared_ptr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener);
+	static RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type,
+		flag<WindowFlags> flags,
+		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+		ClientInterfaces::IWindowEventListener* listenerPointer);
 
 public:
-	// IWindow implementations
+	// IWindow overrides
 
 	void Show() override;
 
@@ -45,11 +56,16 @@ public:
 	void ToForeground() override;
 
 public:
-	// ILinuxWindow implementations
+	// IXorgWindow overrides
 
 	::Display* GetDisplay() const override;
 
 	::Window GetWindow() const override;
+
+private:
+	// BaseObject overrides
+
+	void* _As(uint64_t) const override;
 
 private:
 	// Internal functionality
@@ -62,11 +78,12 @@ private:
 	::Display *const m_display;
 	const ::Window m_window;
 	const string m_name;
-	const weak_ptr<ClientInterfaces::IWindowEventListener> m_listener;
+	const std::weak_ptr<ClientInterfaces::IWindowEventListener> m_listener;
+	ClientInterfaces::IWindowEventListener* const m_listenerPointer;
 	Atom m_deleteWindowAtom = 0;
 	bool m_shown = false;
 
-}; // class EnumConverter
+}; // class XorgWindow
 
 }; // namespace Internal
 }; // namespace Platform

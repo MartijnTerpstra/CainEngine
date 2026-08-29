@@ -1,25 +1,29 @@
 #include "Precomp.h"
 
-#include "LinuxWindow.h"
+#include "XorgWindow.h"
 
 #include "EnumConverter.h"
 
 #include <X11/XKBlib.h>
 #include <X11/Xutil.h>
 
+using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-LinuxWindow::LinuxWindow(Display* display, ::Window window, string name, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener)
+XorgWindow::XorgWindow(Display* display, ::Window window, string name,
+	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+	ClientInterfaces::IWindowEventListener* listenerPointer)
 	: m_display(display),
 	m_window(window),
 	m_name(move(name)),
-	m_listener(listener)
+	m_listener(listener),
+	m_listenerPointer(listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 }
 
-LinuxWindow::~LinuxWindow()
+XorgWindow::~XorgWindow()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -28,14 +32,17 @@ LinuxWindow::~LinuxWindow()
 	XCloseDisplay(m_display);
 }
 
-shared_ptr<IWindow> LinuxWindow::CreateNewWindow(const string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const weak_ptr<ClientInterfaces::IWindowEventListener>& listener)
+RefPtr<IWindow> XorgWindow::CreateNewWindow(const string& name, const uint2& size,
+	WindowType type, flag<WindowFlags> flags,
+	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+	ClientInterfaces::IWindowEventListener* listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 
 	Display* display = XOpenDisplay(":0.0");
 	if (display == null)
 	{
-		Common::FatalError("LinuxWindow::CreateNewWindow(): XOpenDisplay failed");
+		Common::FatalError("XorgWindow::CreateNewWindow(): XOpenDisplay failed");
 	}
 
 	long visualMask = VisualScreenMask;
@@ -66,10 +73,10 @@ shared_ptr<IWindow> LinuxWindow::CreateNewWindow(const string& name, const uint2
 
 	//XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask | VisibilityNotify);
 
-	return make_shared<LinuxWindow>(display, window, name, listener);
+	return Common::RefPtr<XorgWindow>::Create(display, window, name, listener, listenerPointer);
 }
 
-void LinuxWindow::Show()
+void XorgWindow::Show()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -82,7 +89,7 @@ void LinuxWindow::Show()
 		XInternAtom(m_display, "WM_DELETE_WINDOW", False);
 }
 
-void LinuxWindow::Redraw()
+void XorgWindow::Redraw()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -90,26 +97,24 @@ void LinuxWindow::Redraw()
 
 	evt.type = Expose;
 
-	auto res = XSendEvent(m_display, m_window, True, ExposureMask, &evt);
-
-	int gege = 4;
+	XSendEvent(m_display, m_window, True, ExposureMask, &evt);
 }
 
-void LinuxWindow::Maximize()
+void XorgWindow::Maximize()
 {
 	COMMON_CALLSTACK_CALL;
 
 	Common::FatalError("Not implemented");
 }
 
-void LinuxWindow::Minimize()
+void XorgWindow::Minimize()
 {
 	COMMON_CALLSTACK_CALL;
 
 	Common::FatalError("Not implemented");
 }
 
-void LinuxWindow::Close()
+void XorgWindow::Close()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -117,7 +122,7 @@ void LinuxWindow::Close()
 	XDestroyWindow(m_display, m_window);
 }
 
-void LinuxWindow::HandleEvents()
+void XorgWindow::HandleEvents()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -130,15 +135,11 @@ void LinuxWindow::HandleEvents()
 		/* draw or redraw the window */
 		if (evt.type == Expose || evt.type == GraphicsExpose)
 		{
-			/*auto os = mst::platform::full_name();
-
-			XFillRectangle(m_display, window, DefaultGC(display, s), 20, 20, 10, 10);
-			XDrawString(display, window, DefaultGC(display, s), 50, 50, os.c_str(), os.length());*/
 			auto listener = m_listener.lock();
 
 			if (listener != null)
 			{
-				listener->OnRedraw(shared_this_ptr);
+				listener->OnRedraw(this);
 			}
 			continue;
 		}
@@ -161,7 +162,7 @@ void LinuxWindow::HandleEvents()
 				if (nev.type == KeyPress && nev.xkey.time == evt.xkey.time &&
 					nev.xkey.keycode == evt.xkey.keycode)
 				{
-					/* Key wasn’t actually released */
+					/* Key wasn't actually released */
 					continue;
 				}
 			}
@@ -186,21 +187,21 @@ void LinuxWindow::HandleEvents()
 	}
 }
 
-bool LinuxWindow::IsShown() const
+bool XorgWindow::IsShown() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_shown;
 }
 
-string LinuxWindow::GetName() const
+string XorgWindow::GetName() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_name;
 }
 
-int LinuxWindow::GetWidth() const
+int XorgWindow::GetWidth() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -208,7 +209,7 @@ int LinuxWindow::GetWidth() const
 	return 0;
 }
 
-int LinuxWindow::GetHeight() const
+int XorgWindow::GetHeight() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -216,7 +217,7 @@ int LinuxWindow::GetHeight() const
 	return 0;
 }
 
-Rect LinuxWindow::GetRect() const
+Rect XorgWindow::GetRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -224,7 +225,7 @@ Rect LinuxWindow::GetRect() const
 	return Rect();
 }
 
-Rect LinuxWindow::GetClientRect() const
+Rect XorgWindow::GetClientRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -232,26 +233,40 @@ Rect LinuxWindow::GetClientRect() const
 	return Rect();
 }
 
-void LinuxWindow::ToForeground()
+void XorgWindow::ToForeground()
 {
 	COMMON_CALLSTACK_CALL;
 
 	Common::FatalError("Not implemented");
 }
 
-::Display* LinuxWindow::GetDisplay() const
+::Display* XorgWindow::GetDisplay() const
 {
 	return m_display;
 }
 
-::Window LinuxWindow::GetWindow() const
+::Window XorgWindow::GetWindow() const
 {
 	return m_window;
 }
 
-void LinuxWindow::HandleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+void* XorgWindow::_As(uint64_t typeHash) const
 {
+	COMMON_CALLSTACK_CALL;
 
+	switch (typeHash)
+	{
+		CHECK_TYPE_AND_RETURN(Common::BaseObject);
+		CHECK_TYPE_AND_RETURN(IWindow);
+		CHECK_TYPE_AND_RETURN(IXorgWindow);
+		CHECK_TYPE_AND_RETURN(XorgWindow);
+	default:
+		return nullptr;
+	}
+}
+
+void XorgWindow::HandleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+{
 	auto sym = XkbKeycodeToKeysym(m_display, evt->xkey.keycode, 0, (evt->xkey.state & ShiftMask) != 0 ? 1 : 0);
 
 	auto keyCode = EnumConverter::ToKeyCodes(sym);
@@ -269,7 +284,7 @@ void LinuxWindow::HandleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces:
 
 	if (evt->type == KeyPress)
 	{
-		listener->OnKeyDown(shared_this_ptr, keyCode, modifiers);
+		listener->OnKeyDown(this, keyCode, modifiers);
 	}
 	else
 	{
