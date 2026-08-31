@@ -13,7 +13,7 @@ public:
 public:
 	// Singleton functionality
 
-	static Engine& Get();
+	static Engine& get();
 
 public:
 	// Main functionality
@@ -22,61 +22,61 @@ public:
 		Summary:
 			Initializes the engine
 	*/
-	void Init(flag<Graphics::RendererInitFlags> initFlags);
+	void init(flag<Graphics::RendererInitFlags> initFlags);
 
 	/**
 		Summary:
 			Removes all resources the engine
 	*/
-	void Exit();
+	void exit();
 
 	/**
 		Summary:
 			Sets the main target window
 	*/
-	void SetMainWindow(const RefPtr<Platform::IWindow>& mainWindow,
+	void setMainWindow(const RefPtr<Platform::IWindow>& mainWindow,
 		const std::optional<Graphics::SwapChainCreationSettings>& creationSettings);
 
 	/**
 		Summary:
 			Call this function when a window is resized
 	*/
-	void HandleResize();
+	void handleResize();
 
 	/**
 		Summary:
 			Renders a new frame
 	*/
-	void RenderFrame(const std::optional<Graphics::Viewport>& viewport);
+	void renderFrame(const std::optional<Graphics::Viewport>& viewport);
 
 	/**
 		Summary:
 			Returns the renderer
 	*/
-	Graphics::Renderer& GetRenderer();
+	Graphics::Renderer& getRenderer();
 
 	/**
 		Summary:
 			Returns the Camera Component Manager
 	*/
-	Graphics::CameraManager& GetCameraManager();
+	Graphics::CameraManager& getCameraManager();
 
 	/**
 		Summary:
 			Returns the Model Component Manager
 	*/
-	Graphics::ModelManager& GetModelManager();
+	Graphics::ModelManager& getModelManager();
 
 	/**
 		Summary:
 			Returns the scene
 	*/
-	EntitySystem::Scene& GetScene();
+	EntitySystem::Scene& getScene();
 
 private:
 	// Internal functionality
 
-	std::future<void> LoadShaders();
+	std::future<void> loadShaders();
 
 private:
 	// Member variables

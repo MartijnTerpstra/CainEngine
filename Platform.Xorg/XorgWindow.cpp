@@ -32,7 +32,7 @@ XorgWindow::~XorgWindow()
 	XCloseDisplay(m_display);
 }
 
-RefPtr<IWindow> XorgWindow::CreateNewWindow(const string& name, const uint2& size,
+RefPtr<IWindow> XorgWindow::createNewWindow(const string& name, const uint2& size,
 	WindowType type, flag<WindowFlags> flags,
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
@@ -42,7 +42,7 @@ RefPtr<IWindow> XorgWindow::CreateNewWindow(const string& name, const uint2& siz
 	Display* display = XOpenDisplay(":0.0");
 	if (display == null)
 	{
-		Common::FatalError("XorgWindow::CreateNewWindow(): XOpenDisplay failed");
+		Common::fatalError("XorgWindow::createNewWindow(): XOpenDisplay failed");
 	}
 
 	long visualMask = VisualScreenMask;
@@ -76,7 +76,7 @@ RefPtr<IWindow> XorgWindow::CreateNewWindow(const string& name, const uint2& siz
 	return Common::RefPtr<XorgWindow>::Create(display, window, name, listener, listenerPointer);
 }
 
-void XorgWindow::Show()
+void XorgWindow::show()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -89,7 +89,7 @@ void XorgWindow::Show()
 		XInternAtom(m_display, "WM_DELETE_WINDOW", False);
 }
 
-void XorgWindow::Redraw()
+void XorgWindow::redraw()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -100,21 +100,21 @@ void XorgWindow::Redraw()
 	XSendEvent(m_display, m_window, True, ExposureMask, &evt);
 }
 
-void XorgWindow::Maximize()
+void XorgWindow::maximize()
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 }
 
-void XorgWindow::Minimize()
+void XorgWindow::minimize()
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 }
 
-void XorgWindow::Close()
+void XorgWindow::close()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -122,7 +122,7 @@ void XorgWindow::Close()
 	XDestroyWindow(m_display, m_window);
 }
 
-void XorgWindow::HandleEvents()
+void XorgWindow::handleEvents()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -167,7 +167,7 @@ void XorgWindow::HandleEvents()
 				}
 			}
 
-			HandleKeyEvent(&evt, listener);
+			handleKeyEvent(&evt, listener);
 		}
 		if (evt.type == MapNotify)
 		{
@@ -187,70 +187,70 @@ void XorgWindow::HandleEvents()
 	}
 }
 
-bool XorgWindow::IsShown() const
+bool XorgWindow::isShown() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_shown;
 }
 
-string XorgWindow::GetName() const
+string XorgWindow::getName() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_name;
 }
 
-int XorgWindow::GetWidth() const
+int XorgWindow::getWidth() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 	return 0;
 }
 
-int XorgWindow::GetHeight() const
+int XorgWindow::getHeight() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 	return 0;
 }
 
-Rect XorgWindow::GetRect() const
+Rect XorgWindow::getRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 	return Rect();
 }
 
-Rect XorgWindow::GetClientRect() const
+Rect XorgWindow::getClientRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 	return Rect();
 }
 
-void XorgWindow::ToForeground()
+void XorgWindow::toForeground()
 {
 	COMMON_CALLSTACK_CALL;
 
-	Common::FatalError("Not implemented");
+	Common::fatalError("Not implemented");
 }
 
-::Display* XorgWindow::GetDisplay() const
+::Display* XorgWindow::getDisplay() const
 {
 	return m_display;
 }
 
-::Window XorgWindow::GetWindow() const
+::Window XorgWindow::getWindow() const
 {
 	return m_window;
 }
 
-void* XorgWindow::_As(uint64_t typeHash) const
+void* XorgWindow::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -265,11 +265,11 @@ void* XorgWindow::_As(uint64_t typeHash) const
 	}
 }
 
-void XorgWindow::HandleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+void XorgWindow::handleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
 	auto sym = XkbKeycodeToKeysym(m_display, evt->xkey.keycode, 0, (evt->xkey.state & ShiftMask) != 0 ? 1 : 0);
 
-	auto keyCode = EnumConverter::ToKeyCodes(sym);
+	auto keyCode = EnumConverter::toKeyCodes(sym);
 
 	mst::flag<KeyModifiers> modifiers;
 

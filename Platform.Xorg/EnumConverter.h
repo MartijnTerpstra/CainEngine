@@ -9,7 +9,7 @@ class EnumConverter
 public:
 	// Main functionality
 
-	static KeyCodes ToKeyCodes(KeySym k);
+	static KeyCodes toKeyCodes(KeySym k);
 
 }; // class EnumConverter
 

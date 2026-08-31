@@ -13,22 +13,22 @@ struct Version
 		: data(0)
 	{ }
 
-	std::string ToString() const
+	std::string toString() const
 	{
-		return mst::to_printf_string("%u.%u.%u", Major(), Minor(), Revision());
+		return mst::to_printf_string("%u.%u.%u", major(), minor(), revision());
 	}
 
-	uint32_t Major() const
+	uint32_t major() const
 	{
 		return data >> 24;
 	}
 
-	uint32_t Minor() const
+	uint32_t minor() const
 	{
 		return (data >> 16) & 0xFF;
 	}
 
-	uint32_t Revision() const
+	uint32_t revision() const
 	{
 		return data & 0xFFFF;
 	}
@@ -55,34 +55,34 @@ struct SubresourceHeader
 constexpr static const Version g_currentVerion{ 1, 0, 0 };
 
 Factory::Factory(Renderer& renderer)
-	: m_renderer(renderer.Implementation())
-	, m_factory(renderer.Implementation()->GetFactory())
+	: m_renderer(renderer.implementation())
+	, m_factory(renderer.implementation()->getFactory())
 { }
 
 Factory::~Factory()
 { }
 
-std::pair<int32_t, API::ITexture*> Factory::LoadTexture(Common::Source& source)
+std::pair<int32_t, API::ITexture*> Factory::loadTexture(Common::Source& source)
 {
-	auto header = source.ReadStruct<ImageHeader>();
+	auto header = source.readStruct<ImageHeader>();
 
-	if(header.magicNumber != Common::PackChars('c', 'e', 't', 'f'))
+	if(header.magicNumber != Common::packChars('c', 'e', 't', 'f'))
 	{
-		Common::Error("Invalid file format");
+		Common::error("Invalid file format");
 		return { -1, nullptr };
 	}
 
-	if(header.version.Major() != g_currentVerion.Major())
+	if(header.version.major() != g_currentVerion.major())
 	{
-		Common::Error("'Major version mismatch: %s != %s", header.version.ToString(),
-			g_currentVerion.ToString());
+		Common::error("'Major version mismatch: %s != %s", header.version.toString(),
+			g_currentVerion.toString());
 		return { -1, nullptr };
 	}
 
-	if(header.version.Minor() < g_currentVerion.Minor())
+	if(header.version.minor() < g_currentVerion.minor())
 	{
-		Common::Error("'Minor version mismatch: %s != %s", header.version.ToString(),
-			g_currentVerion.ToString());
+		Common::error("'Minor version mismatch: %s != %s", header.version.toString(),
+			g_currentVerion.toString());
 		return { -1, nullptr };
 	}
 
@@ -108,14 +108,14 @@ std::pair<int32_t, API::ITexture*> Factory::LoadTexture(Common::Source& source)
 
 	for(size_t i = 0; i < subresourceCount; ++i)
 	{
-		subresources[i].pitch = source.ReadUint();
+		subresources[i].pitch = source.readUint();
 
-		subresourceDatas.push_back(source.ReadVector<uint8_t>());
+		subresourceDatas.push_back(source.readVector<uint8_t>());
 
 		subresources[i].size = (uint32_t)subresourceDatas.back().size();
 		subresources[i].pixels = subresourceDatas.back().data();
 	}
 
-	return m_factory->CreateTexture(m_renderer, header.type, size, subresources, header.format,
+	return m_factory->createTexture(m_renderer, header.type, size, subresources, header.format,
 		API::BindFlags::ShaderResource, API::Usage::Constant, arraySize, header.mipCount);
 }

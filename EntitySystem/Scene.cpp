@@ -28,14 +28,14 @@ Scene::~Scene()
 	}
 }
 
-EntityID Scene::Create()
+EntityID Scene::create()
 {
-	int32_t newId = RemoveFromFreeList();
+	int32_t newId = removeFromFreeList();
 	if(newId == -1)
 	{
 		COMMON_ASSERT(m_entityCount < 0xFFFFF - 1);
 
-		newId = CreateNew();
+		newId = createNew();
 	}
 
 	auto& e = m_entities[newId];
@@ -59,15 +59,15 @@ EntityID Scene::Create()
 	return entityId;
 }
 
-EntityID Scene::Create(std::string name)
+EntityID Scene::create(std::string name)
 {
-	const auto id = Create();
-	SetName(id, std::move(name));
+	const auto id = create();
+	setName(id, std::move(name));
 
 	return id;
 }
 
-EntityID Scene::Find(std::string_view name) const noexcept
+EntityID Scene::find(std::string_view name) const noexcept
 {
 	const auto iter = m_names.find(name);
 
@@ -77,7 +77,7 @@ EntityID Scene::Find(std::string_view name) const noexcept
 	return iter->second;
 }
 
-EntityID Scene::Find(const uuid& id) const noexcept
+EntityID Scene::find(const uuid& id) const noexcept
 {
 	const auto iter = m_uniqueIds.find(id);
 
@@ -87,44 +87,44 @@ EntityID Scene::Find(const uuid& id) const noexcept
 	return iter->second;
 }
 
-void Scene::Destroy(EntityID entity, bool recursive)
+void Scene::destroy(EntityID entity, bool recursive)
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
 	for(auto& handler : m_destroyHandlers)
 	{
 		handler.second(*this, entity);
 	}
 
-	ResetParentForDestroy(entity);
+	resetParentForDestroy(entity);
 
-	const auto index = entity.Index();
+	const auto index = entity.index();
 
-	DestroyAndAddToFreeList(index);
+	destroyAndAddToFreeList(index);
 
 	if(recursive)
 	{
-		DestroyChilds(index);
+		destroyChilds(index);
 	}
 	else
 	{
-		ClearChilds(index);
+		clearChilds(index);
 	}
 }
 
-bool Scene::IsAlive(EntityID entity) const noexcept
+bool Scene::isAlive(EntityID entity) const noexcept
 {
-	if(entity.IsNull())
+	if(entity.isNull())
 		return false;
 
-	COMMON_ASSERT(entity.Index() < m_entityCount);
+	COMMON_ASSERT(entity.index() < m_entityCount);
 
-	const auto index = entity.Index();
+	const auto index = entity.index();
 
-	return m_entities[index].version == entity.Version();
+	return m_entities[index].version == entity.version();
 }
 
-void Scene::Clear() noexcept
+void Scene::clear() noexcept
 {
 	if(m_entityCount == 0)
 		return;
@@ -155,12 +155,12 @@ void Scene::Clear() noexcept
 	m_dirtyTransforms.clear();
 }
 
-void Scene::SetName(EntityID entity, std::string name)
+void Scene::setName(EntityID entity, std::string name)
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 	COMMON_ASSERT(!m_names.contains(name));
 
-	auto& e = m_entities[entity.Index()];
+	auto& e = m_entities[entity.index()];
 
 	if(!e.name.empty())
 	{
@@ -178,69 +178,69 @@ void Scene::SetName(EntityID entity, std::string name)
 	}
 }
 
-std::string_view Scene::GetName(EntityID entity) const noexcept
+std::string_view Scene::getName(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
-	return m_entities[entity.Index()].name;
+	return m_entities[entity.index()].name;
 }
 
-Transform Scene::GetTransform(EntityID entity) noexcept
+Transform Scene::getTransform(EntityID entity) noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
 	return { this, entity };
 }
 
-CTransform Scene::GetTransform(EntityID entity) const noexcept
+CTransform Scene::getTransform(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
 	return { this, entity };
 }
 
-void Scene::SetParent(EntityID entity, EntityID parent)
+void Scene::setParent(EntityID entity, EntityID parent)
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 	COMMON_ASSERT(entity != parent);
-	COMMON_ASSERT(!parent || IsAlive(parent));
-	COMMON_ASSERT(!parent || !HasParent(parent, entity));
+	COMMON_ASSERT(!parent || isAlive(parent));
+	COMMON_ASSERT(!parent || !hasParent(parent, entity));
 
-	auto& e = m_entities[entity.Index()];
+	auto& e = m_entities[entity.index()];
 
 	// No changes
 	if(e.parent == parent)
 		return;
 
 	if(e.parent)
-		RemoveChild(e.parent.Index(), entity);
+		removeChild(e.parent.index(), entity);
 
 	e.parent = parent;
 	if(parent)
 	{
-		m_hierarchy[parent.Index()].emplace_back(entity);
+		m_hierarchy[parent.index()].emplace_back(entity);
 
-		if(GetFromID(parent).hasDirtyTransform)
+		if(getFromId(parent).hasDirtyTransform)
 		{
-			SetDirtyWithNewParent(entity);
+			setDirtyWithNewParent(entity);
 			return;
 		}
 	}
-	SetDirty(entity);
+	setDirty(entity);
 }
 
-EntityID Scene::GetParent(EntityID entity) const noexcept
+EntityID Scene::getParent(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
-	return EntityID{ m_entities[entity.Index()].parent };
+	return EntityID{ m_entities[entity.index()].parent };
 }
 
-array_view<EntityID> Scene::GetChildren(EntityID entity) const noexcept
+array_view<EntityID> Scene::getChildren(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
-	const auto iter = m_hierarchy.find(entity.Index());
+	const auto iter = m_hierarchy.find(entity.index());
 
 	if(iter == m_hierarchy.end())
 		return {};
@@ -248,12 +248,12 @@ array_view<EntityID> Scene::GetChildren(EntityID entity) const noexcept
 	return iter->second;
 }
 
-void Scene::SetUniqueID(EntityID entity, const uuid& id)
+void Scene::setUniqueId(EntityID entity, const uuid& id)
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 	COMMON_ASSERT(!m_uniqueIds.contains(id));
 
-	auto& e = m_entities[entity.Index()];
+	auto& e = m_entities[entity.index()];
 
 	if(e.uniqueId)
 	{
@@ -264,47 +264,47 @@ void Scene::SetUniqueID(EntityID entity, const uuid& id)
 	e.uniqueId = &result.first->first;
 }
 
-const uuid* Scene::GetUniqueID(EntityID entity) const noexcept
+const uuid* Scene::getUniqueId(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
-	return m_entities[entity.Index()].uniqueId;
+	return m_entities[entity.index()].uniqueId;
 }
 
-uint32_t Scene::LiveEntities() const noexcept
+uint32_t Scene::liveEntities() const noexcept
 {
 	return m_liveEntityCount;
 }
 
-uint32_t Scene::Capacity() const noexcept
+uint32_t Scene::capacity() const noexcept
 {
 	return static_cast<uint32_t>(m_capacity);
 }
 
-uint32_t Scene::DeadEntities() const noexcept
+uint32_t Scene::deadEntities() const noexcept
 {
 	return m_deadEntityCount;
 }
 
-void Scene::AddCreateCallback(
+void Scene::addCreateCallback(
 	void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate)
 {
 	m_createHandlers.emplace_back(managerPtr, std::move(onCreate));
 }
 
-void Scene::AddDestroyCallback(
+void Scene::addDestroyCallback(
 	void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy)
 {
 	m_destroyHandlers.emplace_back(managerPtr, std::move(onDestroy));
 }
 
-void Scene::AddTransformChangeCallback(void* managerPtr,
+void Scene::addTransformChangeCallback(void* managerPtr,
 	std::function<void(Scene& scene, EntityID entity, const matrix3x4& matrix)> onTransformChange)
 {
 	m_transformChangeHandlers.emplace_back(managerPtr, std::move(onTransformChange));
 }
 
-void Scene::RemoveAllCallbacks(void* managerPtr) noexcept
+void Scene::removeAllCallbacks(void* managerPtr) noexcept
 {
 	std::erase_if(m_createHandlers, [managerPtr](auto& p) { return p.first == managerPtr; });
 
@@ -314,22 +314,22 @@ void Scene::RemoveAllCallbacks(void* managerPtr) noexcept
 		m_transformChangeHandlers, [managerPtr](auto& p) { return p.first == managerPtr; });
 }
 
-void Scene::BuildMatrices() noexcept
+void Scene::buildMatrices() noexcept
 {
 	for(auto it = m_dirtyTransforms.rbegin(); it != m_dirtyTransforms.rend(); ++it)
 	{
 		const auto entity = *it;
 
-		auto& e = m_entities[entity.Index()];
+		auto& e = m_entities[entity.index()];
 
 		e.globalMatrix =
-			std::visit([this, &e](const auto& o) { return GenerateLocalMatrixImpl(e.position, o); },
+			std::visit([this, &e](const auto& o) { return generateLocalMatrixImpl(e.position, o); },
 				e.orientation);
 		e.hasDirtyTransform = false;
 
 		if(e.parent)
 		{
-			const auto& parentMatrix = GetGlobalMatrix(e.parent);
+			const auto& parentMatrix = getGlobalMatrix(e.parent);
 
 			e.globalMatrix = parentMatrix * e.globalMatrix;
 		}
@@ -338,14 +338,14 @@ void Scene::BuildMatrices() noexcept
 	m_dirtyTransforms.clear();
 }
 
-const matrix3x4& Scene::GetGlobalMatrix(EntityID entity) const noexcept
+const matrix3x4& Scene::getGlobalMatrix(EntityID entity) const noexcept
 {
-	COMMON_ASSERT(IsAlive(entity));
+	COMMON_ASSERT(isAlive(entity));
 
-	return m_entities[entity.Index()].globalMatrix;
+	return m_entities[entity.index()].globalMatrix;
 }
 
-void Scene::RemoveChild(int32_t parent, EntityID child) noexcept
+void Scene::removeChild(int32_t parent, EntityID child) noexcept
 {
 	auto& childs = m_hierarchy.at(parent);
 
@@ -359,7 +359,7 @@ void Scene::RemoveChild(int32_t parent, EntityID child) noexcept
 	}
 }
 
-void Scene::ClearChilds(int32_t parent)
+void Scene::clearChilds(int32_t parent)
 {
 	const auto iter = m_hierarchy.find(parent);
 
@@ -367,16 +367,16 @@ void Scene::ClearChilds(int32_t parent)
 	{
 		for(auto& child : iter->second)
 		{
-			auto& e = m_entities[child.Index()];
+			auto& e = m_entities[child.index()];
 			e.parent = EntityID::Null;
-			SetDirty(child);
+			setDirty(child);
 		}
 
 		m_hierarchy.erase(iter);
 	}
 }
 
-void Scene::DestroyChilds(int32_t parent)
+void Scene::destroyChilds(int32_t parent)
 {
 	const auto iter = m_hierarchy.find(parent);
 
@@ -384,17 +384,17 @@ void Scene::DestroyChilds(int32_t parent)
 	{
 		for(auto& child : iter->second)
 		{
-			const auto index = child.Index();
+			const auto index = child.index();
 
-			DestroyAndAddToFreeList(index);
+			destroyAndAddToFreeList(index);
 
-			DestroyChilds(index);
+			destroyChilds(index);
 		}
 		m_hierarchy.erase(iter);
 	}
 }
 
-void Scene::DestroyAndAddToFreeList(int32_t entityIndex)
+void Scene::destroyAndAddToFreeList(int32_t entityIndex)
 {
 	auto& e = m_entities[entityIndex];
 
@@ -408,12 +408,12 @@ void Scene::DestroyAndAddToFreeList(int32_t entityIndex)
 		m_uniqueIds.erase(*e.uniqueId);
 	}
 
-	AddToFreeList(entityIndex);
+	addToFreeList(entityIndex);
 }
 
-void Scene::SetDirty(EntityID entity)
+void Scene::setDirty(EntityID entity)
 {
-	const auto entityIndex = entity.Index();
+	const auto entityIndex = entity.index();
 
 	auto& e = m_entities[entityIndex];
 
@@ -428,38 +428,38 @@ void Scene::SetDirty(EntityID entity)
 	{
 		for(auto child : iter->second)
 		{
-			SetDirty(child);
+			setDirty(child);
 		}
 	}
 
 	m_dirtyTransforms.push_back(entity);
 }
 
-void Scene::SetDirtyWithNewParent(EntityID entity)
+void Scene::setDirtyWithNewParent(EntityID entity)
 {
-	SetDirty(entity);
+	setDirty(entity);
 
-	auto parent = GetFromID(entity).parent;
+	auto parent = getFromId(entity).parent;
 
-	while(parent && GetFromID(parent).hasDirtyTransform)
+	while(parent && getFromId(parent).hasDirtyTransform)
 	{
 		m_dirtyTransforms.push_back(parent);
 
-		parent = GetFromID(parent).parent;
+		parent = getFromId(parent).parent;
 	}
 }
 
-Scene::EntityData& Scene::GetFromID(EntityID entity) noexcept
+Scene::EntityData& Scene::getFromId(EntityID entity) noexcept
 {
-	return m_entities[entity.Index()];
+	return m_entities[entity.index()];
 }
 
-const Scene::EntityData& Scene::GetFromID(EntityID entity) const noexcept
+const Scene::EntityData& Scene::getFromId(EntityID entity) const noexcept
 {
-	return m_entities[entity.Index()];
+	return m_entities[entity.index()];
 }
 
-int32_t Scene::RemoveFromFreeList() noexcept
+int32_t Scene::removeFromFreeList() noexcept
 {
 	const auto entityIndex = m_freeListHead;
 
@@ -494,7 +494,7 @@ int32_t Scene::RemoveFromFreeList() noexcept
 	return entityIndex;
 }
 
-void Scene::AddToFreeList(int32_t entityIndex) noexcept
+void Scene::addToFreeList(int32_t entityIndex) noexcept
 {
 	--m_liveEntityCount;
 	++m_deadEntityCount;
@@ -592,15 +592,15 @@ void Scene::AddToFreeList(int32_t entityIndex) noexcept
 	}
 }
 
-void Scene::ResetParentForDestroy(EntityID entity) noexcept
+void Scene::resetParentForDestroy(EntityID entity) noexcept
 {
-	auto& e = m_entities[entity.Index()];
+	auto& e = m_entities[entity.index()];
 
 	if(e.parent)
-		RemoveChild(e.parent.Index(), entity);
+		removeChild(e.parent.index(), entity);
 }
 
-int32_t Scene::CreateNew()
+int32_t Scene::createNew()
 {
 	++m_liveEntityCount;
 
@@ -644,27 +644,27 @@ int32_t Scene::CreateNew()
 	return m_entityCount++;
 }
 
-bool Scene::HasParent(EntityID entity, EntityID parent) const noexcept
+bool Scene::hasParent(EntityID entity, EntityID parent) const noexcept
 {
-	auto p = GetFromID(entity).parent;
+	auto p = getFromId(entity).parent;
 	while(p)
 	{
 		if(parent == p) [[unlikely]]
 			return true;
 
-		p = GetFromID(p).parent;
+		p = getFromId(p).parent;
 	}
 
 	return false;
 }
 
-matrix3x4 Scene::GenerateLocalMatrixImpl(
+matrix3x4 Scene::generateLocalMatrixImpl(
 	const float3& position, const Scene::EulerAngles& angles) const noexcept
 {
 	return matrix3x4(position).rotated(angles.x, angles.y, angles.z, angles.order);
 }
 
-matrix3x4 Scene::GenerateLocalMatrixImpl(
+matrix3x4 Scene::generateLocalMatrixImpl(
 	const float3& position, const quaternion& quat) const noexcept
 {
 	return { position, quat };

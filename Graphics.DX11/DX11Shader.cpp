@@ -19,17 +19,17 @@ API::VertexShader::VertexShader(ID3D11Device* device, API::ShaderReflectionData&
 API::VertexShader::~VertexShader()
 { }
 
-ID3D11VertexShader* API::VertexShader::GetShader() const
+ID3D11VertexShader* API::VertexShader::getShader() const
 {
 	return m_vertexShader.get();
 }
 
-memory_view API::VertexShader::ByteCode() const
+memory_view API::VertexShader::byteCode() const
 {
 	return memory_view(m_byteCode);
 }
 
-uint64_t API::VertexShader::InputRegisterHash() const
+uint64_t API::VertexShader::inputRegisterHash() const
 {
 	return m_inputRegisterHash;
 }
@@ -44,7 +44,7 @@ API::PixelShader::PixelShader(ID3D11Device* device, API::CompiledShaderData&& sh
 API::PixelShader::~PixelShader()
 { }
 
-ID3D11PixelShader* API::PixelShader::GetShader() const
+ID3D11PixelShader* API::PixelShader::getShader() const
 {
 	return m_pixelShader.get();
 }

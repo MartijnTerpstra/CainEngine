@@ -14,7 +14,7 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-void DX11Renderer::RenderFrame(std::function<void(API::IRenderContext*)> onRender)
+void DX11Renderer::renderFrame(std::function<void(API::IRenderContext*)> onRender)
 {
 	COMMON_CALLSTACK_CALL;
 

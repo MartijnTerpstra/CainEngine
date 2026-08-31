@@ -5,7 +5,7 @@
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-KeyCodes EnumConverter::ToKeyCodes(WPARAM wParam)
+KeyCodes EnumConverter::toKeyCodes(WPARAM wParam)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -110,7 +110,7 @@ KeyCodes EnumConverter::ToKeyCodes(WPARAM wParam)
 	case VK_ESCAPE:
 		return KeyCodes::Escape;
 	default:
-		Common::Warning(("keyCode not found: " + std::to_string(wParam)).c_str());
+		Common::warning(("keyCode not found: " + std::to_string(wParam)).c_str());
 		return (KeyCodes)-1;
 	}
 }

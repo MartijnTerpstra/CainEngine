@@ -52,7 +52,10 @@
 
 namespace mst {
 
+// AbslHashValue is an ADL customization point Abseil's hashing framework
+// looks up by this exact spelling - it must not be renamed.
 template<typename H>
+// NOLINTNEXTLINE(readability-identifier-naming)
 constexpr H AbslHashValue(H state, const uuid& v)
 {
 	uint8_t bytes[sizeof(v)];
@@ -125,7 +128,7 @@ protected:                                                                      
 
 using FatalErrorHandlerFn = void (*)(std::string_view);
 
-void SetFatalErrorHandler(FatalErrorHandlerFn handler);
+void setFatalErrorHandler(FatalErrorHandlerFn handler);
 
 namespace Common {
 
@@ -134,13 +137,13 @@ namespace Common {
 	[&]() {                                                                                        \
 		if(!(x)) [[unlikely]]                                                                      \
 		{                                                                                          \
-			Common::FatalError("Assertion failed: " #x);                                           \
+			Common::fatalError("Assertion failed: " #x);                                           \
 		}                                                                                          \
 	}()
-void Unreachable();
+void unreachable();
 #else // !DEBUG_CHECKS
 #define COMMON_ASSERT(x)
-[[noreturn]] inline void Unreachable()
+[[noreturn]] inline void unreachable()
 {
 	std::unreachable();
 }
@@ -154,7 +157,7 @@ class CastHandle;
 
 class BaseObject;
 
-constexpr uint32_t PackChars(char a, char b, char c, char d)
+constexpr uint32_t packChars(char a, char b, char c, char d)
 {
 	return (uint32_t)d + ((uint32_t)c << 8) + ((uint32_t)b << 16) + ((uint32_t)a << 24);
 }

@@ -14,12 +14,12 @@ public:
 public:
 	// Main functionality
 
-	std::future<void> Run(std::function<void()> job);
+	std::future<void> run(std::function<void()> job);
 
 private:
 	// For Task
 
-	void TaskCompleted(Details::Thread* thread);
+	void taskCompleted(Details::Thread* thread);
 
 private:
 	std::mutex m_mutex;

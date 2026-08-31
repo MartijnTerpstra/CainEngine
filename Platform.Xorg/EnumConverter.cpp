@@ -7,7 +7,7 @@
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-KeyCodes EnumConverter::ToKeyCodes(KeySym k)
+KeyCodes EnumConverter::toKeyCodes(KeySym k)
 {
 	switch (k)
 	{
@@ -96,6 +96,6 @@ KeyCodes EnumConverter::ToKeyCodes(KeySym k)
 	case XK_Right:
 		return KeyCodes::RightArrow;
 	default:
-		Common::FatalError("Unknown key:  %#xlu", k);
+		Common::fatalError("Unknown key:  %#xlu", k);
 	}
 }

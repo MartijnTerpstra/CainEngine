@@ -10,13 +10,13 @@ public:
 	explicit EntityID(uint32_t value) noexcept;
 	explicit EntityID(int32_t index, uint16_t version) noexcept;
 
-	int32_t Index() const noexcept;
+	int32_t index() const noexcept;
 
-	uint16_t Version() const noexcept;
+	uint16_t version() const noexcept;
 
-	uint32_t Value() const noexcept;
+	uint32_t value() const noexcept;
 
-	bool IsNull() const noexcept;
+	bool isNull() const noexcept;
 
 	friend bool operator == (EntityID left, EntityID right) noexcept;
 

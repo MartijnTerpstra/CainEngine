@@ -16,7 +16,7 @@ namespace {
 // never supposed to return (it must throw, exit(), or otherwise terminate
 // execution) - this simulates a client that fails to honor that [[noreturn]]
 // policy.
-void ReturningFatalErrorHandler(std::string_view)
+void returningFatalErrorHandler(std::string_view)
 { }
 
 } // namespace
@@ -26,14 +26,14 @@ void ReturningFatalErrorHandler(std::string_view)
 
 TEST_F(FatalErrorTest, FatalErrorThrowsInsteadOfBlocking)
 {
-	EXPECT_THROW(Common::FatalError("deliberate failure: %d", 42), FatalErrorTriggered);
+	EXPECT_THROW(Common::fatalError("deliberate failure: %d", 42), FatalErrorTriggered);
 }
 
 TEST_F(FatalErrorTest, FatalErrorMessageIsPreservedOnTheException)
 {
 	try
 	{
-		Common::FatalError("deliberate failure: %d", 42);
+		Common::fatalError("deliberate failure: %d", 42);
 		FAIL() << "FatalError() should have thrown";
 	}
 	catch(const FatalErrorTriggered& caught)
@@ -57,7 +57,7 @@ TEST_F(FatalErrorTest, FatalErrorThrowsRuntimeErrorWhenHandlerReturns)
 	// FatalErrorTest's own handler (ThrowingFatalErrorHandler) always throws,
 	// so it can't exercise this path - install a handler that breaks the
 	// noreturn contract instead.
-	SetFatalErrorHandler(&ReturningFatalErrorHandler);
+	setFatalErrorHandler(&returningFatalErrorHandler);
 
-	EXPECT_THROW(Common::FatalError("deliberate failure: %d", 42), std::runtime_error);
+	EXPECT_THROW(Common::fatalError("deliberate failure: %d", 42), std::runtime_error);
 }

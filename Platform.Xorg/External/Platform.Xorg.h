@@ -12,7 +12,7 @@ namespace Xorg {
 
 class IXorgWindow;
 
-RefPtr<ICoreFactory> CreateInstance();
+RefPtr<ICoreFactory> createInstance();
 
 }; // namespace Xorg
 }; // namespace Platform

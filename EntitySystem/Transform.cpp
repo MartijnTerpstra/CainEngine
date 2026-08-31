@@ -38,43 +38,43 @@ TransformImpl<IsConst>& TransformImpl<IsConst>::operator=(
 }
 
 template<bool IsConst>
-const float3& TransformImpl<IsConst>::Position() const noexcept
+const float3& TransformImpl<IsConst>::position() const noexcept
 {
-	return GetData().position;
+	return getData().position;
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::SetPosition(const float3& position)
+void TransformImpl<IsConst>::setPosition(const float3& position)
 	requires(!IsConst)
 {
-	GetData().position = position;
-	m_scene->SetDirty(m_entity);
+	getData().position = position;
+	m_scene->setDirty(m_entity);
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::Translate(const float3& translation)
+void TransformImpl<IsConst>::translate(const float3& translation)
 	requires(!IsConst)
 {
-	GetData().position += translation;
-	m_scene->SetDirty(m_entity);
+	getData().position += translation;
+	m_scene->setDirty(m_entity);
 }
 
 template<bool IsConst>
-bool TransformImpl<IsConst>::UsingEulerAngles() const noexcept
+bool TransformImpl<IsConst>::usingEulerAngles() const noexcept
 {
-	return std::holds_alternative<Scene::EulerAngles>(GetData().orientation);
+	return std::holds_alternative<Scene::EulerAngles>(getData().orientation);
 }
 
 template<bool IsConst>
-bool TransformImpl<IsConst>::UsingQuaternion() const noexcept
+bool TransformImpl<IsConst>::usingQuaternion() const noexcept
 {
-	return std::holds_alternative<quaternion>(GetData().orientation);
+	return std::holds_alternative<quaternion>(getData().orientation);
 }
 
 template<bool IsConst>
-const quaternion& TransformImpl<IsConst>::Quaternion() const noexcept
+const quaternion& TransformImpl<IsConst>::rotation() const noexcept
 {
-	auto quat = std::get_if<quaternion>(&GetData().orientation);
+	auto quat = std::get_if<quaternion>(&getData().orientation);
 
 	if(quat) [[likely]]
 		return *quat;
@@ -83,9 +83,9 @@ const quaternion& TransformImpl<IsConst>::Quaternion() const noexcept
 }
 
 template<bool IsConst>
-degrees TransformImpl<IsConst>::EulerX() const noexcept
+degrees TransformImpl<IsConst>::eulerX() const noexcept
 {
-	auto euler = std::get_if<Scene::EulerAngles>(&GetData().orientation);
+	auto euler = std::get_if<Scene::EulerAngles>(&getData().orientation);
 
 	if(euler) [[likely]]
 		return euler->x;
@@ -94,9 +94,9 @@ degrees TransformImpl<IsConst>::EulerX() const noexcept
 }
 
 template<bool IsConst>
-degrees TransformImpl<IsConst>::EulerY() const noexcept
+degrees TransformImpl<IsConst>::eulerY() const noexcept
 {
-	auto euler = std::get_if<Scene::EulerAngles>(&GetData().orientation);
+	auto euler = std::get_if<Scene::EulerAngles>(&getData().orientation);
 
 	if(euler) [[likely]]
 		return euler->y;
@@ -105,9 +105,9 @@ degrees TransformImpl<IsConst>::EulerY() const noexcept
 }
 
 template<bool IsConst>
-degrees TransformImpl<IsConst>::EulerZ() const noexcept
+degrees TransformImpl<IsConst>::eulerZ() const noexcept
 {
-	auto euler = std::get_if<Scene::EulerAngles>(&GetData().orientation);
+	auto euler = std::get_if<Scene::EulerAngles>(&getData().orientation);
 
 	if(euler) [[likely]]
 		return euler->z;
@@ -116,9 +116,9 @@ degrees TransformImpl<IsConst>::EulerZ() const noexcept
 }
 
 template<bool IsConst>
-euler_rotation_order TransformImpl<IsConst>::RotationOrder() const noexcept
+euler_rotation_order TransformImpl<IsConst>::rotationOrder() const noexcept
 {
-	auto euler = std::get_if<Scene::EulerAngles>(&GetData().orientation);
+	auto euler = std::get_if<Scene::EulerAngles>(&getData().orientation);
 
 	if(euler) [[likely]]
 		return euler->order;
@@ -127,69 +127,69 @@ euler_rotation_order TransformImpl<IsConst>::RotationOrder() const noexcept
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::SetQuaternion(const quaternion& quat)
+void TransformImpl<IsConst>::setQuaternion(const quaternion& quat)
 	requires(!IsConst)
 {
-	GetData().orientation = quat;
-	m_scene->SetDirty(m_entity);
+	getData().orientation = quat;
+	m_scene->setDirty(m_entity);
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::SetEulerAngles(
+void TransformImpl<IsConst>::setEulerAngles(
 	degrees x, degrees y, degrees z, euler_rotation_order order)
 	requires(!IsConst)
 {
-	GetData().orientation = Scene::EulerAngles{ x, y, z, order };
-	m_scene->SetDirty(m_entity);
+	getData().orientation = Scene::EulerAngles{ x, y, z, order };
+	m_scene->setDirty(m_entity);
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::Reset()
+void TransformImpl<IsConst>::reset()
 	requires(!IsConst)
 {
-	GetData().position = { 0, 0, 0 };
-	GetData().orientation = Scene::EulerAngles{ 0, 0, 0, euler_rotation_order::zxy };
-	m_scene->SetDirty(m_entity);
+	getData().position = { 0, 0, 0 };
+	getData().orientation = Scene::EulerAngles{ 0, 0, 0, euler_rotation_order::zxy };
+	m_scene->setDirty(m_entity);
 }
 
 template<bool IsConst>
-EntityID TransformImpl<IsConst>::Entity() const noexcept
+EntityID TransformImpl<IsConst>::entity() const noexcept
 {
 	return m_entity;
 }
 
 template<bool IsConst>
-void TransformImpl<IsConst>::CopyTo(TransformImpl<false>& other) const
+void TransformImpl<IsConst>::copyTo(TransformImpl<false>& other) const
 {
 	COMMON_ASSERT(m_entity != other.m_entity);
 	COMMON_ASSERT(m_scene == other.m_scene);
 
-	const auto& thisData = GetData();
-	auto& otherData = other.GetData();
+	const auto& thisData = getData();
+	auto& otherData = other.getData();
 
 	otherData.position = thisData.position;
 	otherData.orientation = thisData.orientation;
 
-	other.m_scene->SetDirty(other.m_entity);
+	other.m_scene->setDirty(other.m_entity);
 }
 
 template<bool IsConst>
-const Scene::EntityData& TransformImpl<IsConst>::GetData() const noexcept
+const Scene::EntityData& TransformImpl<IsConst>::getData() const noexcept
 {
 	COMMON_ASSERT(m_scene);
-	COMMON_ASSERT(m_scene->IsAlive(m_entity));
+	COMMON_ASSERT(m_scene->isAlive(m_entity));
 
-	return m_scene->GetFromID(m_entity);
+	return m_scene->getFromId(m_entity);
 }
 
 template<bool IsConst>
-Scene::EntityData& TransformImpl<IsConst>::GetData() noexcept
+Scene::EntityData& TransformImpl<IsConst>::getData() noexcept
 	requires(!IsConst)
 {
 	COMMON_ASSERT(m_scene);
-	COMMON_ASSERT(m_scene->IsAlive(m_entity));
+	COMMON_ASSERT(m_scene->isAlive(m_entity));
 
-	return m_scene->GetFromID(m_entity);
+	return m_scene->getFromId(m_entity);
 }
 
 template class TransformImpl<false>;

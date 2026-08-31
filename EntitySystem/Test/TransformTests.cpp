@@ -7,7 +7,7 @@ using namespace ::CainEngine::EntitySystem;
 
 namespace {
 
-void ExpectPositionEqual(const float3& actual, const float3& expected)
+void expectPositionEqual(const float3& actual, const float3& expected)
 {
 	EXPECT_FLOAT_EQ(expected.x, actual.x);
 	EXPECT_FLOAT_EQ(expected.y, actual.y);
@@ -21,31 +21,31 @@ void ExpectPositionEqual(const float3& actual, const float3& expected)
 TEST(Transform, DefaultPositionIsZero)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	ExpectPositionEqual(scene.GetTransform(entity).Position(), float3(0, 0, 0));
+	expectPositionEqual(scene.getTransform(entity).position(), float3(0, 0, 0));
 }
 
 TEST(Transform, SetPositionUpdatesPosition)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	scene.GetTransform(entity).SetPosition(float3(1, 2, 3));
+	scene.getTransform(entity).setPosition(float3(1, 2, 3));
 
-	ExpectPositionEqual(scene.GetTransform(entity).Position(), float3(1, 2, 3));
+	expectPositionEqual(scene.getTransform(entity).position(), float3(1, 2, 3));
 }
 
 TEST(Transform, TranslateAddsToPosition)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetPosition(float3(1, 2, 3));
-	transform.Translate(float3(1, 1, 1));
+	auto transform = scene.getTransform(entity);
+	transform.setPosition(float3(1, 2, 3));
+	transform.translate(float3(1, 1, 1));
 
-	ExpectPositionEqual(scene.GetTransform(entity).Position(), float3(2, 3, 4));
+	expectPositionEqual(scene.getTransform(entity).position(), float3(2, 3, 4));
 }
 
 // -- Transform: orientation --------------------------------------------------
@@ -53,95 +53,95 @@ TEST(Transform, TranslateAddsToPosition)
 TEST(Transform, DefaultOrientationIsZeroEulerAngles)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
+	auto transform = scene.getTransform(entity);
 
-	EXPECT_TRUE(transform.UsingEulerAngles());
-	EXPECT_FALSE(transform.UsingQuaternion());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerX().count());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerY().count());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerZ().count());
-	EXPECT_EQ(euler_rotation_order::zxy, transform.RotationOrder());
+	EXPECT_TRUE(transform.usingEulerAngles());
+	EXPECT_FALSE(transform.usingQuaternion());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerX().count());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerY().count());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerZ().count());
+	EXPECT_EQ(euler_rotation_order::zxy, transform.rotationOrder());
 }
 
 TEST(Transform, SetEulerAnglesSwitchesToEulerModeAndRoundTrips)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetEulerAngles(degrees(45), degrees(30), degrees(60), euler_rotation_order::zyx);
+	auto transform = scene.getTransform(entity);
+	transform.setEulerAngles(degrees(45), degrees(30), degrees(60), euler_rotation_order::zyx);
 
-	EXPECT_TRUE(transform.UsingEulerAngles());
-	EXPECT_FALSE(transform.UsingQuaternion());
-	EXPECT_FLOAT_EQ(45.0f, transform.EulerX().count());
-	EXPECT_FLOAT_EQ(30.0f, transform.EulerY().count());
-	EXPECT_FLOAT_EQ(60.0f, transform.EulerZ().count());
-	EXPECT_EQ(euler_rotation_order::zyx, transform.RotationOrder());
+	EXPECT_TRUE(transform.usingEulerAngles());
+	EXPECT_FALSE(transform.usingQuaternion());
+	EXPECT_FLOAT_EQ(45.0f, transform.eulerX().count());
+	EXPECT_FLOAT_EQ(30.0f, transform.eulerY().count());
+	EXPECT_FLOAT_EQ(60.0f, transform.eulerZ().count());
+	EXPECT_EQ(euler_rotation_order::zyx, transform.rotationOrder());
 }
 
 TEST(Transform, EulerAnglesFallBackToZeroWhileUsingQuaternion)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetQuaternion(quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	auto transform = scene.getTransform(entity);
+	transform.setQuaternion(quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 
-	EXPECT_TRUE(transform.UsingQuaternion());
-	EXPECT_FALSE(transform.UsingEulerAngles());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerX().count());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerY().count());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerZ().count());
-	EXPECT_EQ(euler_rotation_order::zxy, transform.RotationOrder());
+	EXPECT_TRUE(transform.usingQuaternion());
+	EXPECT_FALSE(transform.usingEulerAngles());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerX().count());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerY().count());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerZ().count());
+	EXPECT_EQ(euler_rotation_order::zxy, transform.rotationOrder());
 }
 
 TEST(Transform, SetQuaternionSwitchesToQuaternionModeAndRoundTrips)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
 	const quaternion q(0.0f, 1.0f, 0.0f, 0.0f);
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetQuaternion(q);
+	auto transform = scene.getTransform(entity);
+	transform.setQuaternion(q);
 
-	EXPECT_TRUE(transform.UsingQuaternion());
-	EXPECT_FLOAT_EQ(q.w, transform.Quaternion().w);
-	EXPECT_FLOAT_EQ(q.x, transform.Quaternion().x);
-	EXPECT_FLOAT_EQ(q.y, transform.Quaternion().y);
-	EXPECT_FLOAT_EQ(q.z, transform.Quaternion().z);
+	EXPECT_TRUE(transform.usingQuaternion());
+	EXPECT_FLOAT_EQ(q.w, transform.rotation().w);
+	EXPECT_FLOAT_EQ(q.x, transform.rotation().x);
+	EXPECT_FLOAT_EQ(q.y, transform.rotation().y);
+	EXPECT_FLOAT_EQ(q.z, transform.rotation().z);
 }
 
 TEST(Transform, QuaternionFallsBackToIdentityWhileUsingEulerAngles)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetEulerAngles(degrees(10), degrees(0), degrees(0));
+	auto transform = scene.getTransform(entity);
+	transform.setEulerAngles(degrees(10), degrees(0), degrees(0));
 
-	EXPECT_FLOAT_EQ(quaternion::identity.w, transform.Quaternion().w);
-	EXPECT_FLOAT_EQ(quaternion::identity.x, transform.Quaternion().x);
-	EXPECT_FLOAT_EQ(quaternion::identity.y, transform.Quaternion().y);
-	EXPECT_FLOAT_EQ(quaternion::identity.z, transform.Quaternion().z);
+	EXPECT_FLOAT_EQ(quaternion::identity.w, transform.rotation().w);
+	EXPECT_FLOAT_EQ(quaternion::identity.x, transform.rotation().x);
+	EXPECT_FLOAT_EQ(quaternion::identity.y, transform.rotation().y);
+	EXPECT_FLOAT_EQ(quaternion::identity.z, transform.rotation().z);
 }
 
 TEST(Transform, ResetRestoresDefaultPositionAndOrientation)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetPosition(float3(1, 2, 3));
-	transform.SetQuaternion(quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	auto transform = scene.getTransform(entity);
+	transform.setPosition(float3(1, 2, 3));
+	transform.setQuaternion(quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 
-	transform.Reset();
+	transform.reset();
 
-	ExpectPositionEqual(transform.Position(), float3(0, 0, 0));
-	EXPECT_TRUE(transform.UsingEulerAngles());
-	EXPECT_FLOAT_EQ(0.0f, transform.EulerX().count());
+	expectPositionEqual(transform.position(), float3(0, 0, 0));
+	EXPECT_TRUE(transform.usingEulerAngles());
+	EXPECT_FLOAT_EQ(0.0f, transform.eulerX().count());
 }
 
 // -- Transform::CopyTo / CTransform::CopyTo ----------------------------------
@@ -155,35 +155,35 @@ TEST(Transform, ResetRestoresDefaultPositionAndOrientation)
 TEST(Transform, CopyToCopiesPositionAndOrientationToAnotherEntityInTheSameScene)
 {
 	Scene scene;
-	const auto source = scene.Create();
-	const auto destination = scene.Create();
+	const auto source = scene.create();
+	const auto destination = scene.create();
 
-	auto sourceTransform = scene.GetTransform(source);
-	sourceTransform.SetPosition(float3(1, 2, 3));
-	sourceTransform.SetEulerAngles(degrees(10), degrees(20), degrees(30));
+	auto sourceTransform = scene.getTransform(source);
+	sourceTransform.setPosition(float3(1, 2, 3));
+	sourceTransform.setEulerAngles(degrees(10), degrees(20), degrees(30));
 
-	auto destinationTransform = scene.GetTransform(destination);
-	sourceTransform.CopyTo(destinationTransform);
+	auto destinationTransform = scene.getTransform(destination);
+	sourceTransform.copyTo(destinationTransform);
 
-	ExpectPositionEqual(destinationTransform.Position(), float3(1, 2, 3));
-	EXPECT_FLOAT_EQ(10.0f, destinationTransform.EulerX().count());
-	EXPECT_FLOAT_EQ(20.0f, destinationTransform.EulerY().count());
-	EXPECT_FLOAT_EQ(30.0f, destinationTransform.EulerZ().count());
+	expectPositionEqual(destinationTransform.position(), float3(1, 2, 3));
+	EXPECT_FLOAT_EQ(10.0f, destinationTransform.eulerX().count());
+	EXPECT_FLOAT_EQ(20.0f, destinationTransform.eulerY().count());
+	EXPECT_FLOAT_EQ(30.0f, destinationTransform.eulerZ().count());
 }
 
 TEST(CTransform, CopyToCopiesPositionAndOrientationToAnotherEntityInTheSameScene)
 {
 	Scene scene;
-	const auto source = scene.Create();
-	const auto destination = scene.Create();
+	const auto source = scene.create();
+	const auto destination = scene.create();
 
-	scene.GetTransform(source).SetPosition(float3(4, 5, 6));
-	const CTransform sourceView = scene.GetTransform(source);
+	scene.getTransform(source).setPosition(float3(4, 5, 6));
+	const CTransform sourceView = scene.getTransform(source);
 
-	auto destinationTransform = scene.GetTransform(destination);
-	sourceView.CopyTo(destinationTransform);
+	auto destinationTransform = scene.getTransform(destination);
+	sourceView.copyTo(destinationTransform);
 
-	ExpectPositionEqual(destinationTransform.Position(), float3(4, 5, 6));
+	expectPositionEqual(destinationTransform.position(), float3(4, 5, 6));
 }
 
 // -- CTransform ---------------------------------------------------------------
@@ -191,52 +191,52 @@ TEST(CTransform, CopyToCopiesPositionAndOrientationToAnotherEntityInTheSameScene
 TEST(CTransform, ConstSceneGetTransformReturnsCTransform)
 {
 	Scene scene;
-	const auto entity = scene.Create();
-	scene.GetTransform(entity).SetPosition(float3(4, 5, 6));
+	const auto entity = scene.create();
+	scene.getTransform(entity).setPosition(float3(4, 5, 6));
 
 	const Scene& constScene = scene;
-	const CTransform view = constScene.GetTransform(entity);
+	const CTransform view = constScene.getTransform(entity);
 
-	ExpectPositionEqual(view.Position(), float3(4, 5, 6));
+	expectPositionEqual(view.position(), float3(4, 5, 6));
 }
 
 TEST(CTransform, MirrorsUnderlyingTransformState)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	auto transform = scene.GetTransform(entity);
-	transform.SetPosition(float3(7, 8, 9));
-	transform.SetEulerAngles(degrees(15), degrees(0), degrees(0));
+	auto transform = scene.getTransform(entity);
+	transform.setPosition(float3(7, 8, 9));
+	transform.setEulerAngles(degrees(15), degrees(0), degrees(0));
 
 	const CTransform constView(transform);
 
-	ExpectPositionEqual(constView.Position(), float3(7, 8, 9));
-	EXPECT_TRUE(constView.UsingEulerAngles());
-	EXPECT_FLOAT_EQ(15.0f, constView.EulerX().count());
-	EXPECT_EQ(entity, constView.Entity());
+	expectPositionEqual(constView.position(), float3(7, 8, 9));
+	EXPECT_TRUE(constView.usingEulerAngles());
+	EXPECT_FLOAT_EQ(15.0f, constView.eulerX().count());
+	EXPECT_EQ(entity, constView.entity());
 }
 
 TEST(Transform, EntityReturnsOwningEntityID)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	EXPECT_EQ(entity, scene.GetTransform(entity).Entity());
+	EXPECT_EQ(entity, scene.getTransform(entity).entity());
 }
 
 TEST(CTransform, AssignmentFromTransformUpdatesView)
 {
 	Scene scene;
-	const auto entityA = scene.Create();
-	const auto entityB = scene.Create();
+	const auto entityA = scene.create();
+	const auto entityB = scene.create();
 
-	scene.GetTransform(entityA).SetPosition(float3(1, 0, 0));
-	scene.GetTransform(entityB).SetPosition(float3(0, 1, 0));
+	scene.getTransform(entityA).setPosition(float3(1, 0, 0));
+	scene.getTransform(entityB).setPosition(float3(0, 1, 0));
 
-	CTransform view = scene.GetTransform(entityA);
-	ExpectPositionEqual(view.Position(), float3(1, 0, 0));
+	CTransform view = scene.getTransform(entityA);
+	expectPositionEqual(view.position(), float3(1, 0, 0));
 
-	view = scene.GetTransform(entityB);
-	ExpectPositionEqual(view.Position(), float3(0, 1, 0));
+	view = scene.getTransform(entityB);
+	expectPositionEqual(view.position(), float3(0, 1, 0));
 }

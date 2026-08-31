@@ -11,12 +11,12 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-FullScreenState DX11Renderer::FullScreen() const
+FullScreenState DX11Renderer::fullScreen() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
 	BOOL fullscreen;
 	com_ptr<IDXGIOutput> output;
@@ -46,12 +46,12 @@ FullScreenState DX11Renderer::FullScreen() const
 	return FullScreenState(fullscreen != FALSE, 0);
 }
 
-void DX11Renderer::SetFullScreen(bool fullScreen, uint32_t outputIndex)
+void DX11Renderer::setFullScreen(bool fullScreen, uint32_t outputIndex)
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
 	if (fullScreen)
 	{
@@ -66,12 +66,12 @@ void DX11Renderer::SetFullScreen(bool fullScreen, uint32_t outputIndex)
 	}
 }
 
-uint32_t DX11Renderer::MultiSamplingCount() const
+uint32_t DX11Renderer::multiSamplingCount() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
 	if (!m_msBackBuffer)
 		return 1;
@@ -82,14 +82,14 @@ uint32_t DX11Renderer::MultiSamplingCount() const
 	return desc.SampleDesc.Count;
 }
 
-void DX11Renderer::SetMultiSamplingCount(uint32_t count)
+void DX11Renderer::setMultiSamplingCount(uint32_t count)
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
-	if (count == MultiSamplingCount())
+	if (count == multiSamplingCount())
 		return; // no changes
 
 	m_msBackBuffer.reset();
@@ -103,52 +103,52 @@ void DX11Renderer::SetMultiSamplingCount(uint32_t count)
 
 	if (qualityLevels == 0)
 	{
-		Common::Error("invalid argument: count (%u), sampling count is not supported, see GetSupportedMultiSamplingCounts()", count);
+		Common::error("invalid argument: count (%u), sampling count is not supported, see GetSupportedMultiSamplingCounts()", count);
 		return; // dont commit change
 	}
 
-	UpdateRTV(count);
+	updateRtv(count);
 }
 
-bool DX11Renderer::VSync() const
+bool DX11Renderer::vSync() const
 {
 	return m_vSync;
 }
 
-void DX11Renderer::SetVSync(bool vSync)
+void DX11Renderer::setVSync(bool vSync)
 {
 	m_vSync = vSync;
 }
 
-PixelFormat DX11Renderer::Format() const
+PixelFormat DX11Renderer::format() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
 	DXGI_SWAP_CHAIN_DESC desc;
 	CHECK_HRESULT(m_swapChain->GetDesc(&desc));
 
-	return EnumConverter::Convert(desc.BufferDesc.Format);
+	return EnumConverter::convert(desc.BufferDesc.Format);
 }
 
-void DX11Renderer::SetFormat(PixelFormat format)
+void DX11Renderer::setFormat(PixelFormat format)
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
-	Common::FatalError("unimplemented");
+	Common::fatalError("unimplemented");
 }
 
-SwapChainDisplayMode DX11Renderer::DisplayMode() const
+SwapChainDisplayMode DX11Renderer::displayMode() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
 	DXGI_SWAP_CHAIN_DESC desc;
 	CHECK_HRESULT(m_swapChain->GetDesc(&desc));
@@ -158,17 +158,17 @@ SwapChainDisplayMode DX11Renderer::DisplayMode() const
 	return SwapChainDisplayMode(desc.BufferDesc.Width, desc.BufferDesc.Height, refreshRate);
 }
 
-void DX11Renderer::SetDisplayMode(const SwapChainDisplayMode& mode)
+void DX11Renderer::setDisplayMode(const SwapChainDisplayMode& mode)
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (!m_swapChain)
-		Common::FatalError("No main window set");
+		Common::fatalError("No main window set");
 
-	Common::FatalError("unimplemented");
+	Common::fatalError("unimplemented");
 }
 
-std::vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
+std::vector<OutputDisplay> DX11Renderer::supportedOutputs() const
 {
 	std::vector<OutputDisplay> outputs;
 
@@ -197,7 +197,7 @@ std::vector<OutputDisplay> DX11Renderer::SupportedOutputs() const
 	return outputs;
 }
 
-std::vector<PixelFormat> DX11Renderer::SupportedPixelFormats(uint32_t output) const
+std::vector<PixelFormat> DX11Renderer::supportedPixelFormats(uint32_t output) const
 {
 	std::vector<PixelFormat> retval;
 
@@ -218,12 +218,12 @@ std::vector<PixelFormat> DX11Renderer::SupportedPixelFormats(uint32_t output) co
 	return retval;
 }
 
-std::vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
+std::vector<SwapChainDisplayMode> DX11Renderer::supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
 {
 	com_ptr<IDXGIOutput> output;
 	CHECK_HRESULT(m_adapter->EnumOutputs((UINT)outputIndex, mst::initialize(output)));
 
-	auto dxformat = EnumConverter::Convert(format);
+	auto dxformat = EnumConverter::convert(format);
 
 	UINT numModes;
 	CHECK_HRESULT(output->GetDisplayModeList(dxformat, 0, &numModes, nullptr));
@@ -244,11 +244,11 @@ std::vector<SwapChainDisplayMode> DX11Renderer::SupportedDisplayModes(uint32_t o
 	return displayModes;
 }
 
-std::vector<uint32_t> DX11Renderer::SupportedMultiSamplingCounts(PixelFormat format) const
+std::vector<uint32_t> DX11Renderer::supportedMultiSamplingCounts(PixelFormat format) const
 {
 	std::vector<uint32_t> modes;
 
-	auto dxformat = EnumConverter::Convert(format);
+	auto dxformat = EnumConverter::convert(format);
 
 	for (UINT i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1)
 	{
@@ -262,7 +262,7 @@ std::vector<uint32_t> DX11Renderer::SupportedMultiSamplingCounts(PixelFormat for
 	return modes;
 }
 
-void DX11Renderer::EnsureFullscreen(bool fullscreen, IDXGIOutput* output)
+void DX11Renderer::ensureFullscreen(bool fullscreen, IDXGIOutput* output)
 {
-	Common::FatalError("unimplemented");
+	Common::fatalError("unimplemented");
 }

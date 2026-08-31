@@ -14,7 +14,7 @@ TEST(TaskManager, RunExecutesJobAndFutureBecomesReady)
 	TaskManager manager;
 	std::atomic<bool> ran{false};
 
-	auto future = manager.Run([&]() { ran = true; });
+	auto future = manager.run([&]() { ran = true; });
 	future.wait();
 
 	EXPECT_TRUE(ran.load());
@@ -29,7 +29,7 @@ TEST(TaskManager, RunExecutesMultipleJobsConcurrently)
 	std::vector<std::future<void>> futures;
 	for(int i = 0; i < jobCount; ++i)
 	{
-		futures.push_back(manager.Run([&]() { ++completed; }));
+		futures.push_back(manager.run([&]() { ++completed; }));
 	}
 
 	for(auto& future : futures)
@@ -45,7 +45,7 @@ TEST(TaskManager, ConstructingWithInitialThreadCountStillRunsJobs)
 	TaskManager manager(4);
 	std::atomic<bool> ran{false};
 
-	manager.Run([&]() { ran = true; }).wait();
+	manager.run([&]() { ran = true; }).wait();
 
 	EXPECT_TRUE(ran.load());
 }
@@ -56,7 +56,7 @@ TEST(TaskManager, JobsRunOnADifferentThreadThanTheCaller)
 	const auto callerThreadId = std::this_thread::get_id();
 	std::thread::id jobThreadId;
 
-	manager.Run([&]() { jobThreadId = std::this_thread::get_id(); }).wait();
+	manager.run([&]() { jobThreadId = std::this_thread::get_id(); }).wait();
 
 	EXPECT_NE(callerThreadId, jobThreadId);
 }
@@ -66,7 +66,7 @@ TEST(TaskManager, DestructorWaitsForOutstandingJobsToFinish)
 	std::atomic<bool> ran{false};
 	{
 		TaskManager manager;
-		manager.Run([&]() {
+		manager.run([&]() {
 			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 			ran = true;
 		});
@@ -79,10 +79,10 @@ TEST(TaskManager, RunAfterPreviousJobCompletedReusesTheManager)
 {
 	TaskManager manager;
 
-	manager.Run([]() {}).wait();
+	manager.run([]() {}).wait();
 
 	std::atomic<bool> ran{false};
-	manager.Run([&]() { ran = true; }).wait();
+	manager.run([&]() { ran = true; }).wait();
 
 	EXPECT_TRUE(ran.load());
 }

@@ -17,16 +17,16 @@ public:
 private:
 	// For TaskManager
 
-	void Run(std::promise<void>&& promise, std::function<void()>&& job);
+	void run(std::promise<void>&& promise, std::function<void()>&& job);
 
-	void Stop();
+	void stop();
 
-	void Wait();
+	void wait();
 
 private:
 	// Internal functionality
 
-	void ThreadProc();
+	void threadProc();
 
 private:
 	// Member variables

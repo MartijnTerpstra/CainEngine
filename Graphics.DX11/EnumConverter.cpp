@@ -6,7 +6,7 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-PixelFormat EnumConverter::Convert(DXGI_FORMAT format)
+PixelFormat EnumConverter::convert(DXGI_FORMAT format)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -26,12 +26,12 @@ PixelFormat EnumConverter::Convert(DXGI_FORMAT format)
 	case DXGI_FORMAT_R16G16B16A16_FLOAT:
 		return PixelFormat::FloatRGBA16;
 	default:
-		Common::FatalError("DXGI_FORMAT corrupted");
+		Common::fatalError("DXGI_FORMAT corrupted");
 		return (PixelFormat)-1;
 	}
 }
 
-DXGI_FORMAT EnumConverter::Convert(PixelFormat format)
+DXGI_FORMAT EnumConverter::convert(PixelFormat format)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -68,12 +68,12 @@ DXGI_FORMAT EnumConverter::Convert(PixelFormat format)
 	case PixelFormat::FloatRGBA16:
 		return DXGI_FORMAT_R16G16B16A16_FLOAT;
 	default:
-		Common::FatalError("Graphics::PixelFormat corrupted");
+		Common::fatalError("Graphics::PixelFormat corrupted");
 		return DXGI_FORMAT_UNKNOWN;
 	}
 }
 
-D3D11_FILTER EnumConverter::Convert(TextureSamplingMode sampler, UINT& maxAnisotropy)
+D3D11_FILTER EnumConverter::convert(TextureSamplingMode sampler, UINT& maxAnisotropy)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -99,13 +99,13 @@ D3D11_FILTER EnumConverter::Convert(TextureSamplingMode sampler, UINT& maxAnisot
 		return D3D11_FILTER_ANISOTROPIC;
 		break;
 	default:
-		Common::FatalError("Graphics::TextureSamplingMode corrupted");
+		Common::fatalError("Graphics::TextureSamplingMode corrupted");
 		maxAnisotropy = 0;
 		return (D3D11_FILTER)-1;
 	}
 }
 
-D3D11_TEXTURE_ADDRESS_MODE EnumConverter::Convert(TextureAddressMode address)
+D3D11_TEXTURE_ADDRESS_MODE EnumConverter::convert(TextureAddressMode address)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -118,12 +118,12 @@ D3D11_TEXTURE_ADDRESS_MODE EnumConverter::Convert(TextureAddressMode address)
 	case Graphics::TextureAddressMode::Mirror:
 		return D3D11_TEXTURE_ADDRESS_MIRROR;
 	default:
-		Common::FatalError("Graphics::TextureaddressMode corrupted");
+		Common::fatalError("Graphics::TextureaddressMode corrupted");
 		return (D3D11_TEXTURE_ADDRESS_MODE)-1;
 	}
 }
 
-API::ShaderVariableType EnumConverter::Convert(D3D_REGISTER_COMPONENT_TYPE type)
+API::ShaderVariableType EnumConverter::convert(D3D_REGISTER_COMPONENT_TYPE type)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -138,15 +138,15 @@ API::ShaderVariableType EnumConverter::Convert(D3D_REGISTER_COMPONENT_TYPE type)
 	case D3D_REGISTER_COMPONENT_FLOAT32:
 		return ShaderVariableType::Float;
 	case D3D_REGISTER_COMPONENT_UNKNOWN:
-		Common::FatalError("D3D_REGISTER_COMPONENT_TYPE has a unknown value");
+		Common::fatalError("D3D_REGISTER_COMPONENT_TYPE has a unknown value");
 		return ShaderVariableType::Float;
 	default:
-		Common::FatalError("D3D_REGISTER_COMPONENT_TYPE has a corrupted value");
+		Common::fatalError("D3D_REGISTER_COMPONENT_TYPE has a corrupted value");
 		return ShaderVariableType::Float;
 	}
 }
 
-DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint32_t elementCount)
+DXGI_FORMAT EnumConverter::convert(API::ShaderVariableType type, uint32_t elementCount)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -166,7 +166,7 @@ DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint32_t elemen
 		case 4:
 			return DXGI_FORMAT_R32G32B32A32_FLOAT;
 		default:
-			Common::FatalError("elementCount out of range");
+			Common::fatalError("elementCount out of range");
 			return (DXGI_FORMAT)-1;
 		}
 	case ShaderVariableType::Int32:
@@ -181,7 +181,7 @@ DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint32_t elemen
 		case 4:
 			return DXGI_FORMAT_R32G32B32A32_SINT;
 		default:
-			Common::FatalError("elementCount out of range");
+			Common::fatalError("elementCount out of range");
 			return (DXGI_FORMAT)-1;
 		}
 	case ShaderVariableType::Uint32:
@@ -196,16 +196,16 @@ DXGI_FORMAT EnumConverter::Convert(API::ShaderVariableType type, uint32_t elemen
 		case 4:
 			return DXGI_FORMAT_R32G32B32A32_UINT;
 		default:
-			Common::FatalError("elementCount out of range");
+			Common::fatalError("elementCount out of range");
 			return (DXGI_FORMAT)-1;
 		}
 	default:
-		Common::FatalError("Graphics::ShaderVariableType corrupted");
+		Common::fatalError("Graphics::ShaderVariableType corrupted");
 		return (DXGI_FORMAT)-1;
 	}
 }
 
-D3D11_CULL_MODE EnumConverter::Convert(CullingMode culling)
+D3D11_CULL_MODE EnumConverter::convert(CullingMode culling)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -218,12 +218,12 @@ D3D11_CULL_MODE EnumConverter::Convert(CullingMode culling)
 	case Graphics::CullingMode::Back:
 		return D3D11_CULL_BACK;
 	default:
-		Common::FatalError("Graphics::CullingMode corrupted");
+		Common::fatalError("Graphics::CullingMode corrupted");
 		return (D3D11_CULL_MODE)-1;
 	}
 }
 
-D3D11_FILL_MODE EnumConverter::Convert(FillingMode filling)
+D3D11_FILL_MODE EnumConverter::convert(FillingMode filling)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -234,12 +234,12 @@ D3D11_FILL_MODE EnumConverter::Convert(FillingMode filling)
 	case Graphics::FillingMode::Solid:
 		return D3D11_FILL_SOLID;
 	default:
-		Common::FatalError("Graphics::FillingMode corrupted");
+		Common::fatalError("Graphics::FillingMode corrupted");
 		return (D3D11_FILL_MODE)-1;
 	}
 }
 
-D3D11_PRIMITIVE_TOPOLOGY EnumConverter::Convert(PrimitiveTopology topology)
+D3D11_PRIMITIVE_TOPOLOGY EnumConverter::convert(PrimitiveTopology topology)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -252,12 +252,12 @@ D3D11_PRIMITIVE_TOPOLOGY EnumConverter::Convert(PrimitiveTopology topology)
 	case Graphics::PrimitiveTopology::PointList:
 		return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 	default:
-		Common::FatalError("Graphics::PrimitiveType corrupted");
+		Common::fatalError("Graphics::PrimitiveType corrupted");
 		return (D3D11_PRIMITIVE_TOPOLOGY)-1;
 	}
 }
 
-UINT EnumConverter::Convert(flag<API::BindFlags> bindFlags)
+UINT EnumConverter::convert(flag<API::BindFlags> bindFlags)
 {
 	UINT retval = 0;
 
@@ -273,7 +273,7 @@ UINT EnumConverter::Convert(flag<API::BindFlags> bindFlags)
 	return retval;
 }
 
-flag<API::BindFlags> EnumConverter::ConvertBindFlags(UINT bindFlags)
+flag<API::BindFlags> EnumConverter::convertBindFlags(UINT bindFlags)
 {
 	flag<API::BindFlags> retval;
 
@@ -294,7 +294,7 @@ flag<API::BindFlags> EnumConverter::ConvertBindFlags(UINT bindFlags)
 	return retval;
 }
 
-API::Usage EnumConverter::Convert(D3D11_USAGE usage)
+API::Usage EnumConverter::convert(D3D11_USAGE usage)
 {
 	switch(usage)
 	{
@@ -307,12 +307,12 @@ API::Usage EnumConverter::Convert(D3D11_USAGE usage)
 	case D3D11_USAGE_STAGING:
 		return API::Usage::Staging;
 	default:
-		Common::FatalError("D3D11_USAGE corrupted");
+		Common::fatalError("D3D11_USAGE corrupted");
 		return (API::Usage)-1;
 	}
 }
 
-EnumConverter::UsageConvertResult EnumConverter::Convert(API::Usage usage)
+EnumConverter::UsageConvertResult EnumConverter::convert(API::Usage usage)
 {
 	switch(usage)
 	{
@@ -325,12 +325,12 @@ EnumConverter::UsageConvertResult EnumConverter::Convert(API::Usage usage)
 	case CainEngine::Graphics::API::Usage::Staging:
 		return { D3D11_USAGE_STAGING, D3D10_CPU_ACCESS_READ };
 	default:
-		Common::FatalError("Graphics::API::Usage corrupted");
+		Common::fatalError("Graphics::API::Usage corrupted");
 		return {};
 	}
 }
 
-API::ShaderSemanticName EnumConverter::Convert(const char* semantic)
+API::ShaderSemanticName EnumConverter::convert(const char* semantic)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -349,13 +349,13 @@ API::ShaderSemanticName EnumConverter::Convert(const char* semantic)
 	case mst::compiletime::hash32("NORMAL"):
 		return ShaderSemanticName::Normal;
 	default:
-		Common::FatalError("semantic name not found");
+		Common::fatalError("semantic name not found");
 		return (ShaderSemanticName)-1;
 	}
 #pragma warning(pop)
 }
 
-const char* EnumConverter::Convert(API::ShaderSemanticName semantic)
+const char* EnumConverter::convert(API::ShaderSemanticName semantic)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -370,7 +370,7 @@ const char* EnumConverter::Convert(API::ShaderSemanticName semantic)
 	case ShaderSemanticName::Normal:
 		return "NORMAL";
 	default:
-		Common::FatalError("ShaderSemanticName corrupted");
+		Common::fatalError("ShaderSemanticName corrupted");
 		return nullptr;
 	}
 }

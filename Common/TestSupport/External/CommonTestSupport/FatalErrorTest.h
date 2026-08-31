@@ -12,7 +12,7 @@ namespace CainEngine::TestSupport {
 		Letting this propagate out of a TEST_F body is enough on its own:
 		googletest's default exception handling (--gtest_catch_exceptions,
 		on by default) reports it as a test failure, printing what() - which
-		holds the original Common::FatalError()/COMMON_ASSERT() message.
+		holds the original Common::fatalError()/COMMON_ASSERT() message.
 		Catch it explicitly (or use EXPECT_THROW/ASSERT_THROW) to assert that
 		a specific operation is expected to hit a fatal error.
 */
@@ -33,7 +33,7 @@ private:
 		the duration of each test.
 
 	Notes:
-		Without this, a COMMON_ASSERT() or Common::FatalError() triggered
+		Without this, a COMMON_ASSERT() or Common::fatalError() triggered
 		during a test hits the default handler, which prints a callstack and
 		then blocks on std::cin waiting for a debugger break/exit choice -
 		hanging the entire test binary instead of failing just the one test.
@@ -48,7 +48,7 @@ private:
 
 		A test that doesn't trigger a fatal error behaves exactly as if this
 		fixture weren't there - the handler is only ever invoked from within
-		Common::FatalError()/COMMON_ASSERT(), never proactively.
+		Common::fatalError()/COMMON_ASSERT(), never proactively.
 */
 class FatalErrorTest : public ::testing::Test
 {

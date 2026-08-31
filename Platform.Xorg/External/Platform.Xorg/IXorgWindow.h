@@ -15,8 +15,8 @@ class IXorgWindow : public IWindow
 public:
 	// Main functionality
 
-	virtual ::Display* GetDisplay() const = 0;
-	virtual ::Window GetWindow() const = 0;
+	virtual ::Display* getDisplay() const = 0;
+	virtual ::Window getWindow() const = 0;
 
 }; // class IXorgWindow
 

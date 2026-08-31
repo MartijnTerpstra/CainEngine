@@ -15,7 +15,7 @@ public:
 public:
 	// IRendererImpl overrides
 
-	uint32 ID() const override;
+	uint32 id() const override;
 
 	void Init(flag<RendererInitFlags> initFlags) override;
 

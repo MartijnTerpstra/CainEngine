@@ -14,13 +14,13 @@ public:
 		Summary:
 			Returns the name of the monitor
 	*/
-	virtual std::string GetName() const = 0;
+	virtual std::string getName() const = 0;
 
 	/**
 		Summary:
 			Returns resolution of the monitor in pixels
 	*/
-	virtual Rect GetResolution() const = 0;
+	virtual Rect getResolution() const = 0;
 
 	/**
 		Summary:
@@ -29,7 +29,7 @@ public:
 		Details:
 			This is the area where there is room for client applications
 	*/
-	virtual Rect GetWorkSpace() const = 0;
+	virtual Rect getWorkSpace() const = 0;
 
 	/**
 		Summary:
@@ -38,7 +38,7 @@ public:
 		Notes:
 			This is usually 60Hz, but it could be in the range of [50, 144]
 	*/
-	virtual uint32_t GetRefreshFrequency() const = 0;
+	virtual uint32_t getRefreshFrequency() const = 0;
 
 }; // class IMonitor
 

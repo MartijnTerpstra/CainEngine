@@ -24,7 +24,7 @@ Win32Process::~Win32Process()
 	}
 }
 
-std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name)
+std::vector<RefPtr<IProcess>> Win32Process::getProcesses(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -35,7 +35,7 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 
 	if(!EnumProcesses(processes, sizeof(processes), &needed))
 	{
-		Common::FatalError("IPlatformFactory::GetProcesses(): failure getting processes");
+		Common::fatalError("IPlatformFactory::GetProcesses(): failure getting processes");
 	}
 
 	DWORD count = needed / sizeof(DWORD);
@@ -57,7 +57,7 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 
 		if(szProcessName == name)
 		{
-			retval.push_back(RefPtr<Win32Process>::Create(processModule));
+			retval.push_back(RefPtr<Win32Process>::create(processModule));
 		}
 		else
 		{
@@ -68,7 +68,7 @@ std::vector<RefPtr<IProcess>> Win32Process::GetProcesses(const std::string& name
 	return retval;
 }
 
-RefPtr<IProcess> Win32Process::GetProcess(uint32_t id)
+RefPtr<IProcess> Win32Process::getProcess(uint32_t id)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -76,13 +76,13 @@ RefPtr<IProcess> Win32Process::GetProcess(uint32_t id)
 
 	if(handle)
 	{
-		return RefPtr<Win32Process>::Create(handle);
+		return RefPtr<Win32Process>::create(handle);
 	}
 
 	return nullptr;
 }
 
-RefPtr<IProcess> Win32Process::GetCurrentProcess()
+RefPtr<IProcess> Win32Process::getCurrentProcess()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -90,13 +90,13 @@ RefPtr<IProcess> Win32Process::GetCurrentProcess()
 
 	if(process != nullptr)
 	{
-		return RefPtr<Win32Process>::Create(process);
+		return RefPtr<Win32Process>::create(process);
 	}
 
 	return nullptr;
 }
 
-RefPtr<IProcess> Win32Process::CreateNewProcess(
+RefPtr<IProcess> Win32Process::createNewProcess(
 	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
@@ -150,13 +150,13 @@ RefPtr<IProcess> Win32Process::CreateNewProcess(
 		   workingDir.c_str(), &startupInfo, &processInfo))
 	{
 		CloseHandle(processInfo.hThread);
-		return RefPtr<Win32Process>::Create(processInfo.hProcess);
+		return RefPtr<Win32Process>::create(processInfo.hProcess);
 	}
 
 	return nullptr;
 }
 
-std::string Win32Process::GetName() const
+std::string Win32Process::getName() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -173,19 +173,19 @@ std::string Win32Process::GetName() const
 	return szProcessName;
 }
 
-uint32_t Win32Process::GetID() const
+uint32_t Win32Process::getId() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return (uint32_t)GetProcessId(m_process);
 }
 
-uint32_t Win32Process::GetSessionID() const
+uint32_t Win32Process::getSessionId() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	DWORD sessionId = (DWORD)-1;
-	if(ProcessIdToSessionId(GetID(), &sessionId))
+	if(ProcessIdToSessionId(getId(), &sessionId))
 	{
 		return (uint32_t)sessionId;
 	}
@@ -194,7 +194,7 @@ uint32_t Win32Process::GetSessionID() const
 }
 
 
-static std::chrono::system_clock::time_point FT2TP(const FILETIME& ft)
+static std::chrono::system_clock::time_point fT2Tp(const FILETIME& ft)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -211,28 +211,28 @@ static std::chrono::system_clock::time_point FT2TP(const FILETIME& ft)
 	return tp;
 }
 
-std::chrono::time_point<std::chrono::system_clock> Win32Process::GetCreationTime() const
+std::chrono::time_point<std::chrono::system_clock> Win32Process::getCreationTime() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	FILETIME creation, exit, kernel, user;
 	if(!GetProcessTimes(m_process, &creation, &exit, &kernel, &user))
 	{
-		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
+		Common::fatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
 						   "GetProcessTimes failed");
 	}
 
 	SYSTEMTIME systime;
 	if(!FileTimeToSystemTime(&creation, &systime))
 	{
-		Common::FatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
+		Common::fatalError("Platform::IProcess::GetCreationTime(): internal windows failure, "
 						   "FileTimeToSystemTime failed");
 	}
 
-	return FT2TP(creation);
+	return fT2Tp(creation);
 }
 
-void* Win32Process::_As(uint64_t typeHash) const
+void* Win32Process::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 

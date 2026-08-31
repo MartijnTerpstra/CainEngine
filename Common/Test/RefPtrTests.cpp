@@ -14,7 +14,7 @@ struct Counters
 	static inline int constructed = 0;
 	static inline int destroyed = 0;
 
-	static void Reset()
+	static void reset()
 	{
 		constructed = 0;
 		destroyed = 0;
@@ -27,16 +27,16 @@ public:
 	Base() { ++Counters::constructed; }
 	~Base() override { ++Counters::destroyed; }
 
-	virtual int Tag() const { return 1; }
+	virtual int tag() const { return 1; }
 
 private:
 	// Deliberately returns nullptr for unrecognized types, matching
 	// BaseObject::As()'s documented "null on failure" contract. Some other
-	// _As() overrides elsewhere in the codebase instead call
-	// Common::FatalError() in their default case, which contradicts that
+	// as() overrides elsewhere in the codebase instead call
+	// Common::fatalError() in their default case, which contradicts that
 	// contract and would abort the process on a failed cast rather than
 	// letting the caller check the result - not something to imitate here.
-	void* _As(uint64_t typeHash) const override
+	void* asImpl(uint64_t typeHash) const override
 	{
 		switch(typeHash)
 		{
@@ -51,10 +51,10 @@ private:
 class Derived final : public Base
 {
 public:
-	int Tag() const override { return 2; }
+	int tag() const override { return 2; }
 
 private:
-	void* _As(uint64_t typeHash) const override
+	void* asImpl(uint64_t typeHash) const override
 	{
 		switch(typeHash)
 		{
@@ -70,7 +70,7 @@ private:
 class Unrelated final : public BaseObject
 {
 private:
-	void* _As(uint64_t typeHash) const override
+	void* asImpl(uint64_t typeHash) const override
 	{
 		switch(typeHash)
 		{
@@ -87,7 +87,7 @@ class RefPtrTest : public ::testing::Test
 protected:
 	void SetUp() override
 	{
-		Counters::Reset();
+		Counters::reset();
 	}
 };
 
@@ -100,15 +100,15 @@ TEST_F(RefPtrTest, DefaultConstructedIsNull)
 	RefPtr<Base> ptr;
 
 	EXPECT_FALSE(bool(ptr));
-	EXPECT_EQ(nullptr, ptr.Get());
+	EXPECT_EQ(nullptr, ptr.get());
 }
 
 TEST_F(RefPtrTest, CreateConstructsExactlyOneObject)
 {
-	auto ptr = RefPtr<Base>::Create();
+	auto ptr = RefPtr<Base>::create();
 
 	EXPECT_TRUE(bool(ptr));
-	EXPECT_NE(nullptr, ptr.Get());
+	EXPECT_NE(nullptr, ptr.get());
 	EXPECT_EQ(1, Counters::constructed);
 	EXPECT_EQ(0, Counters::destroyed);
 }
@@ -116,7 +116,7 @@ TEST_F(RefPtrTest, CreateConstructsExactlyOneObject)
 TEST_F(RefPtrTest, GoingOutOfScopeDestroysTheObject)
 {
 	{
-		auto ptr = RefPtr<Base>::Create();
+		auto ptr = RefPtr<Base>::create();
 		EXPECT_EQ(0, Counters::destroyed);
 	}
 
@@ -127,7 +127,7 @@ TEST_F(RefPtrTest, GoingOutOfScopeDestroysTheObject)
 
 TEST_F(RefPtrTest, CopyKeepsObjectAliveUntilLastReferenceIsGone)
 {
-	auto first = RefPtr<Base>::Create();
+	auto first = RefPtr<Base>::create();
 	{
 		RefPtr<Base> second = first;
 		EXPECT_EQ(0, Counters::destroyed);
@@ -139,7 +139,7 @@ TEST_F(RefPtrTest, CopyKeepsObjectAliveUntilLastReferenceIsGone)
 
 TEST_F(RefPtrTest, LastReferenceGoingOutOfScopeDestroysTheObject)
 {
-	auto first = RefPtr<Base>::Create();
+	auto first = RefPtr<Base>::create();
 	RefPtr<Base> second = first;
 
 	second = RefPtr<Base>();
@@ -151,36 +151,36 @@ TEST_F(RefPtrTest, LastReferenceGoingOutOfScopeDestroysTheObject)
 
 TEST_F(RefPtrTest, MoveDoesNotIncrementRefCount)
 {
-	auto first = RefPtr<Base>::Create();
-	Base* rawPtr = first.Get();
+	auto first = RefPtr<Base>::create();
+	Base* rawPtr = first.get();
 
 	RefPtr<Base> second = std::move(first);
 
-	EXPECT_EQ(nullptr, first.Get());
-	EXPECT_EQ(rawPtr, second.Get());
+	EXPECT_EQ(nullptr, first.get());
+	EXPECT_EQ(rawPtr, second.get());
 	EXPECT_EQ(0, Counters::destroyed);
 }
 
 TEST_F(RefPtrTest, CopyAssignmentReplacesHeldObject)
 {
-	auto a = RefPtr<Base>::Create();
-	auto b = RefPtr<Base>::Create();
+	auto a = RefPtr<Base>::create();
+	auto b = RefPtr<Base>::create();
 	ASSERT_EQ(2, Counters::constructed);
 
 	a = b;
 
 	EXPECT_EQ(1, Counters::destroyed); // a's original object was released
-	EXPECT_EQ(a.Get(), b.Get());
+	EXPECT_EQ(a.get(), b.get());
 }
 
 TEST_F(RefPtrTest, SelfAssignmentIsSafe)
 {
-	auto ptr = RefPtr<Base>::Create();
-	Base* rawPtr = ptr.Get();
+	auto ptr = RefPtr<Base>::create();
+	Base* rawPtr = ptr.get();
 
 	ptr = ptr;
 
-	EXPECT_EQ(rawPtr, ptr.Get());
+	EXPECT_EQ(rawPtr, ptr.get());
 	EXPECT_EQ(0, Counters::destroyed);
 }
 
@@ -194,11 +194,11 @@ TEST_F(RefPtrTest, SelfAssignmentIsSafe)
 
 TEST_F(RefPtrTest, ConvertingCopyConstructorSharesOwnership)
 {
-	auto derived = RefPtr<Derived>::Create();
+	auto derived = RefPtr<Derived>::create();
 
 	RefPtr<Base> base = derived;
 
-	EXPECT_EQ(derived.Get(), base.Get());
+	EXPECT_EQ(derived.get(), base.get());
 
 	derived = RefPtr<Derived>();
 	EXPECT_EQ(0, Counters::destroyed); // base still holds a reference
@@ -209,23 +209,23 @@ TEST_F(RefPtrTest, ConvertingCopyConstructorSharesOwnership)
 
 TEST_F(RefPtrTest, ConvertingMoveConstructorTransfersOwnership)
 {
-	auto derived = RefPtr<Derived>::Create();
-	Base* rawPtr = derived.Get();
+	auto derived = RefPtr<Derived>::create();
+	Base* rawPtr = derived.get();
 
 	RefPtr<Base> base = std::move(derived);
 
-	EXPECT_EQ(nullptr, derived.Get());
-	EXPECT_EQ(rawPtr, base.Get());
+	EXPECT_EQ(nullptr, derived.get());
+	EXPECT_EQ(rawPtr, base.get());
 }
 
 TEST_F(RefPtrTest, ConvertingCopyAssignmentSharesOwnership)
 {
-	auto derived = RefPtr<Derived>::Create();
+	auto derived = RefPtr<Derived>::create();
 	RefPtr<Base> base;
 
 	base = derived;
 
-	EXPECT_EQ(derived.Get(), base.Get());
+	EXPECT_EQ(derived.get(), base.get());
 
 	derived = RefPtr<Derived>();
 	EXPECT_EQ(0, Counters::destroyed);
@@ -236,23 +236,23 @@ TEST_F(RefPtrTest, ConvertingCopyAssignmentSharesOwnership)
 
 TEST_F(RefPtrTest, ConvertingMoveAssignmentTransfersOwnership)
 {
-	auto derived = RefPtr<Derived>::Create();
-	Base* rawPtr = derived.Get();
+	auto derived = RefPtr<Derived>::create();
+	Base* rawPtr = derived.get();
 	RefPtr<Base> base;
 
 	base = std::move(derived);
 
-	EXPECT_EQ(nullptr, derived.Get());
-	EXPECT_EQ(rawPtr, base.Get());
+	EXPECT_EQ(nullptr, derived.get());
+	EXPECT_EQ(rawPtr, base.get());
 }
 
 // -- Comparison ------------------------------------------------------------------
 
 TEST_F(RefPtrTest, EqualityComparesUnderlyingPointer)
 {
-	auto a = RefPtr<Base>::Create();
+	auto a = RefPtr<Base>::create();
 	RefPtr<Base> aAlias = a;
-	auto b = RefPtr<Base>::Create();
+	auto b = RefPtr<Base>::create();
 
 	EXPECT_TRUE(a == aAlias);
 	EXPECT_FALSE(a == b);
@@ -263,19 +263,19 @@ TEST_F(RefPtrTest, EqualityComparesUnderlyingPointer)
 
 TEST_F(RefPtrTest, AsSucceedsForTheActualDynamicType)
 {
-	RefPtr<Base> ptr = RefPtr<Derived>::Create();
+	RefPtr<Base> ptr = RefPtr<Derived>::create();
 
-	auto handle = ptr->As<Derived>();
+	auto handle = ptr->as<Derived>();
 
 	ASSERT_TRUE(bool(handle));
-	EXPECT_EQ(2, handle->Tag());
+	EXPECT_EQ(2, handle->tag());
 }
 
 TEST_F(RefPtrTest, AsFailsForAnUnrelatedType)
 {
-	RefPtr<Base> ptr = RefPtr<Derived>::Create();
+	RefPtr<Base> ptr = RefPtr<Derived>::create();
 
-	auto handle = ptr->As<Unrelated>();
+	auto handle = ptr->as<Unrelated>();
 
 	EXPECT_FALSE(bool(handle));
 	EXPECT_EQ(nullptr, handle.get());
@@ -283,20 +283,20 @@ TEST_F(RefPtrTest, AsFailsForAnUnrelatedType)
 
 TEST_F(RefPtrTest, AsOnBaseObjectItselfIsAnIdentityCast)
 {
-	auto ptr = RefPtr<Base>::Create();
+	auto ptr = RefPtr<Base>::create();
 
-	auto handle = ptr->As<BaseObject>();
+	auto handle = ptr->as<BaseObject>();
 
-	EXPECT_EQ(static_cast<BaseObject*>(ptr.Get()), handle.get());
+	EXPECT_EQ(static_cast<BaseObject*>(ptr.get()), handle.get());
 }
 
 TEST_F(RefPtrTest, IsReflectsTheActualDynamicType)
 {
-	RefPtr<Base> ptr = RefPtr<Derived>::Create();
+	RefPtr<Base> ptr = RefPtr<Derived>::create();
 
-	EXPECT_TRUE(ptr->Is<Derived>());
-	EXPECT_TRUE(ptr->Is<Base>());
-	EXPECT_FALSE(ptr->Is<Unrelated>());
+	EXPECT_TRUE(ptr->is<Derived>());
+	EXPECT_TRUE(ptr->is<Base>());
+	EXPECT_FALSE(ptr->is<Unrelated>());
 }
 
 TEST_F(RefPtrTest, AsOnNullptrIsSafeAndReturnsAFailedHandle)
@@ -306,25 +306,25 @@ TEST_F(RefPtrTest, AsOnNullptrIsSafeAndReturnsAFailedHandle)
 	// rather than a crash.
 	RefPtr<Base> empty;
 
-	auto handle = empty->As<Derived>();
+	auto handle = empty->as<Derived>();
 
 	EXPECT_FALSE(bool(handle));
 }
 
 TEST_F(RefPtrTest, CastHandleConvertsBackToARefPtr)
 {
-	auto ptr = RefPtr<Base>::Create();
+	auto ptr = RefPtr<Base>::create();
 
-	CastHandle<Base> handle = ptr->As<Base>();
+	CastHandle<Base> handle = ptr->as<Base>();
 	RefPtr<Base> fromHandle = handle;
 
-	EXPECT_EQ(ptr.Get(), fromHandle.Get());
+	EXPECT_EQ(ptr.get(), fromHandle.get());
 }
 
 TEST_F(RefPtrTest, CastHandleEqualityOperators)
 {
-	auto ptr = RefPtr<Base>::Create();
-	auto handle = ptr->As<Base>();
+	auto ptr = RefPtr<Base>::create();
+	auto handle = ptr->as<Base>();
 	CastHandle<Base> nullHandle(nullptr);
 
 	EXPECT_TRUE(handle == ptr);

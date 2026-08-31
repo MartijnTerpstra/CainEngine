@@ -14,61 +14,61 @@ public:
 		, m_engine(engine)
 	{ }
 
-	void Run()
+	void run()
 	{
-		m_engine.Init(make_flag(Graphics::RendererInitFlags::ApiDebug));
+		m_engine.init(make_flag(Graphics::RendererInitFlags::ApiDebug));
 
-		m_mainWindow = m_platformFactory->CreateNewWindow("Main Window", uint2(1280, 720),
+		m_mainWindow = m_platformFactory->createNewWindow("Main Window", uint2(1280, 720),
 			Platform::WindowType::Default, Platform::WindowFlags::Default, shared_from_this());
 
-		auto rect = m_mainWindow->GetClientRect();
+		auto rect = m_mainWindow->getClientRect();
 
-		m_mainWindow->Show();
+		m_mainWindow->show();
 
-		m_engine.SetMainWindow(m_mainWindow,
+		m_engine.setMainWindow(m_mainWindow,
 			Graphics::SwapChainCreationSettings(Graphics::PixelFormat::UnormBGRA8, 144, false, 4));
 
-		InitScene();
+		initScene();
 
 		std::chrono::high_resolution_clock clock;
 
 		auto start = clock.now();
 
-		while(m_mainWindow->IsShown())
+		while(m_mainWindow->isShown())
 		{
-			m_mainWindow->Redraw();
+			m_mainWindow->redraw();
 
-			m_mainWindow->HandleEvents();
+			m_mainWindow->handleEvents();
 
-			UpdateScene(clock.now() - start);
+			updateScene(clock.now() - start);
 
 			Sleep(25);
 		}
 
-		m_engine.GetScene().Clear();
+		m_engine.getScene().clear();
 
-		m_engine.SetMainWindow(nullptr, std::nullopt);
+		m_engine.setMainWindow(nullptr, std::nullopt);
 
-		m_engine.Exit();
+		m_engine.exit();
 
 		m_mainWindow = nullptr;
 	}
 
-	void InitScene()
+	void initScene()
 	{
-		auto& scene = m_engine.GetScene();
-		auto& cameraManager = m_engine.GetCameraManager();
-		auto& modelManager = m_engine.GetModelManager();
-		auto& renderer = m_engine.GetRenderer();
+		auto& scene = m_engine.getScene();
+		auto& cameraManager = m_engine.getCameraManager();
+		auto& modelManager = m_engine.getModelManager();
+		auto& renderer = m_engine.getRenderer();
 
-		m_camera = scene.Create("Main camera");
+		m_camera = scene.create("Main camera");
 
-		scene.GetTransform(m_camera).SetPosition(float3(0, 0, 10));
+		scene.getTransform(m_camera).setPosition(float3(0, 0, 10));
 		// m_camera.AddComponent<Graphics::Camera>(Graphics::Camera(90, 1, 100));
 
 		// just use clip space
-		cameraManager.AddCamera(m_camera);
-		cameraManager.SetOrthographicProjection(m_camera, float2(-1, -1), float2(1, 1), 0, 1);
+		cameraManager.addCamera(m_camera);
+		cameraManager.setOrthographicProjection(m_camera, float2(-1, -1), float2(1, 1), 0, 1);
 
 		Graphics::VertexDataCreationInfo vertexData;
 
@@ -80,40 +80,40 @@ public:
 
 		Graphics::Factory factory{ renderer };
 
-		auto material = modelManager.CreateMaterial(renderer,
-			Graphics::ShaderManager::GetVertexShader("VertexShader"),
-			Graphics::ShaderManager::GetPixelShader("PixelShader"));
+		auto material = modelManager.createMaterial(renderer,
+			Graphics::ShaderManager::getVertexShader("VertexShader"),
+			Graphics::ShaderManager::getPixelShader("PixelShader"));
 
-		auto model = modelManager.CreateModel(renderer, vertexData);
+		auto model = modelManager.createModel(renderer, vertexData);
 
-		model.second->AddSubMesh(0, 3, material.first);
+		model.second->addSubMesh(0, 3, material.first);
 
-		m_simpleTriangle = scene.Create("Simple triangle");
-		modelManager.AddEntity(model.first, scene, m_simpleTriangle);
+		m_simpleTriangle = scene.create("Simple triangle");
+		modelManager.addEntity(model.first, scene, m_simpleTriangle);
 		// m_simpleTriangle.AddComponent<shared_ptr<Graphics::Model>>(move(model));
 	}
 
-	void UpdateScene(std::chrono::nanoseconds ns)
+	void updateScene(std::chrono::nanoseconds ns)
 	{
 		/*float dt = float(ns.count() / (long double)1000000);
 
 		auto& transform = m_scene.GetTransform(m_simpleTriangle);
 
 		transform.SetEulerAngles(transform.EulerX() + degrees(5) * dt, 0, 0);*/
-		Graphics::ShaderManager::GetPixelShader("PixelShader");
+		Graphics::ShaderManager::getPixelShader("PixelShader");
 	}
 
 private:
 	// IWindowEventListener overrides
 
-	void OnRedraw(Platform::IWindow* window) override
+	void onRedraw(Platform::IWindow* window) override
 	{
-		m_engine.RenderFrame(std::nullopt);
+		m_engine.renderFrame(std::nullopt);
 	}
 
-	void OnResize(Platform::IWindow* window, const uint2& newSize) override
+	void onResize(Platform::IWindow* window, const uint2& newSize) override
 	{
-		m_engine.HandleResize();
+		m_engine.handleResize();
 	}
 
 	void OnKeyDown(Platform::IWindow* window, Platform::KeyCodes keyCode,
@@ -122,26 +122,26 @@ private:
 		switch(keyCode)
 		{
 		case CainEngine::Platform::KeyCodes::A: {
-			auto fs = m_engine.GetRenderer().DisplaySettings().FullScreen();
+			auto fs = m_engine.getRenderer().displaySettings().fullScreen();
 			if(fs.isFullScreen)
 			{
-				m_engine.GetRenderer().DisplaySettings().SetFullScreen(false, fs.outputIndex);
+				m_engine.getRenderer().displaySettings().setFullScreen(false, fs.outputIndex);
 			}
 			else
 			{
-				m_engine.GetRenderer().DisplaySettings().SetFullScreen(true, fs.outputIndex);
+				m_engine.getRenderer().displaySettings().setFullScreen(true, fs.outputIndex);
 			}
 			return;
 		}
 		case CainEngine::Platform::KeyCodes::S: {
-			auto ms = m_engine.GetRenderer().DisplaySettings().MultiSamplingCount();
+			auto ms = m_engine.getRenderer().displaySettings().multiSamplingCount();
 			if(ms == 1)
 			{
-				m_engine.GetRenderer().DisplaySettings().SetMultiSamplingCount(4);
+				m_engine.getRenderer().displaySettings().setMultiSamplingCount(4);
 			}
 			else
 			{
-				m_engine.GetRenderer().DisplaySettings().SetMultiSamplingCount(1);
+				m_engine.getRenderer().displaySettings().setMultiSamplingCount(1);
 			}
 			return;
 		}
@@ -162,29 +162,29 @@ private:
 	EntitySystem::EntityID m_simpleTriangle;
 };
 
-void RunEngine(Engine& engine, const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
+void runEngine(Engine& engine, const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
 {
 	auto application = std::make_shared<Application>(engine, platform);
 
-	application->Run();
+	application->run();
 }
 
-void InitEngine(const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
+void initEngine(const Common::RefPtr<CainEngine::Platform::ICoreFactory>& platform)
 {
 	Engine engine(
-		std::make_unique<Graphics::Renderer>(Graphics::DX11::CreateInstance()), CONTENT_DIRECTORY);
+		std::make_unique<Graphics::Renderer>(Graphics::DX11::createInstance()), CONTENT_DIRECTORY);
 
-	RunEngine(engine, platform);
+	runEngine(engine, platform);
 }
 
-extern void RunBenchmark();
+extern void runBenchmark();
 
 int main()
 {
 	// RunBenchmark();
 	// return 0;
 
-	auto platform = Platform::Win32::CreateInstance();
+	auto platform = Platform::Win32::createInstance();
 
-	InitEngine(platform);
+	initEngine(platform);
 }

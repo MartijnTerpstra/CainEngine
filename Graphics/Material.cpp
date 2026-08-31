@@ -13,12 +13,12 @@ Material::~Material()
 {
 }
 
-API::VertexShader* Material::VertexShader() const
+API::VertexShader* Material::vertexShader() const
 {
 	return m_vertexShader;
 }
 
-API::PixelShader* Material::PixelShader() const
+API::PixelShader* Material::pixelShader() const
 {
 	return m_pixelShader;
 }

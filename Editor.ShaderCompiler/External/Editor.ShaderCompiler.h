@@ -21,7 +21,7 @@ struct ShaderCompilation
 	std::vector<ShaderDefine> defines;
 };
 
-bool CompileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory,
+bool compileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory,
 	const char* targetDirectory, bool optization);
 
 } // namespace CainEngine::Editor::ShaderCompiler

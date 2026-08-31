@@ -22,29 +22,29 @@ EntityID::EntityID(int32_t index, uint16_t version) noexcept
 	COMMON_ASSERT(version < 0xFFFU);
 }
 
-int32_t EntityID::Index() const noexcept
+int32_t EntityID::index() const noexcept
 {
 	return m_value & 0xFFFFFU;
 }
 
-uint16_t EntityID::Version() const noexcept
+uint16_t EntityID::version() const noexcept
 {
 	return uint16_t((m_value >> 20) & 0xFFFU);
 }
 
-uint32_t EntityID::Value() const noexcept
+uint32_t EntityID::value() const noexcept
 {
 	return m_value;
 }
 
-bool EntityID::IsNull() const noexcept
+bool EntityID::isNull() const noexcept
 {
 	return m_value == UINT32_MAX;
 }
 
 EntityID::operator bool() noexcept
 {
-	return !IsNull();
+	return !isNull();
 }
 
 bool CainEngine::EntitySystem::operator == (EntityID left, EntityID right) noexcept

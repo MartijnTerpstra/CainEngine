@@ -2,7 +2,7 @@
 
 namespace CainEngine::Graphics::API {
 
-constexpr uint32_t SHADER_MAGIC_NUMBER = Common::PackChars('c', 'e', 'c', 's');
+constexpr uint32_t SHADER_MAGIC_NUMBER = Common::packChars('c', 'e', 'c', 's');
 
 /**
 	Summary:

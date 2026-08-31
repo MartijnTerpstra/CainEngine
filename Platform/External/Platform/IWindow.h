@@ -18,31 +18,31 @@ public:
 		Summary:
 			Shows the window
 	*/
-	virtual void Show() = 0;
+	virtual void show() = 0;
 
 	/**
 		Summary:
 			Redraws the window
 	*/
-	virtual void Redraw() = 0;
+	virtual void redraw() = 0;
 
 	/**
 		Summary:
 			Maximizes the window
 	*/
-	virtual void Maximize() = 0;
+	virtual void maximize() = 0;
 
 	/**
 		Summary:
 			Minimizes the window
 	*/
-	virtual void Minimize() = 0;
+	virtual void minimize() = 0;
 
 	/**
 		Summary:
 			Closes the window
 	*/
-	virtual void Close() = 0;
+	virtual void close() = 0;
 
 
 
@@ -53,49 +53,49 @@ public:
 		Details:
 			Events are sent to the window event listener attached at creation
 	*/
-	virtual void HandleEvents() = 0;
+	virtual void handleEvents() = 0;
 
 	/**
 		Summary:
 			Returns whether the window is shown
 	*/
-	virtual bool IsShown() const = 0;
+	virtual bool isShown() const = 0;
 
 	/**
 		Summary:
 			Returns the window's name
 	*/
-	virtual std::string GetName() const = 0;
+	virtual std::string getName() const = 0;
 
 	/**
 		Summary:
 			Returns the window's width
 	*/
-	virtual int GetWidth() const = 0;
+	virtual int getWidth() const = 0;
 
 	/**
 		Summary:
 			Returns the window's height
 	*/
-	virtual int GetHeight() const = 0;
+	virtual int getHeight() const = 0;
 
 	/**
 		Summary:
 			Returns the window's rectangle on the monitor
 	*/
-	virtual Rect GetRect() const = 0;
+	virtual Rect getRect() const = 0;
 
 	/**
 		Summary:
 			Returns the window's inside rectangle
 	*/
-	virtual Rect GetClientRect() const = 0;
+	virtual Rect getClientRect() const = 0;
 
 	/**
 		Summary:
 			Places the window on  the foreground of the monitor
 	*/
-	virtual void ToForeground() = 0;
+	virtual void toForeground() = 0;
 
 }; // class IWindow
 

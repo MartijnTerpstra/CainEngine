@@ -14,6 +14,6 @@ inline void CheckVkResult(VkResult res, const char* errorMessage)
 	if (res != VK_SUCCESS)
 	{
 		int resultCode = (long)res;
-		Common::FatalError("%s VkResult: %d", errorMessage, resultCode);
+		Common::fatalError("%s VkResult: %d", errorMessage, resultCode);
 	}
 }

@@ -10,11 +10,11 @@ using namespace CainEngine::Editor::ShaderCompiler;
 template<typename T>
 static const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::string& key, const char* variableName);
 
-bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization)
+bool CainEngine::Editor::ShaderCompiler::compileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization)
 {
 	std::map<std::string, std::unique_ptr<ICompiler>> rendererTypeMap;
-	rendererTypeMap["DX11"] = CreateDX11Compiler();
-	rendererTypeMap["DX12"] = CreateDX12Compiler();
+	rendererTypeMap["DX11"] = createDX11Compiler();
+	rendererTypeMap["DX12"] = createDX12Compiler();
 
 	std::map<ICompiler*, std::vector<std::tuple<std::string, ShaderType, API::CompiledShaderData>>> compiledShaders;
 
@@ -24,14 +24,14 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<Shader
 	{
 		if (shader.name.empty())
 		{
-			Common::Error("name: required");
+			Common::error("name: required");
 			failure = true;
 			continue;
 		}
 
 		if (shader.name.length() > 63)
 		{
-			Common::Error("name: must be max. 63 characters long, name will be truncated");
+			Common::error("name: must be max. 63 characters long, name will be truncated");
 			failure = true;
 		}
 
@@ -45,7 +45,7 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<Shader
 
 		if (shader.renderers.empty())
 		{
-			Common::Error("renderers: required");
+			Common::error("renderers: required");
 			failure = true;
 			continue;
 		}
@@ -56,7 +56,7 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<Shader
 			if (!compiler)
 				continue;
 
-			compiledShaders[compiler->get()].emplace_back(shader.name.substr(0, 63), shader.shaderType, (*compiler)->Compile(sourceDirectory, shader.source.c_str(), shader.shaderType, entryPoint.c_str(), shader.defines, optization));
+			compiledShaders[compiler->get()].emplace_back(shader.name.substr(0, 63), shader.shaderType, (*compiler)->compile(sourceDirectory, shader.source.c_str(), shader.shaderType, entryPoint.c_str(), shader.defines, optization));
 		}
 	}
 
@@ -64,10 +64,10 @@ bool CainEngine::Editor::ShaderCompiler::CompileShaders(const std::vector<Shader
 	{
 		std::vector<API::CompiledShaderMetaData> metadata(byRenderer.second.size());
 
-		std::ofstream outfile(std::string(targetDirectory) + "/" + byRenderer.first->RendererType() + ".shaders", std::ios::binary);
+		std::ofstream outfile(std::string(targetDirectory) + "/" + byRenderer.first->rendererType() + ".shaders", std::ios::binary);
 
 		auto m = API::SHADER_MAGIC_NUMBER;
-		auto id = byRenderer.first->RendererID(); 
+		auto id = byRenderer.first->rendererId(); 
 
 		outfile.write(reinterpret_cast<const char*>(&m), sizeof(m));
 		outfile.write(reinterpret_cast<const char*>(&id), sizeof(id));
@@ -127,7 +127,7 @@ const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::
 	{
 		std::string supportedValues;
 
-		Common::Error("%s: '%s' in not a valid value, supported values: ", variableName, key, supportedValues);
+		Common::error("%s: '%s' in not a valid value, supported values: ", variableName, key, supportedValues);
 		return nullptr;
 	}
 

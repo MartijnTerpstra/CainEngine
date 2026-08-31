@@ -12,14 +12,14 @@ using namespace ::CainEngine::Common;
 namespace {
 
 template<typename T>
-std::vector<uint8_t> ToBytes(const T& value)
+std::vector<uint8_t> toBytes(const T& value)
 {
 	std::vector<uint8_t> bytes(sizeof(T));
 	std::memcpy(bytes.data(), &value, sizeof(T));
 	return bytes;
 }
 
-std::vector<uint8_t> Concat(std::initializer_list<std::vector<uint8_t>> chunks)
+std::vector<uint8_t> concat(std::initializer_list<std::vector<uint8_t>> chunks)
 {
 	std::vector<uint8_t> result;
 	for(auto& chunk : chunks)
@@ -37,7 +37,7 @@ public:
 	{ }
 
 private:
-	bool Read(void* data, size_t dataSize) override
+	bool read(void* data, size_t dataSize) override
 	{
 		if(m_offset + dataSize > m_bytes.size())
 			return false;
@@ -69,40 +69,40 @@ struct PodStruct
 
 TEST(Source, ReadUintReturnsWrittenValue)
 {
-	MemorySource source(ToBytes(uint32_t(0xDEADBEEFu)));
+	MemorySource source(toBytes(uint32_t(0xDEADBEEFu)));
 
-	EXPECT_EQ(0xDEADBEEFu, source.ReadUint());
+	EXPECT_EQ(0xDEADBEEFu, source.readUint());
 }
 
 TEST(Source, ReadIntReturnsWrittenNegativeValue)
 {
-	MemorySource source(ToBytes(int32_t(-12345)));
+	MemorySource source(toBytes(int32_t(-12345)));
 
-	EXPECT_EQ(-12345, source.ReadInt());
+	EXPECT_EQ(-12345, source.readInt());
 }
 
 TEST(Source, ReadFloatReturnsWrittenValue)
 {
-	MemorySource source(ToBytes(3.5f));
+	MemorySource source(toBytes(3.5f));
 
-	EXPECT_FLOAT_EQ(3.5f, source.ReadFloat());
+	EXPECT_FLOAT_EQ(3.5f, source.readFloat());
 }
 
 TEST(Source, ReadUintOnEmptySourceReturnsZeroWithoutCrashing)
 {
 	MemorySource source({});
 
-	EXPECT_EQ(0u, source.ReadUint());
+	EXPECT_EQ(0u, source.readUint());
 }
 
 TEST(Source, SuccessiveReadsAdvanceThroughTheBuffer)
 {
 	MemorySource source(
-		Concat({ ToBytes(uint32_t(1)), ToBytes(uint32_t(2)), ToBytes(uint32_t(3)) }));
+		concat({ toBytes(uint32_t(1)), toBytes(uint32_t(2)), toBytes(uint32_t(3)) }));
 
-	EXPECT_EQ(1u, source.ReadUint());
-	EXPECT_EQ(2u, source.ReadUint());
-	EXPECT_EQ(3u, source.ReadUint());
+	EXPECT_EQ(1u, source.readUint());
+	EXPECT_EQ(2u, source.readUint());
+	EXPECT_EQ(3u, source.readUint());
 }
 
 // -- ReadStruct -----------------------------------------------------------------
@@ -110,43 +110,43 @@ TEST(Source, SuccessiveReadsAdvanceThroughTheBuffer)
 TEST(Source, ReadStructReturnsWrittenFields)
 {
 	PodStruct value{ 42, 1.25f };
-	MemorySource source(ToBytes(value));
+	MemorySource source(toBytes(value));
 
-	EXPECT_EQ(value, source.ReadStruct<PodStruct>());
+	EXPECT_EQ(value, source.readStruct<PodStruct>());
 }
 
 TEST(Source, ReadStructOnTruncatedSourceReturnsZeroedStruct)
 {
-	MemorySource source(ToBytes(int32_t(1))); // too short for PodStruct
+	MemorySource source(toBytes(int32_t(1))); // too short for PodStruct
 
-	EXPECT_EQ((PodStruct{ 0, 0.0f }), source.ReadStruct<PodStruct>());
+	EXPECT_EQ((PodStruct{ 0, 0.0f }), source.readStruct<PodStruct>());
 }
 
 // -- ReadVector -------------------------------------------------------------------
 
 TEST(Source, ReadVectorRoundTripsElements)
 {
-	auto bytes = Concat(
-		{ ToBytes(uint32_t(3)), ToBytes(int32_t(10)), ToBytes(int32_t(20)), ToBytes(int32_t(30)) });
+	auto bytes = concat(
+		{ toBytes(uint32_t(3)), toBytes(int32_t(10)), toBytes(int32_t(20)), toBytes(int32_t(30)) });
 	MemorySource source(std::move(bytes));
 
-	EXPECT_EQ((std::vector<int32_t>{ 10, 20, 30 }), source.ReadVector<int32_t>());
+	EXPECT_EQ((std::vector<int32_t>{ 10, 20, 30 }), source.readVector<int32_t>());
 }
 
 TEST(Source, ReadVectorWithZeroSizeReturnsEmptyVector)
 {
-	MemorySource source(ToBytes(uint32_t(0)));
+	MemorySource source(toBytes(uint32_t(0)));
 
-	EXPECT_TRUE(source.ReadVector<int32_t>().empty());
+	EXPECT_TRUE(source.readVector<int32_t>().empty());
 }
 
 TEST(Source, ReadVectorFailsGracefullyWhenTruncated)
 {
 	// Header claims 5 elements, but only one is actually present.
-	auto bytes = Concat({ ToBytes(uint32_t(5)), ToBytes(int32_t(1)) });
+	auto bytes = concat({ toBytes(uint32_t(5)), toBytes(int32_t(1)) });
 	MemorySource source(std::move(bytes));
 
-	EXPECT_TRUE(source.ReadVector<int32_t>().empty());
+	EXPECT_TRUE(source.readVector<int32_t>().empty());
 }
 
 // -- FileSource -------------------------------------------------------------------
@@ -156,7 +156,7 @@ namespace {
 class FileSourceTest : public ::testing::Test
 {
 protected:
-	std::filesystem::path WriteTempFile(const std::vector<uint8_t>& bytes)
+	std::filesystem::path writeTempFile(const std::vector<uint8_t>& bytes)
 	{
 		auto path = std::filesystem::temp_directory_path() /
 					("CainEngine_CommonTests_Source_" + std::to_string(m_fileCounter++) + ".bin");
@@ -184,12 +184,12 @@ private:
 
 TEST_F(FileSourceTest, ReadsBackValuesWrittenToDisk)
 {
-	auto path = WriteTempFile(Concat({ ToBytes(uint32_t(7)), ToBytes(int32_t(-3)) }));
+	auto path = writeTempFile(concat({ toBytes(uint32_t(7)), toBytes(int32_t(-3)) }));
 
 	FileSource source(path.string());
 
-	EXPECT_EQ(7u, source.ReadUint());
-	EXPECT_EQ(-3, source.ReadInt());
+	EXPECT_EQ(7u, source.readUint());
+	EXPECT_EQ(-3, source.readInt());
 }
 
 TEST_F(FileSourceTest, MissingFileFailsGracefullyOnRead)
@@ -201,5 +201,5 @@ TEST_F(FileSourceTest, MissingFileFailsGracefullyOnRead)
 	// Construction logs an error (file failed to open) but doesn't throw or
 	// abort; reads from it should degrade gracefully to the same "failed
 	// read" behavior as a truncated in-memory source.
-	EXPECT_EQ(0u, source.ReadUint());
+	EXPECT_EQ(0u, source.readUint());
 }

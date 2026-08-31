@@ -18,25 +18,25 @@ public:
 		Summary:
 			Returns the process's name
 	*/
-	virtual std::string GetName() const = 0;
+	virtual std::string getName() const = 0;
 
 	/**
 		Summary:
 			Returns the process's unique ID number
 	*/
-	virtual uint32_t GetID() const = 0;
+	virtual uint32_t getId() const = 0;
 
 	/**
 		Summary:
 			Returns the ID of the session where this process is running
 	*/
-	virtual uint32_t GetSessionID() const = 0;
+	virtual uint32_t getSessionId() const = 0;
 
 	/**
 		Summary:
 			returns the point at which the process was started
 	*/
-	virtual std::chrono::time_point<std::chrono::system_clock> GetCreationTime() const = 0;
+	virtual std::chrono::time_point<std::chrono::system_clock> getCreationTime() const = 0;
 
 }; // class IProcess
 

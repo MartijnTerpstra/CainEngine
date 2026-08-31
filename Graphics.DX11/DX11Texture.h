@@ -13,12 +13,12 @@ public:
 public:
 	// ITexture overrides
 
-	ResourceType Type() const override;
-	API::Usage Usage() const override;
-	uint3 Size() const override;
-	PixelFormat Format() const override;
-	uint32_t ArraySize() const override;
-	flag<API::BindFlags> BindFlags() const override;
+	ResourceType type() const override;
+	API::Usage usage() const override;
+	uint3 size() const override;
+	PixelFormat format() const override;
+	uint32_t arraySize() const override;
+	flag<API::BindFlags> bindFlags() const override;
 
 private:
 	// Member variables

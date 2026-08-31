@@ -12,7 +12,7 @@ public:
 public:
 	// Main functionality
 
-	bool CompileShaders();
+	bool compileShaders();
 
 private:
 	// Member variables

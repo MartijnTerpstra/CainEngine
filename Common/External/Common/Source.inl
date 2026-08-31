@@ -3,28 +3,28 @@
 namespace CainEngine::Common {
 
 template<typename StructType>
-inline StructType Source::ReadStruct()
+inline StructType Source::readStruct()
 {
 	StructType retval;
-	if(!Read(&retval, sizeof(StructType)))
+	if(!read(&retval, sizeof(StructType)))
 	{
-		Common::Error("Unable to read struct");
+		Common::error("Unable to read struct");
 		return StructType{};
 	}
 	return retval;
 }
 
 template<typename T>
-inline std::vector<T> Source::ReadVector()
+inline std::vector<T> Source::readVector()
 {
-	uint32_t size = ReadUint();
+	uint32_t size = readUint();
 
 	std::vector<T> retval(size);
 	if(size != 0)
 	{
-		if(!Read(retval.data(), sizeof(T) * size))
+		if(!read(retval.data(), sizeof(T) * size))
 		{
-			Common::Error("Unable to read vector<T>");
+			Common::error("Unable to read vector<T>");
 			return {};
 		}
 	}

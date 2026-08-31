@@ -8,7 +8,7 @@ static thread_local unsigned long g_StackIdx = 0;
 
 typedef ::std::tuple<const char*, const char*, int>(&StackType)[STACK_SIZE];
 
-static StackType& GetCallstack()
+static StackType& getCallstack()
 {
 	static thread_local ::std::tuple<const char*, const char*, int> stack[STACK_SIZE];
 
@@ -20,7 +20,7 @@ CallstackScope::CallstackScope(const char * function, const char * file, int lin
 	auto index = g_StackIdx++;
 	if(index < STACK_SIZE)
 	{
-		GetCallstack()[index] = { function, file, line };
+		getCallstack()[index] = { function, file, line };
 	}
 }
 
@@ -29,7 +29,7 @@ CallstackScope::~CallstackScope()
 	--g_StackIdx;
 }
 
-std::vector<std::string> Callstack::Get()
+std::vector<std::string> Callstack::get()
 {
 	std::vector<std::string> retval;
 
@@ -37,7 +37,7 @@ std::vector<std::string> Callstack::Get()
 
 	while(--index < STACK_SIZE)
 	{
-		auto& line = GetCallstack()[index];
+		auto& line = getCallstack()[index];
 
 		std::string func = std::get<0>(line);
 		/*

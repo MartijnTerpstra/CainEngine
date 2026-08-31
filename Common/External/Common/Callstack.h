@@ -35,7 +35,7 @@ public:
 class Callstack
 {
 public:
-	static std::vector<std::string> Get();
+	static std::vector<std::string> get();
 };
 
 }; // namespace CainEngine::Common

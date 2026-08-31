@@ -18,33 +18,33 @@ public:
 public:
 	// Main functionality
 
-	[[nodiscard]] std::pair<int32_t, Material*> CreateMaterial(
+	[[nodiscard]] std::pair<int32_t, Material*> createMaterial(
 		Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps);
 
-	[[nodiscard]] Material* GetMaterial(int32_t materialID) noexcept;
+	[[nodiscard]] Material* getMaterial(int32_t materialID) noexcept;
 
-	void RemoveMaterial(int32_t materialID) noexcept;
+	void removeMaterial(int32_t materialID) noexcept;
 
-	[[nodiscard]] std::pair<int32_t, Model*> CreateModel(
+	[[nodiscard]] std::pair<int32_t, Model*> createModel(
 		Renderer& renderer, const VertexDataCreationInfo& vertexData);
 
-	[[nodiscard]] Model* GetModel(int32_t modelID) noexcept;
+	[[nodiscard]] Model* getModel(int32_t modelID) noexcept;
 
-	void RemoveModel(int32_t modelID) noexcept;
+	void removeModel(int32_t modelID) noexcept;
 
-	void AddEntity(int32_t modelID, Scene& scene, EntityID entity);
+	void addEntity(int32_t modelID, Scene& scene, EntityID entity);
 
-	void RemoveEntity(EntityID entity) noexcept;
+	void removeEntity(EntityID entity) noexcept;
 
-	[[nodiscard]] Model* GetModel(EntityID entity) noexcept;
+	[[nodiscard]] Model* getModel(EntityID entity) noexcept;
 
-	[[nodiscard]] bool HasModel(EntityID entity) const noexcept;
+	[[nodiscard]] bool hasModel(EntityID entity) const noexcept;
 
-	[[nodiscard]] bool HasModel(int32_t modelID, EntityID entity) const noexcept;
+	[[nodiscard]] bool hasModel(int32_t modelID, EntityID entity) const noexcept;
 
-	void AttachCallbacks(Scene& scene);
+	void attachCallbacks(Scene& scene);
 
-	[[nodiscard]] const colony<ModelData>& GetModels() const noexcept;
+	[[nodiscard]] const colony<ModelData>& getModels() const noexcept;
 
 private:
 	struct ModelData
