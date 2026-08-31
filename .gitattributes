@@ -1,0 +1,4 @@
+# Shell scripts must keep LF line endings everywhere, including on Windows
+# checkouts - a CRLF shebang line breaks the interpreter lookup.
+.githooks/* text eol=lf
+*.sh text eol=lf

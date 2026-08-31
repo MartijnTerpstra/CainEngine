@@ -2,6 +2,24 @@ cmake_minimum_required (VERSION 3.25)
 
 project (CainEngine CXX)
 
+# Point git at .githooks/ (tracked in the repo) so the clang-format
+# pre-commit hook is on for everyone without a manual setup step. Only
+# touches this repo's own .git/config, and only if this is actually a git
+# checkout (a source tarball, or building from inside another repo's
+# worktree, won't have .git here).
+find_package(Git QUIET)
+if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+	execute_process(
+		COMMAND ${GIT_EXECUTABLE} config core.hooksPath .githooks
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+		RESULT_VARIABLE _cainengine_githooks_result
+		OUTPUT_QUIET ERROR_QUIET)
+	if (NOT _cainengine_githooks_result EQUAL 0)
+		message(STATUS "Could not set core.hooksPath (not fatal - clang-format pre-commit hook stays off)")
+	endif()
+	unset(_cainengine_githooks_result)
+endif()
+
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
 add_compile_definitions(_DEBUG=1)
 else()

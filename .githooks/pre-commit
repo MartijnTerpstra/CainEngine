@@ -1,0 +1,34 @@
+#!/bin/sh
+# Formats staged C++ files with clang-format before they're committed.
+#
+# Enabled automatically the first time you configure with CMake (it sets
+# `git config core.hooksPath .githooks` - see the top-level CMakeLists.txt).
+# To enable it by hand instead: git config core.hooksPath .githooks
+#
+# Runs anywhere git itself does (Windows via Git Bash's sh, Linux, macOS) -
+# no Python or other tooling beyond clang-format on PATH.
+
+set -e
+
+CLANG_FORMAT="${CLANG_FORMAT:-clang-format}"
+
+if ! command -v "$CLANG_FORMAT" >/dev/null 2>&1; then
+	echo "pre-commit: '$CLANG_FORMAT' not found on PATH - skipping format check." >&2
+	echo "pre-commit: set \$CLANG_FORMAT to its full path if it's installed elsewhere." >&2
+	exit 0
+fi
+
+# Staged, added/copied/modified C++ files - excluding vendored/third-party
+# code, which keeps its own upstream formatting.
+files=$(git diff --cached --name-only --diff-filter=ACM -- \
+	'*.c' '*.cc' '*.cpp' '*.h' '*.hpp' '*.inl' |
+	grep -v '^Dependencies/' |
+	grep -v '^Graphics\.DX12/D3DX12\.h$' || true)
+
+[ -z "$files" ] && exit 0
+
+echo "$files" | while IFS= read -r f; do
+	[ -f "$f" ] || continue
+	"$CLANG_FORMAT" -style=file -i -- "$f"
+	git add -- "$f"
+done
