@@ -7,6 +7,7 @@
 #include <X11/XKBlib.h>
 #include <X11/Xutil.h>
 
+
 using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
@@ -19,14 +20,10 @@ XorgWindow::XorgWindow(Display* display, ::Window window, std::string name,
 	, m_name(std::move(name))
 	, m_listener(listener)
 	, m_listenerPointer(listenerPointer)
-{
-	COMMON_CALLSTACK_CALL;
-}
+{ }
 
 XorgWindow::~XorgWindow()
 {
-	COMMON_CALLSTACK_CALL;
-
 	XDestroyWindow(m_display, m_window);
 
 	XCloseDisplay(m_display);
@@ -37,8 +34,6 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const std::string& name, const uint2
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
 {
-	COMMON_CALLSTACK_CALL;
-
 	Display* display = XOpenDisplay(":0.0");
 	if(display == nullptr)
 	{
@@ -76,8 +71,6 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const std::string& name, const uint2
 
 void XorgWindow::show()
 {
-	COMMON_CALLSTACK_CALL;
-
 	m_shown = true;
 
 	XMapWindow(m_display, m_window);
@@ -88,8 +81,6 @@ void XorgWindow::show()
 
 void XorgWindow::redraw()
 {
-	COMMON_CALLSTACK_CALL;
-
 	XEvent evt = {};
 
 	evt.type = Expose;
@@ -99,30 +90,22 @@ void XorgWindow::redraw()
 
 void XorgWindow::maximize()
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 }
 
 void XorgWindow::minimize()
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 }
 
 void XorgWindow::close()
 {
-	COMMON_CALLSTACK_CALL;
-
 	m_shown = false;
 	XDestroyWindow(m_display, m_window);
 }
 
 void XorgWindow::handleEvents()
 {
-	COMMON_CALLSTACK_CALL;
-
 	XEvent evt;
 
 	while(XPending(m_display) > 0)
@@ -186,54 +169,40 @@ void XorgWindow::handleEvents()
 
 bool XorgWindow::isShown() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return m_shown;
 }
 
 std::string XorgWindow::getName() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return m_name;
 }
 
 int XorgWindow::getWidth() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 	return 0;
 }
 
 int XorgWindow::getHeight() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 	return 0;
 }
 
 Rect XorgWindow::getRect() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 	return Rect();
 }
 
 Rect XorgWindow::getClientRect() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 	return Rect();
 }
 
 void XorgWindow::toForeground()
 {
-	COMMON_CALLSTACK_CALL;
-
 	Common::fatalError("Not implemented");
 }
 
@@ -249,8 +218,6 @@ void XorgWindow::toForeground()
 
 void* XorgWindow::asImpl(uint64_t typeHash) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);

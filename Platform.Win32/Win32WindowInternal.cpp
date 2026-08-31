@@ -9,8 +9,6 @@ using namespace ::CainEngine::Platform::Internal;
 
 LRESULT Win32Window::wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto backPtr = reinterpret_cast<Win32Window*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
 
 	if(backPtr != nullptr)
@@ -23,8 +21,6 @@ LRESULT Win32Window::wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
 LRESULT Win32Window::onWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(message)
 	{
 	case WM_SIZE: {

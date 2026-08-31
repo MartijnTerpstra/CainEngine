@@ -8,19 +8,12 @@ using namespace ::CainEngine::Platform::Internal;
 
 Win32Monitor::Win32Monitor(HMONITOR monitor)
 	: m_monitor(monitor)
-{
-	COMMON_CALLSTACK_CALL;
-}
+{ }
 
-Win32Monitor::~Win32Monitor()
-{
-	COMMON_CALLSTACK_CALL;
-}
+Win32Monitor::~Win32Monitor() = default;
 
 static BOOL __stdcall getMainMonitorProc(HMONITOR monitor, HDC, LPRECT, LPARAM param)
 {
-	COMMON_CALLSTACK_CALL;
-
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
 	if(!GetMonitorInfoA(monitor, &info))
@@ -39,8 +32,6 @@ static BOOL __stdcall getMainMonitorProc(HMONITOR monitor, HDC, LPRECT, LPARAM p
 
 RefPtr<IMonitor> Win32Monitor::getMainMonitor()
 {
-	COMMON_CALLSTACK_CALL;
-
 	HMONITOR monitor = 0;
 	if(!EnumDisplayMonitors(
 		   nullptr, nullptr, getMainMonitorProc, reinterpret_cast<LPARAM>(&monitor)))
@@ -58,8 +49,6 @@ RefPtr<IMonitor> Win32Monitor::getMainMonitor()
 
 static BOOL __stdcall getMonitorsProc(HMONITOR monitor, HDC, LPRECT, LPARAM param)
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto monitors = reinterpret_cast<std::vector<HMONITOR>*>(param);
 
 	MONITORINFOEXA info;
@@ -83,8 +72,6 @@ static BOOL __stdcall getMonitorsProc(HMONITOR monitor, HDC, LPRECT, LPARAM para
 
 std::vector<RefPtr<IMonitor>> Win32Monitor::getMonitors()
 {
-	COMMON_CALLSTACK_CALL;
-
 	std::vector<HMONITOR> monitors;
 
 	if(!EnumDisplayMonitors(nullptr, nullptr, getMonitorsProc, reinterpret_cast<LPARAM>(&monitors)))
@@ -108,8 +95,6 @@ std::vector<RefPtr<IMonitor>> Win32Monitor::getMonitors()
 
 std::string Win32Monitor::getName() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
 	if(!GetMonitorInfoA(m_monitor, &info))
@@ -130,8 +115,6 @@ std::string Win32Monitor::getName() const
 
 Rect Win32Monitor::getResolution() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
 	if(!GetMonitorInfoA(m_monitor, &info))
@@ -145,8 +128,6 @@ Rect Win32Monitor::getResolution() const
 
 Rect Win32Monitor::getWorkSpace() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
 	if(!GetMonitorInfoA(m_monitor, &info))
@@ -159,8 +140,6 @@ Rect Win32Monitor::getWorkSpace() const
 
 uint32_t Win32Monitor::getRefreshFrequency() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	MONITORINFOEXA info;
 	info.cbSize = sizeof(info);
 	if(!GetMonitorInfoA(m_monitor, &info))
@@ -181,8 +160,6 @@ uint32_t Win32Monitor::getRefreshFrequency() const
 
 void* Win32Monitor::asImpl(uint64_t typeHash) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);

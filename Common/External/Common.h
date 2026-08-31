@@ -168,7 +168,6 @@ constexpr uint32_t packChars(char a, char b, char c, char d)
 
 #include "Common/Enums.h"
 #include "Common/Logging.h"
-#include "Common/Callstack.h"
 #include "Common/BaseObject.h"
 #include "Common/RefPtr.h"
 #include "Common/JsonParser.h"

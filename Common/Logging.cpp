@@ -17,7 +17,7 @@ void Details::log(LogSeverity severity, std::string_view str)
 	{
 	case Common::LogSeverity::FatalError:
 		severityStr = "[FATAL]: ";
-		return;
+		break;
 	case Common::LogSeverity::Error:
 		severityStr = "[ERROR]: ";
 		break;
@@ -31,7 +31,7 @@ void Details::log(LogSeverity severity, std::string_view str)
 		unreachable();
 	}
 
-	std::cout << str << std::endl;
+	std::cout << severityStr << str << std::endl;
 }
 
 void SetConsole(IConsole* console)

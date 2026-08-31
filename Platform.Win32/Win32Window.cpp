@@ -14,14 +14,10 @@ Win32Window::Win32Window(HWND hwnd, std::string name,
 	, m_minimized(false)
 	, m_eventListener(listener)
 	, m_eventListenerPointer(listenerPointer)
-{
-	COMMON_CALLSTACK_CALL;
-}
+{ }
 
 Win32Window::~Win32Window()
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto thisPtr = (std::weak_ptr<Win32Window>*)GetWindowLongPtrA(m_hwnd, GWLP_USERDATA);
 
 	SetWindowLongPtrA(m_hwnd, GWLP_USERDATA, 0);
@@ -35,8 +31,6 @@ RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
 {
-	COMMON_CALLSTACK_CALL;
-
 	HINSTANCE instance = GetModuleHandleA(nullptr);
 
 	WNDCLASSA wc;
@@ -107,8 +101,6 @@ RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint
 
 RefPtr<IWindow> Win32Window::getConsole()
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto hwnd = GetConsoleWindow();
 
 	if(hwnd == nullptr)
@@ -123,43 +115,31 @@ RefPtr<IWindow> Win32Window::getConsole()
 
 void Win32Window::show()
 {
-	COMMON_CALLSTACK_CALL;
-
 	ShowWindow(m_hwnd, SW_NORMAL);
 }
 
 void Win32Window::redraw()
 {
-	COMMON_CALLSTACK_CALL;
-
 	RedrawWindow(m_hwnd, nullptr, nullptr, RDW_INTERNALPAINT);
 }
 
 void Win32Window::maximize()
 {
-	COMMON_CALLSTACK_CALL;
-
 	ShowWindow(m_hwnd, SW_MAXIMIZE);
 }
 
 void Win32Window::close()
 {
-	COMMON_CALLSTACK_CALL;
-
 	DestroyWindow(m_hwnd);
 }
 
 void Win32Window::minimize()
 {
-	COMMON_CALLSTACK_CALL;
-
 	ShowWindow(m_hwnd, SW_MINIMIZE);
 }
 
 void Win32Window::handleEvents()
 {
-	COMMON_CALLSTACK_CALL;
-
 	MSG msg = {};
 
 	while(1)
@@ -180,22 +160,16 @@ void Win32Window::handleEvents()
 
 bool Win32Window::isShown() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return (IsWindowVisible(m_hwnd) != FALSE);
 }
 
 std::string Win32Window::getName() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return m_name;
 }
 
 int Win32Window::getWidth() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	RECT rect;
 	GetWindowRect(m_hwnd, &rect);
 
@@ -204,8 +178,6 @@ int Win32Window::getWidth() const
 
 int Win32Window::getHeight() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	RECT rect;
 	GetWindowRect(m_hwnd, &rect);
 
@@ -214,8 +186,6 @@ int Win32Window::getHeight() const
 
 Rect Win32Window::getRect() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	RECT rect;
 	GetWindowRect(m_hwnd, &rect);
 
@@ -224,8 +194,6 @@ Rect Win32Window::getRect() const
 
 Rect Win32Window::getClientRect() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	RECT rect;
 	::GetClientRect(m_hwnd, &rect);
 
@@ -234,22 +202,16 @@ Rect Win32Window::getClientRect() const
 
 void Win32Window::toForeground()
 {
-	COMMON_CALLSTACK_CALL;
-
 	SetForegroundWindow(m_hwnd);
 }
 
 HWND Win32Window::getHwnd() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return m_hwnd;
 }
 
 void* Win32Window::asImpl(uint64_t typeHash) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);

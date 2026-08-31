@@ -10,14 +10,10 @@ using namespace ::CainEngine::Platform::Internal;
 
 Win32Process::Win32Process(HANDLE process)
 	: m_process(process)
-{
-	COMMON_CALLSTACK_CALL;
-}
+{ }
 
 Win32Process::~Win32Process()
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(m_process)
 	{
 		CloseHandle(m_process);
@@ -26,8 +22,6 @@ Win32Process::~Win32Process()
 
 std::vector<RefPtr<IProcess>> Win32Process::getProcesses(const std::string& name)
 {
-	COMMON_CALLSTACK_CALL;
-
 	std::vector<RefPtr<IProcess>> retval;
 
 	DWORD processes[1024];
@@ -70,8 +64,6 @@ std::vector<RefPtr<IProcess>> Win32Process::getProcesses(const std::string& name
 
 RefPtr<IProcess> Win32Process::getProcess(uint32_t id)
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)id);
 
 	if(handle)
@@ -84,8 +76,6 @@ RefPtr<IProcess> Win32Process::getProcess(uint32_t id)
 
 RefPtr<IProcess> Win32Process::getCurrentProcess()
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto process = ::GetCurrentProcess();
 
 	if(process != nullptr)
@@ -99,8 +89,6 @@ RefPtr<IProcess> Win32Process::getCurrentProcess()
 RefPtr<IProcess> Win32Process::createNewProcess(
 	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
-	COMMON_CALLSTACK_CALL;
-
 	std::string cmdLine;
 	if(path.find(' ') != std::string::npos)
 	{
@@ -158,8 +146,6 @@ RefPtr<IProcess> Win32Process::createNewProcess(
 
 std::string Win32Process::getName() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	CHAR szProcessName[MAX_PATH] = "<unknown>";
 
 	HMODULE hMod;
@@ -175,15 +161,11 @@ std::string Win32Process::getName() const
 
 uint32_t Win32Process::getId() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	return (uint32_t)GetProcessId(m_process);
 }
 
 uint32_t Win32Process::getSessionId() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	DWORD sessionId = (DWORD)-1;
 	if(ProcessIdToSessionId(getId(), &sessionId))
 	{
@@ -196,8 +178,6 @@ uint32_t Win32Process::getSessionId() const
 
 static std::chrono::system_clock::time_point fT2Tp(const FILETIME& ft)
 {
-	COMMON_CALLSTACK_CALL;
-
 	// number of seconds
 	ULARGE_INTEGER ull;
 	ull.LowPart = ft.dwLowDateTime;
@@ -213,8 +193,6 @@ static std::chrono::system_clock::time_point fT2Tp(const FILETIME& ft)
 
 std::chrono::time_point<std::chrono::system_clock> Win32Process::getCreationTime() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	FILETIME creation, exit, kernel, user;
 	if(!GetProcessTimes(m_process, &creation, &exit, &kernel, &user))
 	{
@@ -234,8 +212,6 @@ std::chrono::time_point<std::chrono::system_clock> Win32Process::getCreationTime
 
 void* Win32Process::asImpl(uint64_t typeHash) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);

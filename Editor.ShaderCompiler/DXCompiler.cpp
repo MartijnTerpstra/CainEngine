@@ -84,8 +84,6 @@ API::CompiledShaderData DXCompiler::compile(const char* sourceDirectory, const c
 	ShaderType shaderType, const char* entryPoint, const std::vector<ShaderDefine>& defines,
 	bool optimize) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	std::wstring wpath;
 	{
 		std::string path = std::string(sourceDirectory) + "\\" + filePath;
@@ -333,8 +331,6 @@ uint32_t DXCompiler::rendererId() const
 
 API::ShaderVariableType DXCompiler::convert(D3D_REGISTER_COMPONENT_TYPE type)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(type)
 	{
 	case D3D_REGISTER_COMPONENT_UINT32:
@@ -354,8 +350,6 @@ API::ShaderVariableType DXCompiler::convert(D3D_REGISTER_COMPONENT_TYPE type)
 
 API::ShaderSemanticName DXCompiler::convert(const char* semantic)
 {
-	COMMON_CALLSTACK_CALL;
-
 	// Integral constant overflow because of compiletime hashing
 	switch(mst::hash32(semantic))
 	{

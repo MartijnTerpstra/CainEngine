@@ -13,8 +13,6 @@ using namespace ::CainEngine::Graphics::DX11;
 
 FullScreenState DX11Renderer::fullScreen() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -48,8 +46,6 @@ FullScreenState DX11Renderer::fullScreen() const
 
 void DX11Renderer::setFullScreen(bool fullScreen, uint32_t outputIndex)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -68,8 +64,6 @@ void DX11Renderer::setFullScreen(bool fullScreen, uint32_t outputIndex)
 
 uint32_t DX11Renderer::multiSamplingCount() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -84,8 +78,6 @@ uint32_t DX11Renderer::multiSamplingCount() const
 
 void DX11Renderer::setMultiSamplingCount(uint32_t count)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -125,8 +117,6 @@ void DX11Renderer::setVSync(bool vSync)
 
 PixelFormat DX11Renderer::format() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -138,8 +128,6 @@ PixelFormat DX11Renderer::format() const
 
 void DX11Renderer::setFormat(PixelFormat format)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -148,8 +136,6 @@ void DX11Renderer::setFormat(PixelFormat format)
 
 SwapChainDisplayMode DX11Renderer::displayMode() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 
@@ -165,8 +151,6 @@ SwapChainDisplayMode DX11Renderer::displayMode() const
 
 void DX11Renderer::setDisplayMode(const SwapChainDisplayMode& mode)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(!m_swapChain)
 		Common::fatalError("No main window set");
 

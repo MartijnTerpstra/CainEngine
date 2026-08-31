@@ -21,8 +21,6 @@ using namespace ::CainEngine::Graphics::Vulkan;
 VKAPI_ATTR VkBool32 VKAPI_CALL onVulkanError(VkFlags msgFlags, VkDebugReportObjectTypeEXT, uint64_t,
 	size_t, int32_t msgCode, const char* pLayerPrefix, const char* pMsg, void*)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(msgFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
 	{
 

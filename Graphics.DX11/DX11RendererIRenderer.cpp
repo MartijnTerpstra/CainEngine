@@ -28,8 +28,6 @@ std::string DX11Renderer::name() const noexcept
 
 void DX11Renderer::init(flag<RendererInitFlags> initFlags)
 {
-	COMMON_CALLSTACK_CALL;
-
 	auto createDeviceFunc = reinterpret_cast<decltype(D3D11CreateDevice)*>(
 		GetProcAddress(m_d3d11, "D3D11CreateDevice"));
 
@@ -85,8 +83,6 @@ void DX11Renderer::init(flag<RendererInitFlags> initFlags)
 
 void DX11Renderer::exit()
 {
-	COMMON_CALLSTACK_CALL;
-
 	flush();
 
 	m_inputLayoutResolver.clear();
@@ -140,8 +136,6 @@ void DX11Renderer::flush()
 void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
 	const std::optional<SwapChainCreationSettings>& creationSettings)
 {
-	COMMON_CALLSTACK_CALL;
-
 	if(m_mainWindow == mainWindow)
 		return;
 
@@ -218,8 +212,6 @@ void CainEngine::Graphics::DX11::DX11Renderer::handleWindowResize()
 
 bool DX11Renderer::hasFeature(RendererFeature feature) const
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(feature)
 	{
 	case CainEngine::Graphics::RendererFeature::AsyncShaderLoading:

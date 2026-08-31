@@ -19,14 +19,10 @@ public:
 		: m_pointer(ptr)
 		, API(std::move(api))
 		, m_onDestroyFunc(onDestroyFunc)
-	{
-		COMMON_CALLSTACK_CALL;
-	}
+	{ }
 
 	~VkRefBlock()
 	{
-		COMMON_CALLSTACK_CALL;
-
 		if(m_pointer)
 			m_onDestroyFunc(m_pointer, API);
 	}
