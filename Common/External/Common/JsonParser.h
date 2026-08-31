@@ -16,7 +16,7 @@ template<typename T>
 class JsonDeclaration
 {
 	friend class JsonParser;
-	template<typename T>
+	template<typename T2>
 	friend class JsonDeclaration;
 
 public:

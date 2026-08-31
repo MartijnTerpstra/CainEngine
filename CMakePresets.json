@@ -115,6 +115,30 @@
           }
         }
       }
+    },
+    {
+      "name": "ci-linux-debug",
+      "displayName": "CI Linux Debug",
+      "description": "Ninja generator, Debug build, BUILD_TESTING=ON; used by .github/workflows/unit-tests.yml. Requires ninja plus the X11 and Vulkan dev packages Platform.Xorg/Graphics.Vulkan find_package()-for on the runner.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/_build/CainEngine/${presetName}",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": {
+          "type": "BOOL",
+          "value": true
+        }
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [ "Linux" ]
+        }
+      }
     }
   ],
   "buildPresets": [
@@ -138,6 +162,11 @@
       "name": "linux-x64-debug",
       "displayName": "Linux x64 Debug",
       "configurePreset": "linux-x64-debug"
+    },
+    {
+      "name": "ci-linux-debug",
+      "displayName": "CI Linux Debug",
+      "configurePreset": "ci-linux-debug"
     }
   ],
   "testPresets": [
@@ -162,6 +191,17 @@
       "name": "linux-x64-debug",
       "displayName": "Linux x64 Debug",
       "configurePreset": "linux-x64-debug"
+    },
+    {
+      "name": "ci-linux-debug",
+      "displayName": "CI Linux Debug",
+      "configurePreset": "ci-linux-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 120
+      }
     }
   ]
 }

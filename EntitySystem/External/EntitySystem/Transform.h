@@ -9,10 +9,10 @@ class Scene;
 // can also be obtained from a `const Scene&`). Mutating members are removed from CTransform via
 // `requires (!IsConst)`, so the two views can never drift apart the way a hand-duplicated pair
 // would.
-template <bool IsConst>
+template<bool IsConst>
 class TransformImpl final
 {
-	template <bool>
+	template<bool>
 	friend class TransformImpl;
 	friend class Scene;
 
@@ -24,16 +24,20 @@ public:
 	~TransformImpl();
 
 	// Implicit conversion/assignment from the mutable view to the const view.
-	TransformImpl(const TransformImpl<false>& other) noexcept requires IsConst;
-	TransformImpl& operator = (const TransformImpl<false>& other) noexcept requires IsConst;
+	TransformImpl(const TransformImpl<false>& other) noexcept
+		requires(IsConst);
+	TransformImpl& operator=(const TransformImpl<false>& other) noexcept
+		requires(IsConst);
 
 public:
 	// Main functionality
 
 	[[nodiscard]] const float3& Position() const noexcept;
 
-	void SetPosition(const float3& position) requires (!IsConst);
-	void Translate(const float3& translation) requires (!IsConst);
+	void SetPosition(const float3& position)
+		requires(!IsConst);
+	void Translate(const float3& translation)
+		requires(!IsConst);
 
 	[[nodiscard]] bool UsingEulerAngles() const noexcept;
 	[[nodiscard]] bool UsingQuaternion() const noexcept;
@@ -45,10 +49,14 @@ public:
 	[[nodiscard]] degrees EulerZ() const noexcept;
 	[[nodiscard]] euler_rotation_order RotationOrder() const noexcept;
 
-	void SetQuaternion(const quaternion& quat) requires (!IsConst);
-	void SetEulerAngles(degrees x, degrees y, degrees z, euler_rotation_order order = euler_rotation_order::zxy) requires (!IsConst);
+	void SetQuaternion(const quaternion& quat)
+		requires(!IsConst);
+	void SetEulerAngles(
+		degrees x, degrees y, degrees z, euler_rotation_order order = euler_rotation_order::zxy)
+		requires(!IsConst);
 
-	void Reset() requires (!IsConst);
+	void Reset()
+		requires(!IsConst);
 
 	[[nodiscard]] EntityID Entity() const noexcept;
 
@@ -60,7 +68,8 @@ private:
 	TransformImpl(SceneT* scene, EntityID entity) noexcept;
 
 	const Scene::EntityData& GetData() const noexcept;
-	Scene::EntityData& GetData() noexcept requires (!IsConst);
+	Scene::EntityData& GetData() noexcept
+		requires(!IsConst);
 
 private:
 	// Member variables
@@ -72,4 +81,4 @@ private:
 extern template class TransformImpl<false>;
 extern template class TransformImpl<true>;
 
-}
+} // namespace CainEngine::EntitySystem

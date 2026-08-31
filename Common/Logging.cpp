@@ -1,24 +1,31 @@
 #include "Precomp.h"
-#include "FatalErrorHandler.hpp"
 
 namespace CainEngine::Common {
 
-void Log(LogSeverity severity, std::string str)
+constinit IConsole* g_console = nullptr;
+
+void Details::Log(LogSeverity severity, std::string_view str)
 {
+	if(g_console)
+	{
+		g_console->WriteLine(severity, str);
+		return;
+	}
+
+	std::string_view severityStr;
 	switch(severity)
 	{
 	case Common::LogSeverity::FatalError:
-		str.insert((size_t)0, "[FATAL]: ");
-		InvokeFatalErrorHandler(str);
+		severityStr = "[FATAL]: ";
 		return;
 	case Common::LogSeverity::Error:
-		str.insert((size_t)0, "[ERROR]: ");
+		severityStr = "[ERROR]: ";
 		break;
 	case Common::LogSeverity::Warning:
-		str.insert((size_t)0, "[WARN ]: ");
+		severityStr = "[WARN ]: ";
 		break;
 	case Common::LogSeverity::Message:
-		str.insert((size_t)0, "[MESG ]: ");
+		severityStr = "[MESG ]: ";
 		break;
 	default:
 		Unreachable();
@@ -27,4 +34,9 @@ void Log(LogSeverity severity, std::string str)
 	std::cout << str << std::endl;
 }
 
+void SetConsole(IConsole* console)
+{
+	g_console = console;
 }
+
+} // namespace CainEngine::Common
