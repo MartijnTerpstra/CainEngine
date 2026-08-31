@@ -46,3 +46,41 @@ jobs:
 
       - name: Run tests
         run: ctest --preset ci-windows-debug
+
+  test-linux:
+    name: CainEngine unit tests (Linux, Debug)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Dependencies/{mst,Abseil,googletest,nlohmann_json} are real git
+          # submodules (see .gitmodules) - nothing under Dependencies/ is
+          # vendored/committed directly, so this is required for the configure
+          # step below to have anything to build.
+          submodules: recursive
+
+      - name: Install build dependencies
+        # Ninja for the ci-linux-debug preset; libx11-dev and libvulkan-dev
+        # because the top-level CMakeLists.txt always add_subdirectory()s
+        # Platform.Xorg (find_package(X11) REQUIRED) and Graphics.Vulkan
+        # (find_package(Vulkan), FATAL_ERROR if missing) on UNIX, even though
+        # the test suite itself only exercises Common/EntitySystem.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libx11-dev libvulkan-dev
+
+      - name: Configure
+        # ci-linux-debug (CMakePresets.json) pins BUILD_TESTING=ON, same as
+        # ci-windows-debug. Debug specifically - see the comment on the
+        # Windows job's Configure step; Release disables exceptions, which
+        # the FatalErrorTest fixture (Common/TestSupport) relies on.
+        run: cmake --preset ci-linux-debug
+
+      - name: Build test targets
+        run: cmake --build --preset ci-linux-debug
+
+      - name: Run tests
+        run: ctest --preset ci-linux-debug
