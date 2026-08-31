@@ -29,4 +29,4 @@ private:
 	DX11Renderer* const m_renderer;
 };
 
-}
+} // namespace CainEngine::Graphics::DX11

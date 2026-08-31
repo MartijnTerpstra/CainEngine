@@ -7,7 +7,7 @@ namespace CainEngine {
 namespace Graphics {
 namespace Vulkan {
 
-unique_ptr<Implementation::IRenderer> createInstance();
+std::unique_ptr<API::IRenderer> createInstance();
 
 }; // namespace Vulkan
 }; // namespace Graphics

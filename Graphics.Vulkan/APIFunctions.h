@@ -2,15 +2,15 @@
 
 namespace CainEngine::Graphics::Vulkan {
 
-#define GRAPHICS_DECLARE_INST_FUNCTION(x) PFN_##x x = null;
-#define GRAPHICS_DECLARE_DEV_FUNCTION(x) PFN_##x x = null;
+#define GRAPHICS_DECLARE_INST_FUNCTION(x) PFN_##x x = nullptr;
+#define GRAPHICS_DECLARE_DEV_FUNCTION(x)  PFN_##x x = nullptr;
 
 class APIFunctions
 {
 public:
 	// Main functionality
 
-	APIFunctions(const shared_ptr<VkInstance_T>& instance, VkDevice device, bool debuglayer);
+	APIFunctions(const std::shared_ptr<VkInstance_T>& instance, VkDevice device, bool debuglayer);
 	~APIFunctions();
 
 public:
@@ -32,11 +32,11 @@ private:
 	// Member variables
 
 	VkDebugReportCallbackEXT m_debugCallback;
-	const shared_ptr<VkInstance_T> m_instanceHandle;
+	const std::shared_ptr<VkInstance_T> m_instanceHandle;
 
 }; // class APIFunctions
 
 #undef GRAPHICS_DECLARE_INST_FUNCTION
 #undef GRAPHICS_DECLARE_DEV_FUNCTION
 
-};
+}; // namespace CainEngine::Graphics::Vulkan

@@ -5,6 +5,7 @@ namespace CainEngine::Graphics::API {
 class IDisplaySettings
 {
 	COMMON_DECLARE_INTERFACE(IDisplaySettings);
+
 public:
 	// Main functionality
 
@@ -32,11 +33,12 @@ public:
 
 	virtual std::vector<PixelFormat> supportedPixelFormats(uint32_t outputIndex) const = 0;
 
-	virtual std::vector<SwapChainDisplayMode> supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const = 0;
+	virtual std::vector<SwapChainDisplayMode> supportedDisplayModes(
+		uint32_t outputIndex, PixelFormat format) const = 0;
 
 	virtual std::vector<uint32_t> supportedMultiSamplingCounts(PixelFormat format) const = 0;
 };
 
 inline IDisplaySettings::~IDisplaySettings() = default;
 
-}
+} // namespace CainEngine::Graphics::API

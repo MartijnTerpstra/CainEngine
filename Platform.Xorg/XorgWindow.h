@@ -11,7 +11,7 @@ class XorgWindow final : public Xorg::IXorgWindow
 private:
 	// ctor & dtor
 
-	XorgWindow(Display* display, ::Window window, string name,
+	XorgWindow(Display* display, ::Window window, std::string name,
 		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 		ClientInterfaces::IWindowEventListener* listenerPointer);
 	~XorgWindow();
@@ -21,8 +21,8 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> createNewWindow(const string& name, const uint2& size, WindowType type,
-		flag<WindowFlags> flags,
+	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size,
+		WindowType type, flag<WindowFlags> flags,
 		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 		ClientInterfaces::IWindowEventListener* listenerPointer);
 
@@ -43,7 +43,7 @@ public:
 
 	bool isShown() const override;
 
-	string getName() const override;
+	std::string getName() const override;
 
 	int getWidth() const override;
 
@@ -70,14 +70,15 @@ private:
 private:
 	// Internal functionality
 
-	void handleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
+	void handleKeyEvent(
+		XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
 
 private:
 	// Member variables
 
-	::Display *const m_display;
+	::Display* const m_display;
 	const ::Window m_window;
-	const string m_name;
+	const std::string m_name;
 	const std::weak_ptr<ClientInterfaces::IWindowEventListener> m_listener;
 	ClientInterfaces::IWindowEventListener* const m_listenerPointer;
 	Atom m_deleteWindowAtom = 0;

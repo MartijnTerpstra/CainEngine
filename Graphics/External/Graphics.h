@@ -36,7 +36,7 @@ class IResource;
 class IResourceGroup;
 class ITexture;
 
-};
+}; // namespace API
 
 }; // namespace Graphics
 }; // namespace CainEngine

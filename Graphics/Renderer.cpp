@@ -5,12 +5,10 @@ using namespace ::CainEngine::Graphics;
 
 Renderer::Renderer(std::unique_ptr<API::IRenderer> renderer)
 	: m_renderer(std::move(renderer))
-{
-}
+{ }
 
 Renderer::~Renderer()
-{
-}
+{ }
 
 uint32_t Renderer::id() const
 {
@@ -42,7 +40,8 @@ void Renderer::flush()
 	m_renderer->flush();
 }
 
-void Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+	const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	m_renderer->setMainWindow(mainWindow, creationSettings);
 }

@@ -3,10 +3,10 @@
 namespace CainEngine::ResourceSystem {
 
 template<typename StructType>
-inline StructType Source::ReadStruct()
+inline StructType Source::readStruct()
 {
 	StructType retval;
-	if (!Read(&retval, sizeof(StructType)))
+	if(!read(&retval, sizeof(StructType)))
 	{
 		Common::error("Unable to read struct");
 		return StructType{};
@@ -15,14 +15,14 @@ inline StructType Source::ReadStruct()
 }
 
 template<typename T>
-inline vector<T> Source::ReadVector()
+inline std::vector<T> Source::readVector()
 {
-	uint32_t size = ReadUint();
+	uint32_t size = readUint();
 
-	vector<T> retval(size);
-	if (size != 0)
+	std::vector<T> retval(size);
+	if(size != 0)
 	{
-		if (!Read(retval.data(), sizeof(T) * size))
+		if(!read(retval.data(), sizeof(T) * size))
 		{
 			Common::error("Unable to read vector<T>");
 			return {};
@@ -32,4 +32,4 @@ inline vector<T> Source::ReadVector()
 	return retval;
 }
 
-}
+} // namespace CainEngine::ResourceSystem

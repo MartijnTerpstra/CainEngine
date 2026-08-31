@@ -4,7 +4,14 @@ namespace CainEngine {
 namespace Graphics {
 namespace DX12 {
 
-class DX12Renderer final : public Implementation::IRenderer
+// NOTE: init()/renderFrame()/exit()/setMainWindow() are a real (if minimal)
+// D3D12 device/swapchain implementation. Everything else required by the
+// current Graphics::API::IRenderer/IDisplaySettings interfaces that this
+// class predates - shortName()/name()/flush()/handleWindowResize()/
+// getBackBufferSize()/displaySettings()/getFactory() plus the whole
+// IDisplaySettings surface - is a compile-only stub (reports "not
+// implemented"), same treatment as Graphics.Vulkan's VulkanRenderer.
+class DX12Renderer final : public API::IRenderer, private API::IDisplaySettings
 {
 public:
 	// ctor & dtor
@@ -13,25 +20,53 @@ public:
 	~DX12Renderer();
 
 public:
-	// IRendererImpl overrides
+	// IRenderer overrides
 
-	uint32 id() const override;
+	uint32_t id() const noexcept override;
 
-	void Init(flag<RendererInitFlags> initFlags) override;
+	std::string shortName() const noexcept override;
 
-	void Exit() override;
+	std::string name() const noexcept override;
 
-	void RenderFrame() override;
+	void init(flag<RendererInitFlags> initFlags) override;
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow) override;
+	void exit() override;
 
-	unique_ptr<VertexShader> CreateVertexShader(
-		Implementation::CompiledShaderData&& shaderData) override;
+	void renderFrame(std::function<void(API::IRenderContext*)> onRender) override;
 
-	unique_ptr<PixelShader> CreatePixelShader(
-		Implementation::CompiledShaderData&& shaderData) override;
+	void flush() override;
 
-	bool HasFeature(RendererFeature feature) const override;
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<SwapChainCreationSettings>& creationSettings) override;
+
+	void handleWindowResize() override;
+
+	bool hasFeature(RendererFeature feature) const override;
+
+	uint2 getBackBufferSize() const noexcept override;
+
+	IDisplaySettings& displaySettings() noexcept override;
+
+	API::IFactory* getFactory() noexcept override;
+
+private:
+	// IDisplaySettings overrides
+
+	FullScreenState fullScreen() const override;
+	void setFullScreen(bool fullScreen, uint32_t outputIndex) override;
+	uint32_t multiSamplingCount() const override;
+	void setMultiSamplingCount(uint32_t count) override;
+	bool vSync() const override;
+	void setVSync(bool vSync) override;
+	PixelFormat format() const override;
+	void setFormat(PixelFormat format) override;
+	SwapChainDisplayMode displayMode() const override;
+	void setDisplayMode(const SwapChainDisplayMode& mode) override;
+	std::vector<OutputDisplay> supportedOutputs() const override;
+	std::vector<PixelFormat> supportedPixelFormats(uint32_t outputIndex) const override;
+	std::vector<SwapChainDisplayMode> supportedDisplayModes(
+		uint32_t outputIndex, PixelFormat format) const override;
+	std::vector<uint32_t> supportedMultiSamplingCounts(PixelFormat format) const override;
 
 private:
 	// Member variables

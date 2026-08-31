@@ -7,6 +7,7 @@ class Model final
 	COMMON_DECLARE_NON_COPY(Model);
 
 	struct SubMesh;
+
 public:
 	// ctor & dtor
 
@@ -37,4 +38,4 @@ private:
 	inlined_vector<SubMesh, 4> m_subMeshes;
 };
 
-}
+} // namespace CainEngine::Graphics

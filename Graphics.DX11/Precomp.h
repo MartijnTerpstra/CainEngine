@@ -12,7 +12,7 @@ using mst::com_ptr;
 
 inline void checkHResult(HRESULT hr, const char* errorMessage)
 {
-	if (FAILED(hr))
+	if(FAILED(hr))
 	{
 		CainEngine::Common::fatalError("%s HRESULT: 0x%x", errorMessage, (uint32_t)hr);
 	}

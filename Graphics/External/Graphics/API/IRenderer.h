@@ -25,7 +25,8 @@ public:
 
 	virtual void flush() = 0;
 
-	virtual void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) = 0;
+	virtual void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<SwapChainCreationSettings>& creationSettings) = 0;
 
 	virtual void handleWindowResize() = 0;
 
@@ -40,4 +41,4 @@ public:
 
 inline IRenderer::~IRenderer() = default;
 
-};
+}; // namespace CainEngine::Graphics::API

@@ -14,7 +14,7 @@ class IWin32Window;
 
 RefPtr<ICoreFactory> createInstance();
 
-}; // namespace Windows
+}; // namespace Win32
 }; // namespace Platform
 }; // namespace CainEngine
 

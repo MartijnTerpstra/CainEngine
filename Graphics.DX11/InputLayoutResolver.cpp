@@ -9,44 +9,46 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-static bool matches(array_view<API::VertexBufferDesc> resolved, array_view<API::VertexBufferDesc> unresolved)
+static bool matches(
+	array_view<API::VertexBufferDesc> resolved, array_view<API::VertexBufferDesc> unresolved)
 {
-	for (auto& r : resolved)
+	for(auto& r : resolved)
 	{
 		bool found = false;
-		for (auto& u : unresolved)
+		for(auto& u : unresolved)
 		{
 			// Binary matchable
-			if (memcmp(&r, &u, sizeof(r)) == 0)
+			if(memcmp(&r, &u, sizeof(r)) == 0)
 			{
 				found = true;
 				break;
 			}
 		}
-		if (!found)
+		if(!found)
 			return false;
 	}
 
 	return true;
 }
 
-ID3D11InputLayout* InputLayoutResolver::resolve(ID3D11Device* device, API::VertexShader* vs, uint64_t vertexLayoutHash, array_view<API::VertexBufferDesc> vertexLayout)
+ID3D11InputLayout* InputLayoutResolver::resolve(ID3D11Device* device, API::VertexShader* vs,
+	uint64_t vertexLayoutHash, array_view<API::VertexBufferDesc> vertexLayout)
 {
 	const auto shaderHash = vs->inputRegisterHash();
 
-	auto directResolveIt = m_directResolves.find({ shaderHash,vertexLayoutHash });
+	auto directResolveIt = m_directResolves.find({ shaderHash, vertexLayoutHash });
 
-	if (directResolveIt != m_directResolves.end())
+	if(directResolveIt != m_directResolves.end())
 		return directResolveIt->second;
 
 	auto& shader = m_shaders.at(shaderHash);
 
-	for (auto& layout : shader.resolvedLayouts)
+	for(auto& layout : shader.resolvedLayouts)
 	{ // Try match to existing slot
 
-		if (matches(layout.first, vertexLayout))
+		if(matches(layout.first, vertexLayout))
 		{
-			m_directResolves.insert({ {shaderHash, vertexLayoutHash}, layout.second.get() });
+			m_directResolves.insert({ { shaderHash, vertexLayoutHash }, layout.second.get() });
 			return layout.second.get();
 		}
 	}
@@ -58,30 +60,31 @@ ID3D11InputLayout* InputLayoutResolver::resolve(ID3D11Device* device, API::Verte
 
 	inlined_vector<D3D11_INPUT_ELEMENT_DESC, 16> descs;
 	descs.reserve(inputRegisters.size());
-	for (auto& r : inputRegisters)
+	for(auto& r : inputRegisters)
 	{
 		D3D11_INPUT_ELEMENT_DESC desc = {};
 
 		const API::VertexBufferDesc* v = nullptr;
-		for (auto& vl : vertexLayout)
+		for(auto& vl : vertexLayout)
 		{
-			if (vl.semanticName == r.semanticName &&
-				vl.semanticIndex == r.semanticIndex)
+			if(vl.semanticName == r.semanticName && vl.semanticIndex == r.semanticIndex)
 			{
 				v = &vl;
 				break;
 			}
 		}
 
-		if (!v)
+		if(!v)
 		{
-			Common::error("Unable to generate vertex layout, semantics do not match with the shader");
+			Common::error(
+				"Unable to generate vertex layout, semantics do not match with the shader");
 			return nullptr;
 		}
 
-		if (v->type != r.variableType || v->elementCount != r.variableElementCount)
+		if(v->type != r.variableType || v->elementCount != r.variableElementCount)
 		{
-			Common::error("Unable to generate vertex layout, semantics variable type missmatch with the shader");
+			Common::error("Unable to generate vertex layout, semantics variable type missmatch "
+						  "with the shader");
 			return nullptr;
 		}
 
@@ -98,34 +101,37 @@ ID3D11InputLayout* InputLayoutResolver::resolve(ID3D11Device* device, API::Verte
 	}
 
 	com_ptr<ID3D11InputLayout> newLayout;
-	CHECK_HRESULT(device->CreateInputLayout(descs.data(), (UINT)descs.size(), vs->byteCode().data(), vs->byteCode().size(), mst::initialize(newLayout)));
+	CHECK_HRESULT(device->CreateInputLayout(descs.data(), (UINT)descs.size(), vs->byteCode().data(),
+		vs->byteCode().size(), mst::initialize(newLayout)));
 
 	shader.resolvedLayouts.emplace_back(std::move(resolvedLayout), std::move(newLayout));
 
-	m_directResolves.insert({ {shaderHash, vertexLayoutHash}, shader.resolvedLayouts.back().second.get() });
+	m_directResolves.insert(
+		{ { shaderHash, vertexLayoutHash }, shader.resolvedLayouts.back().second.get() });
 	return shader.resolvedLayouts.back().second.get();
 }
 
-void InputLayoutResolver::addVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
+void InputLayoutResolver::addVertexShaderInputRegisters(
+	uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
 {
 	LayoutInfo info;
 
 	info.inputRegisters.reserve(inputRegisters.size());
 
-	for (auto& r : inputRegisters)
+	for(auto& r : inputRegisters)
 	{
 		info.inputRegisters.push_back(r);
 	}
 
-	std::sort(info.inputRegisters.begin(), info.inputRegisters.end(), [](const API::ShaderRegisterInfo& l, const API::ShaderRegisterInfo& r)
-	{
-		if (l.semanticName != r.semanticName)
-			return l.semanticName < r.semanticName;
+	std::sort(info.inputRegisters.begin(), info.inputRegisters.end(),
+		[](const API::ShaderRegisterInfo& l, const API::ShaderRegisterInfo& r) {
+			if(l.semanticName != r.semanticName)
+				return l.semanticName < r.semanticName;
 
-		return l.semanticIndex < r.semanticIndex;
-	});
+			return l.semanticIndex < r.semanticIndex;
+		});
 
-	if (!m_shaders.contains(inputRegisterHash))
+	if(!m_shaders.contains(inputRegisterHash))
 	{
 		m_shaders.insert({ inputRegisterHash, std::move(info) });
 	}

@@ -106,4 +106,4 @@ private:
 
 }; // class CastHandle<T>
 
-}; // namespace Common
+}; // namespace CainEngine::Common

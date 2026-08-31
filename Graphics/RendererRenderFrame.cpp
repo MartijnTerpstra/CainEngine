@@ -4,10 +4,10 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 void Renderer::buildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport)
-{
-}
+{ }
 
-void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Viewport>& vp)
+void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models,
+	const std::optional<Viewport>& vp)
 {
 	++m_frameIndex;
 
@@ -15,8 +15,7 @@ void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, M
 
 	buildFrameData(scene, viewport);
 
-	m_renderer->renderFrame([&](API::IRenderContext* context)
-	{
+	m_renderer->renderFrame([&](API::IRenderContext* context) {
 		context->setViewport(viewport);
 
 		/*
@@ -27,13 +26,13 @@ void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, M
 
 		*/
 
-		for (auto& modelData : models.getModels())
+		for(auto& modelData : models.getModels())
 		{
 			const auto& model = modelData.model;
 
 			context->setVertexData(model.vertexData());
 
-			for (auto subMesh : model.subMeshes())
+			for(auto subMesh : model.subMeshes())
 			{
 				const auto material = models.getMaterial(subMesh.materialIndex);
 
@@ -42,8 +41,6 @@ void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, M
 
 				context->drawIndexed(subMesh.indexCount, subMesh.indexOffset);
 			}
-
 		}
 	});
-
 }

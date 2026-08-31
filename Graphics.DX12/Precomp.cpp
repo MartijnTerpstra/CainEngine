@@ -5,7 +5,7 @@
 
 using namespace ::CainEngine::Graphics;
 
-unique_ptr<Implementation::IRenderer> DX12::CreateInstance()
+std::unique_ptr<API::IRenderer> DX12::createInstance()
 {
-	return make_unique<DX12::DX12Renderer>();
+	return std::make_unique<DX12::DX12Renderer>();
 }

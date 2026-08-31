@@ -3,7 +3,7 @@
 
 using namespace ::CainEngine::Graphics;
 
-unique_ptr<Implementation::IRenderer> Vulkan::createInstance()
+std::unique_ptr<API::IRenderer> Vulkan::createInstance()
 {
-	return make_unique<Vulkan::VulkanRenderer>();
+	return std::make_unique<Vulkan::VulkanRenderer>();
 }

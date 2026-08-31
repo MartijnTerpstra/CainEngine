@@ -4,12 +4,10 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 Model::Model()
-{
-}
+{ }
 
 Model::~Model()
-{
-}
+{ }
 
 void Model::setVertexData(API::VertexData* vertexData) noexcept
 {

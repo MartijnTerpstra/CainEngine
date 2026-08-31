@@ -39,7 +39,7 @@ struct Widget
 
 std::map<std::string, Color> colorMap()
 {
-	return {{"Red", Color::Red}, {"Green", Color::Green}, {"Blue", Color::Blue}};
+	return { { "Red", Color::Red }, { "Green", Color::Green }, { "Blue", Color::Blue } };
 }
 
 JsonDeclaration<Nested> nestedDeclaration()
@@ -86,7 +86,7 @@ protected:
 	std::filesystem::path writeJson(std::string_view content)
 	{
 		auto path = std::filesystem::temp_directory_path() /
-			("CainEngine_CommonTests_Json_" + std::to_string(m_fileCounter++) + ".json");
+					("CainEngine_CommonTests_Json_" + std::to_string(m_fileCounter++) + ".json");
 
 		std::ofstream file(path);
 		file << content;
@@ -141,7 +141,7 @@ TEST_F(JsonParserTest, ParsesAllFieldKindsFromCompleteJson)
 	EXPECT_EQ(99, result->nested.value);
 	ASSERT_TRUE(result->description.has_value());
 	EXPECT_EQ("a widget", *result->description);
-	EXPECT_EQ((std::vector<int32_t>{1, 2, 3}), result->tags);
+	EXPECT_EQ((std::vector<int32_t>{ 1, 2, 3 }), result->tags);
 	ASSERT_EQ(2u, result->children.size());
 	EXPECT_EQ(1, result->children[0].value);
 	EXPECT_EQ(2, result->children[1].value);

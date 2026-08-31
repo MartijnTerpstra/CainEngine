@@ -18,7 +18,6 @@ private:
 	// Member variables
 
 	Common::JsonDeclaration<ShaderCompiler::ShaderCompilation> m_declaration;
-
 };
 
-}
+} // namespace CainEngine::Editor

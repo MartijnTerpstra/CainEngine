@@ -9,4 +9,4 @@ class Engine;
 class CameraManager;
 class ModelCache;
 
-}
+} // namespace CainEngine

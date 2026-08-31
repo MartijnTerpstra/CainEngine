@@ -26,9 +26,8 @@ public:
 			Returns the size of the resource
 	*/
 	virtual uint3 size() const = 0;
-
 };
 
 inline IResource::~IResource() = default;
 
-}
+} // namespace CainEngine::Graphics::API

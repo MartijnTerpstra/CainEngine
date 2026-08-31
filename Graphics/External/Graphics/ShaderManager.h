@@ -5,6 +5,7 @@ namespace CainEngine::Graphics {
 class ShaderManager final
 {
 	COMMON_DECLARE_NON_COPY(ShaderManager);
+
 private:
 	// ctor & dtor
 	ShaderManager();
@@ -32,4 +33,4 @@ private:
 	static std::vector<std::pair<static_string<64>, API::DomainShader*>> m_domainShaders;
 };
 
-}
+} // namespace CainEngine::Graphics

@@ -14,8 +14,11 @@ class VkRefBlock
 public:
 	// ctor & dtor
 
-	VkRefBlock(T ptr, shared_ptr<const APIFunctions> api, void(*onDestroyFunc)(T, const shared_ptr<const APIFunctions>&))
-		: m_pointer(ptr), API(move(api)), m_onDestroyFunc(onDestroyFunc)
+	VkRefBlock(T ptr, std::shared_ptr<const APIFunctions> api,
+		void (*onDestroyFunc)(T, const std::shared_ptr<const APIFunctions>&))
+		: m_pointer(ptr)
+		, API(std::move(api))
+		, m_onDestroyFunc(onDestroyFunc)
 	{
 		COMMON_CALLSTACK_CALL;
 	}
@@ -24,7 +27,7 @@ public:
 	{
 		COMMON_CALLSTACK_CALL;
 
-		if (m_pointer)
+		if(m_pointer)
 			m_onDestroyFunc(m_pointer, API);
 	}
 
@@ -46,7 +49,7 @@ public:
 		return m_pointer;
 	}
 
-	const shared_ptr<const APIFunctions>& GetAPI() const
+	const std::shared_ptr<const APIFunctions>& GetAPI() const
 	{
 		return API;
 	}
@@ -60,46 +63,44 @@ protected:
 	// Member variables
 
 	T m_pointer;
-	const shared_ptr<const APIFunctions> API;
-	void(*const m_onDestroyFunc)(T, const shared_ptr<const APIFunctions>&);
+	const std::shared_ptr<const APIFunctions> API;
+	void (*const m_onDestroyFunc)(T, const std::shared_ptr<const APIFunctions>&);
 
 }; // class VkRefBlock<T>
 
 template<typename T>
 class VkPtr
 {
-	template<typename T, typename Derived>
+	template<typename T2, typename Derived>
 	friend class VkWeakPtr;
+
 protected:
 	// ctor & dtor
 
 	VkPtr()
-		: m_block(null)
-	{
-	}
+		: m_block(nullptr)
+	{ }
 
-	VkPtr(const shared_ptr<VkRefBlock<T>>& block) noexcept
+	VkPtr(const std::shared_ptr<VkRefBlock<T>>& block) noexcept
 		: m_block(block)
-	{
-	}
+	{ }
 
-	VkPtr(shared_ptr<VkRefBlock<T>>&& block) noexcept
-		: m_block(move(block))
-	{
-	}
+	VkPtr(std::shared_ptr<VkRefBlock<T>>&& block) noexcept
+		: m_block(std::move(block))
+	{ }
 
 public:
 	// Main functionality
 
 	T Get() const
 	{
-		if (m_block)
+		if(m_block)
 			return m_block->Get();
 
 		return (T)VK_NULL_HANDLE;
 	}
 
-	const T* operator & () const
+	const T* operator&() const
 	{
 		return &m_block->GetRef();
 	}
@@ -109,19 +110,19 @@ public:
 		return Get() != (T)VK_NULL_HANDLE;
 	}
 
-	const shared_ptr<const APIFunctions>& GetAPI() const
+	const std::shared_ptr<const APIFunctions>& GetAPI() const
 	{
 		return m_block->GetAPI();
 	}
 
 	T Release()
 	{
-		if (m_block)
+		if(m_block)
 		{
 			T released = m_block->Get();
 
 			m_block->GetCreateRef() = (T)VK_NULL_HANDLE;
-			m_block = null;
+			m_block = nullptr;
 			return released;
 		}
 
@@ -131,7 +132,7 @@ public:
 protected:
 	// Member variables
 
-	shared_ptr<VkRefBlock<T>> m_block;
+	std::shared_ptr<VkRefBlock<T>> m_block;
 
 }; // class VkPtr<T>
 
@@ -143,30 +144,25 @@ protected:
 
 	VkWeakPtr()
 		: m_block()
-	{
-	}
+	{ }
 
-	VkWeakPtr(const shared_ptr<VkRefBlock<T>>& block) noexcept
+	VkWeakPtr(const std::shared_ptr<VkRefBlock<T>>& block) noexcept
 		: m_block(block)
-	{
-	}
+	{ }
 
-	VkWeakPtr(shared_ptr<VkRefBlock<T>>&& block) noexcept
-		: m_block(move(block))
-	{
-	}
+	VkWeakPtr(std::shared_ptr<VkRefBlock<T>>&& block) noexcept
+		: m_block(std::move(block))
+	{ }
 
-	VkWeakPtr(const weak_ptr<VkRefBlock<T>>& block)
+	VkWeakPtr(const std::weak_ptr<VkRefBlock<T>>& block)
 		: m_block(block)
-	{
-	}
+	{ }
 
-	VkWeakPtr(weak_ptr<VkRefBlock<T>>&& block)
-		: m_block(move(block))
-	{
-	}
+	VkWeakPtr(std::weak_ptr<VkRefBlock<T>>&& block)
+		: m_block(std::move(block))
+	{ }
 
-	VkWeakPtr& operator = (const MyDerived& other)
+	VkWeakPtr& operator=(const MyDerived& other)
 	{
 		m_block = other.m_block;
 
@@ -186,7 +182,7 @@ public:
 		return m_block.expired();
 	}
 
-	const shared_ptr<const APIFunctions>& GetAPI() const
+	const std::shared_ptr<const APIFunctions>& GetAPI() const
 	{
 		return m_block->GetAPI();
 	}
@@ -194,197 +190,186 @@ public:
 protected:
 	// Member variables
 
-	weak_ptr<VkRefBlock<T>> m_block;
+	std::weak_ptr<VkRefBlock<T>> m_block;
 
 }; // class VkPtr<T>
 
-#define GRAPHICS_VULKAN_BEGIN_VKPTR(vkType) \
-class vkType##WeakPtr; \
-class vkType##Ptr : public VkPtr<vkType> \
-{ \
-	friend class VkPtr<vkType>; \
-	friend class VkWeakPtr<vkType, vkType##Ptr>; \
-	friend class vkType##WeakPtr; \
-	 \
-	typedef VkPtr<vkType> Base; \
-	 \
-public:\
-	\
-	vkType##Ptr() \
-	{ \
-	} \
-	 \
-	vkType##Ptr(const vkType##Ptr& other) noexcept \
-		: Base(other.m_block) \
-	{ \
-	} \
-	 \
-	vkType##Ptr(vkType##Ptr&& other) noexcept \
-		: Base(move(other.m_block)) \
-	{ \
-	} \
-	 \
-	vkType##Ptr& operator = (const vkType##Ptr& other) \
-	{ \
-		m_block = other.m_block; \
-		return *this; \
-	} \
-	 \
-	vkType##Ptr& operator = (vkType##Ptr&& other) \
-	{ \
-		m_block = move(other.m_block); \
-		return *this; \
-	} \
-	 \
-	vkType* Create(shared_ptr<const APIFunctions> api) \
-	{ \
-		m_block = make_shared<VkRefBlock<vkType>>((vkType)VK_NULL_HANDLE, move(api), &DestroyVkObject); \
-		 \
-		return &m_block->GetCreateRef(); \
-	} \
-	 \
-	void Adopt(vkType ptr, shared_ptr<const APIFunctions> api) \
-	{ \
-		m_block = make_shared<VkRefBlock<vkType>>(ptr, move(api), &DestroyVkObject); \
-	} \
-	 \
-private: \
-	 \
-	vkType##Ptr(shared_ptr<VkRefBlock<vkType>>&& refBlock) \
-		:  Base(move(refBlock))	\
-	{ \
-	} \
-	 \
-	 \
-private: \
-	 \
-	static void DestroyVkObject(vkType ptr, const shared_ptr<const APIFunctions>& api) {
+#define GRAPHICS_VULKAN_BEGIN_VKPTR(vkType)                                                        \
+	class vkType##WeakPtr;                                                                         \
+	class vkType##Ptr : public VkPtr<vkType>                                                       \
+	{                                                                                              \
+		friend class VkPtr<vkType>;                                                                \
+		friend class VkWeakPtr<vkType, vkType##Ptr>;                                               \
+		friend class vkType##WeakPtr;                                                              \
+                                                                                                   \
+		typedef VkPtr<vkType> Base;                                                                \
+                                                                                                   \
+	public:                                                                                        \
+		vkType##Ptr()                                                                              \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##Ptr(const vkType##Ptr& other) noexcept                                             \
+			: Base(other.m_block)                                                                  \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##Ptr(vkType##Ptr&& other) noexcept                                                  \
+			: Base(std::move(other.m_block))                                                       \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##Ptr& operator=(const vkType##Ptr& other)                                           \
+		{                                                                                          \
+			m_block = other.m_block;                                                               \
+			return *this;                                                                          \
+		}                                                                                          \
+                                                                                                   \
+		vkType##Ptr& operator=(vkType##Ptr&& other)                                                \
+		{                                                                                          \
+			m_block = std::move(other.m_block);                                                    \
+			return *this;                                                                          \
+		}                                                                                          \
+                                                                                                   \
+		vkType* Create(std::shared_ptr<const APIFunctions> api)                                    \
+		{                                                                                          \
+			m_block = std::make_shared<VkRefBlock<vkType>>(                                        \
+				(vkType)VK_NULL_HANDLE, std::move(api), &DestroyVkObject);                         \
+                                                                                                   \
+			return &m_block->GetCreateRef();                                                       \
+		}                                                                                          \
+                                                                                                   \
+		void Adopt(vkType ptr, std::shared_ptr<const APIFunctions> api)                            \
+		{                                                                                          \
+			m_block = std::make_shared<VkRefBlock<vkType>>(ptr, std::move(api), &DestroyVkObject); \
+		}                                                                                          \
+                                                                                                   \
+	private:                                                                                       \
+		vkType##Ptr(std::shared_ptr<VkRefBlock<vkType>>&& refBlock)                                \
+			: Base(std::move(refBlock))                                                            \
+		{ }                                                                                        \
+                                                                                                   \
+                                                                                                   \
+	private:                                                                                       \
+		static void DestroyVkObject(vkType ptr, const std::shared_ptr<const APIFunctions>& api)    \
+		{
 
-#define GRAPHICS_VULKAN_END_VKPTR(vkType) \
- } }; \
- \
-class vkType##WeakPtr : public VkWeakPtr<vkType, vkType##Ptr> \
-{ \
-	friend class VkPtr<vkType>; \
-	friend class VkWeakPtr<vkType, vkType##Ptr>; \
-	 \
-	typedef VkWeakPtr<vkType, vkType##Ptr> Base; \
-	 \
-public:\
-	\
-	vkType##WeakPtr() \
-	{ \
-	} \
-	 \
-	vkType##WeakPtr(const vkType##Ptr& other) noexcept \
-		: Base(other.m_block) \
-	{ \
-	} \
-	 \
-	vkType##WeakPtr(vkType##Ptr&& other) noexcept \
-		: Base(move(other.m_block)) \
-	{ \
-	} \
-	 \
-	vkType##WeakPtr(const vkType##WeakPtr& other) \
-		: Base(other.m_block) \
-	{ \
-	} \
-	 \
-	vkType##WeakPtr(vkType##WeakPtr&& other) \
-		: Base(move(other.m_block)) \
-	{ \
-	} \
-	 \
-	vkType##WeakPtr& operator = (const vkType##Ptr& other) \
-	{ \
-		m_block = other.m_block; \
-		return *this; \
-	} \
-	 \
-	vkType##WeakPtr& operator = (vkType##Ptr&& other) \
-	{ \
-		m_block = move(other.m_block); \
-		return *this; \
-	} \
-	 \
-	 \
-};
+#define GRAPHICS_VULKAN_END_VKPTR(vkType)                                                          \
+	}                                                                                              \
+	}                                                                                              \
+	;                                                                                              \
+                                                                                                   \
+	class vkType##WeakPtr : public VkWeakPtr<vkType, vkType##Ptr>                                  \
+	{                                                                                              \
+		friend class VkPtr<vkType>;                                                                \
+		friend class VkWeakPtr<vkType, vkType##Ptr>;                                               \
+                                                                                                   \
+		typedef VkWeakPtr<vkType, vkType##Ptr> Base;                                               \
+                                                                                                   \
+	public:                                                                                        \
+		vkType##WeakPtr()                                                                          \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##WeakPtr(const vkType##Ptr& other) noexcept                                         \
+			: Base(other.m_block)                                                                  \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##WeakPtr(vkType##Ptr&& other) noexcept                                              \
+			: Base(std::move(other.m_block))                                                       \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##WeakPtr(const vkType##WeakPtr& other)                                              \
+			: Base(other.m_block)                                                                  \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##WeakPtr(vkType##WeakPtr&& other)                                                   \
+			: Base(std::move(other.m_block))                                                       \
+		{ }                                                                                        \
+                                                                                                   \
+		vkType##WeakPtr& operator=(const vkType##Ptr& other)                                       \
+		{                                                                                          \
+			m_block = other.m_block;                                                               \
+			return *this;                                                                          \
+		}                                                                                          \
+                                                                                                   \
+		vkType##WeakPtr& operator=(vkType##Ptr&& other)                                            \
+		{                                                                                          \
+			m_block = std::move(other.m_block);                                                    \
+			return *this;                                                                          \
+		}                                                                                          \
+	};
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkRenderPass)
-vkDestroyRenderPass(api->Device, ptr, null);
+vkDestroyRenderPass(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkRenderPass)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkSwapchainKHR)
-vkDestroySwapchainKHR(api->Device, ptr, null);
+vkDestroySwapchainKHR(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkSwapchainKHR)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkSurfaceKHR)
-vkDestroySurfaceKHR(api->Instance, ptr, null);
+vkDestroySurfaceKHR(api->Instance, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkSurfaceKHR)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkImage)
-vkDestroyImage(api->Device, ptr, null);
+vkDestroyImage(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkImage)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkImageView)
-vkDestroyImageView(api->Device, ptr, null);
+vkDestroyImageView(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkImageView)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkBuffer)
-vkDestroyBuffer(api->Device, ptr, null);
+vkDestroyBuffer(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkBuffer)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkBufferView)
-vkDestroyBufferView(api->Device, ptr, null);
+vkDestroyBufferView(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkBufferView)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkPipelineLayout)
-vkDestroyPipelineLayout(api->Device, ptr, null);
+vkDestroyPipelineLayout(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkPipelineLayout)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkPipeline)
-vkDestroyPipeline(api->Device, ptr, null);
+vkDestroyPipeline(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkPipeline)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkPipelineCache)
-vkDestroyPipelineCache(api->Device, ptr, null);
+vkDestroyPipelineCache(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkPipelineCache)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkDescriptorSetLayout)
-vkDestroyDescriptorSetLayout(api->Device, ptr, null);
+vkDestroyDescriptorSetLayout(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkDescriptorSetLayout)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkShaderModule)
-vkDestroyShaderModule(api->Device, ptr, null);
+vkDestroyShaderModule(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkShaderModule)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkDescriptorPool)
-vkDestroyDescriptorPool(api->Device, ptr, null);
+vkDestroyDescriptorPool(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkDescriptorPool)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkFramebuffer)
-vkDestroyFramebuffer(api->Device, ptr, null);
+vkDestroyFramebuffer(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkFramebuffer)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkCommandPool)
-vkDestroyCommandPool(api->Device, ptr, null);
+vkDestroyCommandPool(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkCommandPool)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkFence)
-vkDestroyFence(api->Device, ptr, null);
+vkDestroyFence(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkFence)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkSemaphore)
-vkDestroySemaphore(api->Device, ptr, null);
+vkDestroySemaphore(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkSemaphore)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkDeviceMemory)
-vkFreeMemory(api->Device, ptr, null);
+vkFreeMemory(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkDeviceMemory)
 
 GRAPHICS_VULKAN_BEGIN_VKPTR(VkSampler)
-vkDestroySampler(api->Device, ptr, null);
+vkDestroySampler(api->Device, ptr, nullptr);
 GRAPHICS_VULKAN_END_VKPTR(VkSampler)
 
-};
+}; // namespace CainEngine::Graphics::Vulkan

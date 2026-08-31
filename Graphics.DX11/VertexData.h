@@ -5,7 +5,6 @@ namespace CainEngine::Graphics::API {
 class VertexData
 {
 public:
-
 	~VertexData();
 
 	inlined_vector<com_ptr<ID3D11Buffer>, 2> vertexBuffers;
@@ -18,4 +17,4 @@ public:
 	inlined_vector<VertexBufferDesc, 16> vertexLayout;
 };
 
-}
+} // namespace CainEngine::Graphics::API
