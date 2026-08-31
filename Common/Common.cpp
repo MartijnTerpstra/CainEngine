@@ -1,6 +1,7 @@
 #include "Precomp.h"
 
 #include <mdebug.h>
+#include <mstacktrace.h>
 
 namespace CainEngine {
 
@@ -9,7 +10,8 @@ namespace {
 void defaultFatalError(std::string_view)
 {
 	printf("Callstack:\n");
-	for(auto& line : Common::Callstack::get())
+
+	for(auto& line : mst::stacktrace::current())
 	{
 		std::cout << line << std::endl;
 	}

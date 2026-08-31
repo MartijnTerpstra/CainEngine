@@ -8,8 +8,6 @@ using namespace ::CainEngine::Graphics::DX11;
 
 PixelFormat EnumConverter::convert(DXGI_FORMAT format)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(format)
 	{
 	case DXGI_FORMAT_R8G8B8A8_UNORM:
@@ -33,8 +31,6 @@ PixelFormat EnumConverter::convert(DXGI_FORMAT format)
 
 DXGI_FORMAT EnumConverter::convert(PixelFormat format)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(format)
 	{
 	case PixelFormat::UnormRGBA8:
@@ -75,8 +71,6 @@ DXGI_FORMAT EnumConverter::convert(PixelFormat format)
 
 D3D11_FILTER EnumConverter::convert(TextureSamplingMode sampler, UINT& maxAnisotropy)
 {
-	COMMON_CALLSTACK_CALL;
-
 	maxAnisotropy = 0;
 
 	switch(sampler)
@@ -107,8 +101,6 @@ D3D11_FILTER EnumConverter::convert(TextureSamplingMode sampler, UINT& maxAnisot
 
 D3D11_TEXTURE_ADDRESS_MODE EnumConverter::convert(TextureAddressMode address)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(address)
 	{
 	case Graphics::TextureAddressMode::Wrap:
@@ -125,8 +117,6 @@ D3D11_TEXTURE_ADDRESS_MODE EnumConverter::convert(TextureAddressMode address)
 
 API::ShaderVariableType EnumConverter::convert(D3D_REGISTER_COMPONENT_TYPE type)
 {
-	COMMON_CALLSTACK_CALL;
-
 	using API::ShaderVariableType;
 
 	switch(type)
@@ -148,8 +138,6 @@ API::ShaderVariableType EnumConverter::convert(D3D_REGISTER_COMPONENT_TYPE type)
 
 DXGI_FORMAT EnumConverter::convert(API::ShaderVariableType type, uint32_t elementCount)
 {
-	COMMON_CALLSTACK_CALL;
-
 	using API::ShaderVariableType;
 
 	switch(type)
@@ -207,8 +195,6 @@ DXGI_FORMAT EnumConverter::convert(API::ShaderVariableType type, uint32_t elemen
 
 D3D11_CULL_MODE EnumConverter::convert(CullingMode culling)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(culling)
 	{
 	case Graphics::CullingMode::None:
@@ -225,8 +211,6 @@ D3D11_CULL_MODE EnumConverter::convert(CullingMode culling)
 
 D3D11_FILL_MODE EnumConverter::convert(FillingMode filling)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(filling)
 	{
 	case Graphics::FillingMode::Wireframe:
@@ -241,8 +225,6 @@ D3D11_FILL_MODE EnumConverter::convert(FillingMode filling)
 
 D3D11_PRIMITIVE_TOPOLOGY EnumConverter::convert(PrimitiveTopology topology)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(topology)
 	{
 	case Graphics::PrimitiveTopology::TriangleList:
@@ -332,8 +314,6 @@ EnumConverter::UsageConvertResult EnumConverter::convert(API::Usage usage)
 
 API::ShaderSemanticName EnumConverter::convert(const char* semantic)
 {
-	COMMON_CALLSTACK_CALL;
-
 	using API::ShaderSemanticName;
 
 	// Integral constant overflow because of compiletime hashing
@@ -357,8 +337,6 @@ API::ShaderSemanticName EnumConverter::convert(const char* semantic)
 
 const char* EnumConverter::convert(API::ShaderSemanticName semantic)
 {
-	COMMON_CALLSTACK_CALL;
-
 	using API::ShaderSemanticName;
 
 	switch(semantic)

@@ -25,8 +25,6 @@ DX11Factory::~DX11Factory()
 API::VertexShader* DX11Factory::createVertexShader(
 	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
-	COMMON_CALLSTACK_CALL;
-
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
 	auto inputRegisterHash = mst::hash64(
@@ -43,8 +41,6 @@ API::VertexShader* DX11Factory::createVertexShader(
 API::PixelShader* DX11Factory::createPixelShader(
 	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
-	COMMON_CALLSTACK_CALL;
-
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
 	const auto iter = m_pixelShaders.emplace(
@@ -56,8 +52,6 @@ API::PixelShader* DX11Factory::createPixelShader(
 API::VertexData* DX11Factory::createVertexData(
 	API::IRenderer* renderer, const VertexDataCreationInfo& creationInfo)
 {
-	COMMON_CALLSTACK_CALL;
-
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
 	if(creationInfo.positions.empty())
@@ -198,8 +192,6 @@ std::pair<int32_t, API::ITexture*> DX11Factory::createTexture(API::IRenderer* re
 	PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint32_t arraySize,
 	uint32_t mipLevels)
 {
-	COMMON_CALLSTACK_CALL;
-
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
 	auto device = dx11Renderer->d3DDevice();

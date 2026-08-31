@@ -16,8 +16,6 @@ using namespace ::CainEngine::Graphics::DX11;
 
 void DX11Renderer::renderFrame(std::function<void(API::IRenderContext*)> onRender)
 {
-	COMMON_CALLSTACK_CALL;
-
 	m_context->ClearRenderTargetView(m_backBufferRTV.get(), float4{ 0.5f, 0.5f, 0.5f, 1 }.data());
 
 	m_context->OMSetRenderTargets(1, &m_backBufferRTV, nullptr);

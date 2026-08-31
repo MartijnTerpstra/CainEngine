@@ -7,8 +7,6 @@ using namespace ::CainEngine::Platform::Internal;
 
 KeyCodes EnumConverter::toKeyCodes(WPARAM wParam)
 {
-	COMMON_CALLSTACK_CALL;
-
 	switch(wParam)
 	{
 	case 'A':

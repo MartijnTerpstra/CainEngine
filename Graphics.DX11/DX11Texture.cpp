@@ -18,8 +18,6 @@ DX11Texture::~DX11Texture()
 
 ResourceType DX11Texture::type() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 
@@ -51,8 +49,6 @@ ResourceType DX11Texture::type() const
 
 API::Usage DX11Texture::usage() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 
@@ -91,8 +87,6 @@ API::Usage DX11Texture::usage() const
 
 uint3 DX11Texture::size() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 
@@ -131,8 +125,6 @@ uint3 DX11Texture::size() const
 
 PixelFormat DX11Texture::format() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 
@@ -171,8 +163,6 @@ PixelFormat DX11Texture::format() const
 
 uint32_t DX11Texture::arraySize() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 
@@ -205,8 +195,6 @@ uint32_t DX11Texture::arraySize() const
 
 flag<API::BindFlags> DX11Texture::bindFlags() const
 {
-	COMMON_CALLSTACK_CALL;
-
 	D3D11_RESOURCE_DIMENSION dimension;
 	m_texture->GetType(&dimension);
 

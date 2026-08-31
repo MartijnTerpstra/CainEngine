@@ -103,6 +103,9 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "MST_CREATE_LIBRARY": "ON"
       },
+      "environment": {
+        "DISPLAY": ":0"
+      },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
           "hostOS": [ "Linux" ]

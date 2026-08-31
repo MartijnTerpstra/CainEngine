@@ -81,8 +81,6 @@ void ShaderManager::exit()
 
 API::VertexShader* ShaderManager::getVertexShader(const std::string& name)
 {
-	COMMON_CALLSTACK_CALL;
-
 	for(auto& shader : m_vertexShaders)
 	{
 		if(shader.first == name)
@@ -97,8 +95,6 @@ API::VertexShader* ShaderManager::getVertexShader(const std::string& name)
 
 API::PixelShader* ShaderManager::getPixelShader(const std::string& name)
 {
-	COMMON_CALLSTACK_CALL;
-
 	for(auto& shader : m_pixelShaders)
 	{
 		if(shader.first == name)
