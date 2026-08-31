@@ -19,24 +19,24 @@ private:
 public:
 	// Creation
 
-	static std::vector<RefPtr<IProcess>> GetProcesses(const std::string& name);
-	static RefPtr<IProcess> GetProcess(uint32_t id);
-	static RefPtr<IProcess> GetCurrentProcess();
-	static RefPtr<IProcess> CreateNewProcess(const std::string& path,
+	static std::vector<RefPtr<IProcess>> getProcesses(const std::string& name);
+	static RefPtr<IProcess> getProcess(uint32_t id);
+	static RefPtr<IProcess> getCurrentProcess();
+	static RefPtr<IProcess> createNewProcess(const std::string& path,
 		const std::string& commandLine, const std::string& workingDirectory);
 
 public:
 	// IProcess overrides
 
-	std::string GetName() const override;
-	uint32_t GetID() const override;
-	uint32_t GetSessionID() const override;
-	std::chrono::time_point<std::chrono::system_clock> GetCreationTime() const override;
+	std::string getName() const override;
+	uint32_t getId() const override;
+	uint32_t getSessionId() const override;
+	std::chrono::time_point<std::chrono::system_clock> getCreationTime() const override;
 
 private:
 	// BaseObject overrides
 
-	virtual void* _As(uint64_t) const override;
+	virtual void* asImpl(uint64_t) const override;
 
 private:
 	// Member variables

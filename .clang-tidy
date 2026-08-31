@@ -1,0 +1,33 @@
+---
+# Only enforce identifier naming here - clang-format (see .clang-format) already
+# owns layout/whitespace, and we don't want a general lint pass mixed into a
+# pure naming-convention change.
+Checks: '-*,readability-identifier-naming'
+
+# Only functions and member functions are covered by camelBack; every other
+# identifier category (types, namespaces, variables, macros, enum constants,
+# template params, ...) is deliberately left unset so this check leaves it
+# alone.
+CheckOptions:
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.GlobalFunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.ConstexprFunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.MethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ClassMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.VirtualMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.StaticMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ConstexprMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicMethodCase
+    value: camelBack

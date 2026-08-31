@@ -11,12 +11,12 @@ Model::~Model()
 {
 }
 
-void Model::SetVertexData(API::VertexData* vertexData) noexcept
+void Model::setVertexData(API::VertexData* vertexData) noexcept
 {
 	m_vertexData = vertexData;
 }
 
-void Model::AddSubMesh(uint32_t indexOffset, uint32_t indexCount, int32_t materialIndex)
+void Model::addSubMesh(uint32_t indexOffset, uint32_t indexCount, int32_t materialIndex)
 {
 	auto& subMesh = m_subMeshes.emplace_back();
 
@@ -25,12 +25,12 @@ void Model::AddSubMesh(uint32_t indexOffset, uint32_t indexCount, int32_t materi
 	subMesh.materialIndex = materialIndex;
 }
 
-array_view<Model::SubMesh> Model::SubMeshes() const noexcept
+array_view<Model::SubMesh> Model::subMeshes() const noexcept
 {
 	return m_subMeshes;
 }
 
-const API::VertexData& Model::VertexData() const noexcept
+const API::VertexData& Model::vertexData() const noexcept
 {
 	return *m_vertexData;
 }

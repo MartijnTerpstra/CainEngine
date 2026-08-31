@@ -32,43 +32,46 @@ public:
 public:
 	// Main functionality
 
-	[[nodiscard]] const float3& Position() const noexcept;
+	[[nodiscard]] const float3& position() const noexcept;
 
-	void SetPosition(const float3& position)
+	void setPosition(const float3& position)
 		requires(!IsConst);
-	void Translate(const float3& translation)
+	void translate(const float3& translation)
 		requires(!IsConst);
 
-	[[nodiscard]] bool UsingEulerAngles() const noexcept;
-	[[nodiscard]] bool UsingQuaternion() const noexcept;
+	[[nodiscard]] bool usingEulerAngles() const noexcept;
+	[[nodiscard]] bool usingQuaternion() const noexcept;
 
-	[[nodiscard]] const quaternion& Quaternion() const noexcept;
+	// Named rotation() rather than quaternion() because a member function
+	// with the exact same spelling as its own return type self-shadows that
+	// type within class scope on some compilers.
+	[[nodiscard]] const quaternion& rotation() const noexcept;
 
-	[[nodiscard]] degrees EulerX() const noexcept;
-	[[nodiscard]] degrees EulerY() const noexcept;
-	[[nodiscard]] degrees EulerZ() const noexcept;
-	[[nodiscard]] euler_rotation_order RotationOrder() const noexcept;
+	[[nodiscard]] degrees eulerX() const noexcept;
+	[[nodiscard]] degrees eulerY() const noexcept;
+	[[nodiscard]] degrees eulerZ() const noexcept;
+	[[nodiscard]] euler_rotation_order rotationOrder() const noexcept;
 
-	void SetQuaternion(const quaternion& quat)
+	void setQuaternion(const quaternion& quat)
 		requires(!IsConst);
-	void SetEulerAngles(
+	void setEulerAngles(
 		degrees x, degrees y, degrees z, euler_rotation_order order = euler_rotation_order::zxy)
 		requires(!IsConst);
 
-	void Reset()
+	void reset()
 		requires(!IsConst);
 
-	[[nodiscard]] EntityID Entity() const noexcept;
+	[[nodiscard]] EntityID entity() const noexcept;
 
-	void CopyTo(TransformImpl<false>& other) const;
+	void copyTo(TransformImpl<false>& other) const;
 
 private:
 	// Internal functionality
 
 	TransformImpl(SceneT* scene, EntityID entity) noexcept;
 
-	const Scene::EntityData& GetData() const noexcept;
-	Scene::EntityData& GetData() noexcept
+	const Scene::EntityData& getData() const noexcept;
+	Scene::EntityData& getData() noexcept
 		requires(!IsConst);
 
 private:

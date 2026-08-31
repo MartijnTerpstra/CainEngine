@@ -37,32 +37,32 @@ struct Widget
 	std::vector<Nested> children;
 };
 
-std::map<std::string, Color> ColorMap()
+std::map<std::string, Color> colorMap()
 {
 	return {{"Red", Color::Red}, {"Green", Color::Green}, {"Blue", Color::Blue}};
 }
 
-JsonDeclaration<Nested> NestedDeclaration()
+JsonDeclaration<Nested> nestedDeclaration()
 {
 	JsonDeclaration<Nested> decl;
-	decl.AddMember("value", &Nested::value);
+	decl.addMember("value", &Nested::value);
 	return decl;
 }
 
-JsonDeclaration<Widget> WidgetDeclaration()
+JsonDeclaration<Widget> widgetDeclaration()
 {
 	JsonDeclaration<Widget> decl;
-	decl.AddMember("enabled", &Widget::enabled);
-	decl.AddMember("flagWithDefault", &Widget::flagWithDefault, /* optional */ true);
-	decl.AddMember("count", &Widget::count);
-	decl.AddMember("ratio", &Widget::ratio);
-	decl.AddMember("offset", &Widget::offset);
-	decl.AddMember("name", &Widget::name);
-	decl.AddMember("color", &Widget::color, ColorMap());
-	decl.AddMember("nested", &Widget::nested, NestedDeclaration());
-	decl.AddMember("description", &Widget::description);
-	decl.AddMember("tags", &Widget::tags);
-	decl.AddMember("children", &Widget::children, NestedDeclaration());
+	decl.addMember("enabled", &Widget::enabled);
+	decl.addMember("flagWithDefault", &Widget::flagWithDefault, /* optional */ true);
+	decl.addMember("count", &Widget::count);
+	decl.addMember("ratio", &Widget::ratio);
+	decl.addMember("offset", &Widget::offset);
+	decl.addMember("name", &Widget::name);
+	decl.addMember("color", &Widget::color, colorMap());
+	decl.addMember("nested", &Widget::nested, nestedDeclaration());
+	decl.addMember("description", &Widget::description);
+	decl.addMember("tags", &Widget::tags);
+	decl.addMember("children", &Widget::children, nestedDeclaration());
 	return decl;
 }
 
@@ -71,10 +71,10 @@ struct Item
 	int32_t value = 0;
 };
 
-JsonDeclaration<Item> ItemDeclaration()
+JsonDeclaration<Item> itemDeclaration()
 {
 	JsonDeclaration<Item> decl;
-	decl.AddMember("value", &Item::value);
+	decl.addMember("value", &Item::value);
 	return decl;
 }
 
@@ -83,7 +83,7 @@ class JsonParserTest : public ::testing::Test
 protected:
 	// Writes `content` to a fresh temp file and returns its path; all files
 	// created this way are cleaned up in TearDown().
-	std::filesystem::path WriteJson(std::string_view content)
+	std::filesystem::path writeJson(std::string_view content)
 	{
 		auto path = std::filesystem::temp_directory_path() /
 			("CainEngine_CommonTests_Json_" + std::to_string(m_fileCounter++) + ".json");
@@ -126,10 +126,10 @@ constexpr std::string_view CompleteWidgetJson = R"({
 
 TEST_F(JsonParserTest, ParsesAllFieldKindsFromCompleteJson)
 {
-	auto path = WriteJson(CompleteWidgetJson);
+	auto path = writeJson(CompleteWidgetJson);
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), WidgetDeclaration());
+	auto result = parser.parse(path.string(), widgetDeclaration());
 
 	ASSERT_TRUE(result.has_value());
 	EXPECT_TRUE(result->enabled);
@@ -150,7 +150,7 @@ TEST_F(JsonParserTest, ParsesAllFieldKindsFromCompleteJson)
 TEST_F(JsonParserTest, MissingRequiredFieldFailsTheParse)
 {
 	// No "name" field, which is a required (non-optional) member.
-	auto path = WriteJson(R"({
+	auto path = writeJson(R"({
 		"enabled": true,
 		"count": 1,
 		"ratio": 1.0,
@@ -162,7 +162,7 @@ TEST_F(JsonParserTest, MissingRequiredFieldFailsTheParse)
 	})");
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), WidgetDeclaration());
+	auto result = parser.parse(path.string(), widgetDeclaration());
 
 	EXPECT_FALSE(result.has_value());
 }
@@ -173,10 +173,10 @@ TEST_F(JsonParserTest, MemberDeclaredOptionalDefaultsWhenMissing)
 {
 	// "flagWithDefault" is declared with the optional=true AddMember overload,
 	// so omitting it from the JSON must not fail the parse.
-	auto path = WriteJson(CompleteWidgetJson);
+	auto path = writeJson(CompleteWidgetJson);
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), WidgetDeclaration());
+	auto result = parser.parse(path.string(), widgetDeclaration());
 
 	ASSERT_TRUE(result.has_value());
 	EXPECT_FALSE(result->flagWithDefault);
@@ -186,7 +186,7 @@ TEST_F(JsonParserTest, MemberDeclaredOptionalDefaultsWhenMissing)
 
 TEST_F(JsonParserTest, OptionalFieldIsNulloptWhenAbsent)
 {
-	auto path = WriteJson(R"({
+	auto path = writeJson(R"({
 		"enabled": true,
 		"count": 1,
 		"ratio": 1.0,
@@ -199,7 +199,7 @@ TEST_F(JsonParserTest, OptionalFieldIsNulloptWhenAbsent)
 	})");
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), WidgetDeclaration());
+	auto result = parser.parse(path.string(), widgetDeclaration());
 
 	ASSERT_TRUE(result.has_value());
 	EXPECT_FALSE(result->description.has_value());
@@ -210,11 +210,11 @@ TEST_F(JsonParserTest, OptionalFieldIsNulloptWhenAbsent)
 TEST_F(JsonParserTest, InvalidEnumValueLogsAnErrorButDoesNotFailTheParse)
 {
 	// Unlike a missing required scalar field, a value that fails to match the
-	// conversion map only logs Common::Error() and resets the member to its
+	// conversion map only logs Common::error() and resets the member to its
 	// zero value (Color::Red) - it does not set the parser's failure flag, so
 	// Parse() still succeeds. This is existing (if perhaps surprising)
 	// behavior, captured here so a future change to it is a deliberate one.
-	auto path = WriteJson(R"({
+	auto path = writeJson(R"({
 		"enabled": true,
 		"count": 1,
 		"ratio": 1.0,
@@ -227,7 +227,7 @@ TEST_F(JsonParserTest, InvalidEnumValueLogsAnErrorButDoesNotFailTheParse)
 	})");
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), WidgetDeclaration());
+	auto result = parser.parse(path.string(), widgetDeclaration());
 
 	ASSERT_TRUE(result.has_value());
 	EXPECT_EQ(Color::Red, result->color);
@@ -237,30 +237,30 @@ TEST_F(JsonParserTest, InvalidEnumValueLogsAnErrorButDoesNotFailTheParse)
 
 TEST_F(JsonParserTest, ParseOnATopLevelArrayFails)
 {
-	auto path = WriteJson(R"([ { "value": 1 } ])");
+	auto path = writeJson(R"([ { "value": 1 } ])");
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), ItemDeclaration());
+	auto result = parser.parse(path.string(), itemDeclaration());
 
 	EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(JsonParserTest, ParseArrayOnATopLevelObjectFails)
 {
-	auto path = WriteJson(R"({ "value": 1 })");
+	auto path = writeJson(R"({ "value": 1 })");
 
 	JsonParser parser;
-	auto result = parser.ParseArray(path.string(), ItemDeclaration());
+	auto result = parser.parseArray(path.string(), itemDeclaration());
 
 	EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(JsonParserTest, ParseArrayRoundTripsEachElement)
 {
-	auto path = WriteJson(R"([ { "value": 1 }, { "value": 2 }, { "value": 3 } ])");
+	auto path = writeJson(R"([ { "value": 1 }, { "value": 2 }, { "value": 3 } ])");
 
 	JsonParser parser;
-	auto result = parser.ParseArray(path.string(), ItemDeclaration());
+	auto result = parser.parseArray(path.string(), itemDeclaration());
 
 	ASSERT_TRUE(result.has_value());
 	ASSERT_EQ(3u, result->size());
@@ -273,10 +273,10 @@ TEST_F(JsonParserTest, ParseArrayRoundTripsEachElement)
 
 TEST_F(JsonParserTest, MalformedJsonFails)
 {
-	auto path = WriteJson("{ this is not valid json ");
+	auto path = writeJson("{ this is not valid json ");
 
 	JsonParser parser;
-	auto result = parser.Parse(path.string(), ItemDeclaration());
+	auto result = parser.parse(path.string(), itemDeclaration());
 
 	EXPECT_FALSE(result.has_value());
 }
@@ -284,10 +284,10 @@ TEST_F(JsonParserTest, MalformedJsonFails)
 TEST_F(JsonParserTest, NonexistentFileFailsGracefully)
 {
 	JsonParser parser;
-	auto result = parser.Parse(
+	auto result = parser.parse(
 		(std::filesystem::temp_directory_path() / "CainEngine_CommonTests_Json_DoesNotExist.json")
 			.string(),
-		ItemDeclaration());
+		itemDeclaration());
 
 	EXPECT_FALSE(result.has_value());
 }

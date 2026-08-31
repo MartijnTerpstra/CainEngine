@@ -15,7 +15,7 @@ class IWin32Window : public IWindow
 public:
 	// Main functionality
 
-	virtual HWND GetHwnd() const = 0;
+	virtual HWND getHwnd() const = 0;
 
 }; // class IWin32Window
 

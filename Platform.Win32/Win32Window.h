@@ -18,55 +18,55 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
+	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
 
-	static RefPtr<IWindow> GetConsole();
+	static RefPtr<IWindow> getConsole();
 
 public:
 	// IWindow overrides
 
-	void Show() override;
+	void show() override;
 
-	void Redraw() override;
+	void redraw() override;
 
-	void Maximize() override;
+	void maximize() override;
 
-	void Minimize() override;
+	void minimize() override;
 
-	void Close() override;
+	void close() override;
 
-	void HandleEvents() override;
+	void handleEvents() override;
 
-	bool IsShown() const override;
+	bool isShown() const override;
 
-	std::string GetName() const override;
+	std::string getName() const override;
 
-	int GetWidth() const override;
+	int getWidth() const override;
 
-	int GetHeight() const override;
+	int getHeight() const override;
 
-	Rect GetRect() const override;
+	Rect getRect() const override;
 
-	Rect GetClientRect() const override;
+	Rect getClientRect() const override;
 
-	void ToForeground() override;
+	void toForeground() override;
 
 public:
 	// IWin32Window overrides
 
-	HWND GetHwnd() const override;
+	HWND getHwnd() const override;
 
 private:
 	// BaseObject overrides
 
-	virtual void * _As(uint64_t) const override;
+	virtual void * asImpl(uint64_t) const override;
 
 private:
 	// Internal functionality
 
-	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	LRESULT OnWndProc(UINT message, WPARAM wParam, LPARAM lParam);
+	LRESULT onWndProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	// Member variables

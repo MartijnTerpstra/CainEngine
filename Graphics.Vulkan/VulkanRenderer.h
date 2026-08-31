@@ -15,21 +15,21 @@ public:
 public:
 	// IRendererImpl overrides
 
-	uint32 ID() const override;
+	uint32 id() const override;
 
-	void Init(flag<RendererInitFlags> initFlags) override;
+	void init(flag<RendererInitFlags> initFlags) override;
 
-	void Exit() override;
+	void exit() override;
 
-	void RenderFrame() override;
+	void renderFrame() override;
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow) override;
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow) override;
 
-	unique_ptr<VertexShader> CreateVertexShader(Implementation::CompiledShaderData&& shaderData) override;
+	unique_ptr<VertexShader> createVertexShader(Implementation::CompiledShaderData&& shaderData) override;
 
-	unique_ptr<PixelShader> CreatePixelShader(Implementation::CompiledShaderData&& shaderData) override;
+	unique_ptr<PixelShader> createPixelShader(Implementation::CompiledShaderData&& shaderData) override;
 
-	bool HasFeature(RendererFeature feature) const override;
+	bool hasFeature(RendererFeature feature) const override;
 
 private:
 	// Member variables

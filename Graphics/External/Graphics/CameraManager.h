@@ -20,31 +20,31 @@ public:
 public:
 	// Main functionality
 
-	void AddCamera(EntityID entity);
+	void addCamera(EntityID entity);
 
-	void RemoveCamera(EntityID entity) noexcept;
+	void removeCamera(EntityID entity) noexcept;
 
-	void MoveCamera(EntityID entityFrom, EntityID entityTo);
+	void moveCamera(EntityID entityFrom, EntityID entityTo);
 
-	[[nodiscard]] bool HasCamera(EntityID entity) const noexcept;
+	[[nodiscard]] bool hasCamera(EntityID entity) const noexcept;
 
 public:
 	// Component settings
 
-	void SetPerspectiveProjection(
+	void setPerspectiveProjection(
 		EntityID entity, degrees fov, float nearDepth, float farDepth) noexcept;
-	void SetOrthographicProjection(EntityID entity, const float2& min, const float2& max,
+	void setOrthographicProjection(EntityID entity, const float2& min, const float2& max,
 		float nearDepth, float farDepth) noexcept;
 
 private:
 	// Internal functionality
 
-	[[nodiscard]] uint16_t AddRenderData();
-	void RemoveRenderData(uint16_t index) noexcept;
+	[[nodiscard]] uint16_t addRenderData();
+	void removeRenderData(uint16_t index) noexcept;
 
-	matrix CreateProjectionMatrix(const EntityData& entityData, const float2& viewport) const;
-	matrix CreateProjectionMatrixImpl(const PerspectiveData& data, const float2& viewport) const;
-	matrix CreateProjectionMatrixImpl(const OrthographicData& data, const float2& viewport) const;
+	matrix createProjectionMatrix(const EntityData& entityData, const float2& viewport) const;
+	matrix createProjectionMatrixImpl(const PerspectiveData& data, const float2& viewport) const;
+	matrix createProjectionMatrixImpl(const OrthographicData& data, const float2& viewport) const;
 
 private:
 	// Member variables

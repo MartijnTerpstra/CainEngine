@@ -9,7 +9,7 @@ class EnumConverter
 public:
 	// Main functionality
 
-	static KeyCodes ToKeyCodes(WPARAM wParam);
+	static KeyCodes toKeyCodes(WPARAM wParam);
 
 }; // class EnumConverter
 

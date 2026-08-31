@@ -10,7 +10,7 @@ public:
 	Factory(Renderer& renderer);
 	~Factory();
 
-	std::pair<int32_t, API::ITexture*> LoadTexture(Common::Source& source);
+	std::pair<int32_t, API::ITexture*> loadTexture(Common::Source& source);
 
 private:
 	API::IFactory* const m_factory;

@@ -13,16 +13,16 @@ public:
 public:
 	// Main functionality
 
-	virtual Graphics::API::CompiledShaderData Compile(const char* sourceDirectory,
+	virtual Graphics::API::CompiledShaderData compile(const char* sourceDirectory,
 		const char* filePath,
 		Graphics::ShaderType shaderType,
 		const char* entryPoint,
 		const std::vector<ShaderDefine>& defines,
 		bool optimize) const = 0;
 
-	virtual std::string RendererType() const = 0;
+	virtual std::string rendererType() const = 0;
 
-	virtual uint32_t RendererID() const = 0;
+	virtual uint32_t rendererId() const = 0;
 
 };
 

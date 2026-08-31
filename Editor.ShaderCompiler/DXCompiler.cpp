@@ -12,8 +12,8 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Editor::ShaderCompiler;
 
 // CainEngine Compiled HLSL
-constexpr uint32_t DX11_ID = Common::PackChars('d', 'x', '1', '1');
-constexpr uint32_t DX12_ID = Common::PackChars('d', 'x', '1', '2');
+constexpr uint32_t DX11_ID = Common::packChars('d', 'x', '1', '1');
+constexpr uint32_t DX12_ID = Common::packChars('d', 'x', '1', '2');
 
 class DXCompiler : public ICompiler
 {
@@ -26,17 +26,17 @@ public:
 public:
 	// ICompiler overrides
 
-	API::CompiledShaderData Compile(const char* sourceDirectory, const char* filePath,
+	API::CompiledShaderData compile(const char* sourceDirectory, const char* filePath,
 		ShaderType shaderType, const char* entryPoint, const std::vector<ShaderDefine>& defines,
 		bool optimize) const override;
 
-	std::string RendererType() const override;
+	std::string rendererType() const override;
 
-	uint32_t RendererID() const override;
+	uint32_t rendererId() const override;
 
 private:
-	static API::ShaderVariableType Convert(D3D_REGISTER_COMPONENT_TYPE type);
-	static API::ShaderSemanticName Convert(const char* semantic);
+	static API::ShaderVariableType convert(D3D_REGISTER_COMPONENT_TYPE type);
+	static API::ShaderSemanticName convert(const char* semantic);
 
 private:
 	// Member variables
@@ -49,12 +49,12 @@ private:
 	const uint32_t m_rendererID;
 };
 
-std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX11Compiler()
+std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::createDX11Compiler()
 {
 	return std::make_unique<DXCompiler>("DX11", DX11_ID, "_5_0");
 }
 
-std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::CreateDX12Compiler()
+std::unique_ptr<ICompiler> CainEngine::Editor::ShaderCompiler::createDX12Compiler()
 {
 	return std::make_unique<DXCompiler>("DX12", DX12_ID, "_5_1");
 }
@@ -67,7 +67,7 @@ DXCompiler::DXCompiler(const char* rendererType, uint32_t rendererID, const char
 	m_d3dCompiler = LoadLibraryA(D3DCOMPILER_DLL_A);
 
 	if(!m_d3dCompiler)
-		Common::FatalError("LoadLibraryA failed, ErrorCode: %u", GetLastError());
+		Common::fatalError("LoadLibraryA failed, ErrorCode: %u", GetLastError());
 
 	m_d3dCompileFunc = reinterpret_cast<decltype(m_d3dCompileFunc)>(
 		GetProcAddress(m_d3dCompiler, "D3DCompileFromFile"));
@@ -80,7 +80,7 @@ DXCompiler::~DXCompiler()
 	FreeLibrary(m_d3dCompiler);
 }
 
-API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const char* filePath,
+API::CompiledShaderData DXCompiler::compile(const char* sourceDirectory, const char* filePath,
 	ShaderType shaderType, const char* entryPoint, const std::vector<ShaderDefine>& defines,
 	bool optimize) const
 {
@@ -171,7 +171,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 			if(newlineIndex == std::string::npos)
 				break;
 
-			Common::Error(error.substr(fromIndex, newlineIndex - fromIndex).c_str());
+			Common::error(error.substr(fromIndex, newlineIndex - fromIndex).c_str());
 
 			fromIndex = newlineIndex + 1;
 		}
@@ -189,7 +189,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 	com_ptr<ID3D12ShaderReflection> reflection;
 	if(FAILED(m_d3dReflectFunc(r.byteCode.data(), r.byteCode.size(), MST_IID_PPV_ARGS(reflection))))
 	{
-		Common::Error("Unable to reflect shader");
+		Common::error("Unable to reflect shader");
 		return {};
 	}
 
@@ -204,9 +204,9 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 		API::ShaderRegisterInfo sem;
 
 		sem.registerSlot = inputDesc.Register;
-		sem.variableType = Convert(inputDesc.ComponentType);
+		sem.variableType = convert(inputDesc.ComponentType);
 
-		sem.semanticName = Convert(inputDesc.SemanticName);
+		sem.semanticName = convert(inputDesc.SemanticName);
 		sem.semanticIndex = inputDesc.SemanticIndex;
 
 		int idx = 0;
@@ -232,7 +232,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 		API::ShaderRegisterInfo sem;
 
 		sem.registerSlot = inputDesc.Register;
-		sem.variableType = Convert(inputDesc.ComponentType);
+		sem.variableType = convert(inputDesc.ComponentType);
 
 		int idx = 0;
 		sem.variableElementCount = 0;
@@ -283,7 +283,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 				tex.IsArray = true;
 				break;
 			default:
-				Common::FatalError("D3D_SRV_DIMENSION corrupted");
+				Common::fatalError("D3D_SRV_DIMENSION corrupted");
 			}
 			tex.nameHash = mst::hash64(inputDesc.Name);
 			tex.slot = inputDesc.BindPoint;
@@ -308,7 +308,7 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 		case D3D_SIT_SAMPLER:
 			continue;
 		default:
-			Common::FatalError("D3D_SHADER_INPUT_TYPE corrupted");
+			Common::fatalError("D3D_SHADER_INPUT_TYPE corrupted");
 			break;
 		}
 
@@ -321,17 +321,17 @@ API::CompiledShaderData DXCompiler::Compile(const char* sourceDirectory, const c
 	return r;
 }
 
-std::string DXCompiler::RendererType() const
+std::string DXCompiler::rendererType() const
 {
 	return m_type;
 }
 
-uint32_t DXCompiler::RendererID() const
+uint32_t DXCompiler::rendererId() const
 {
 	return m_rendererID;
 }
 
-API::ShaderVariableType DXCompiler::Convert(D3D_REGISTER_COMPONENT_TYPE type)
+API::ShaderVariableType DXCompiler::convert(D3D_REGISTER_COMPONENT_TYPE type)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -344,15 +344,15 @@ API::ShaderVariableType DXCompiler::Convert(D3D_REGISTER_COMPONENT_TYPE type)
 	case D3D_REGISTER_COMPONENT_FLOAT32:
 		return API::ShaderVariableType::Float;
 	case D3D_REGISTER_COMPONENT_UNKNOWN:
-		Common::FatalError("D3D_REGISTER_COMPONENT_TYPE has a unknown value");
+		Common::fatalError("D3D_REGISTER_COMPONENT_TYPE has a unknown value");
 		return API::ShaderVariableType::Float;
 	default:
-		Common::FatalError("D3D_REGISTER_COMPONENT_TYPE has a corrupted value");
+		Common::fatalError("D3D_REGISTER_COMPONENT_TYPE has a corrupted value");
 		return API::ShaderVariableType::Float;
 	}
 }
 
-API::ShaderSemanticName DXCompiler::Convert(const char* semantic)
+API::ShaderSemanticName DXCompiler::convert(const char* semantic)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -367,7 +367,7 @@ API::ShaderSemanticName DXCompiler::Convert(const char* semantic)
 	case mst::compiletime::hash32("NORMAL"):
 		return API::ShaderSemanticName::Normal;
 	default:
-		Common::FatalError("semantic name not found");
+		Common::fatalError("semantic name not found");
 		return (API::ShaderSemanticName)-1;
 	}
 }

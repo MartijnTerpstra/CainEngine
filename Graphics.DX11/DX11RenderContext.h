@@ -13,12 +13,12 @@ public:
 public:
 	// IRenderContext overrides
 
-	void SetViewport(const Viewport& vp, float depthMin, float depthMax) override;
-	void SetVertexData(const API::VertexData& vertexData) override;
-	void SetVertexShader(API::VertexShader* shader) override;
-	void SetPixelShader(API::PixelShader* shader) override;
-	void Draw(uint32_t vertexCount, uint32_t startOffset) override;
-	void DrawIndexed(uint32_t indexCount, uint32_t startOffset) override;
+	void setViewport(const Viewport& vp, float depthMin, float depthMax) override;
+	void setVertexData(const API::VertexData& vertexData) override;
+	void setVertexShader(API::VertexShader* shader) override;
+	void setPixelShader(API::PixelShader* shader) override;
+	void draw(uint32_t vertexCount, uint32_t startOffset) override;
+	void drawIndexed(uint32_t indexCount, uint32_t startOffset) override;
 
 private:
 	// Member variables

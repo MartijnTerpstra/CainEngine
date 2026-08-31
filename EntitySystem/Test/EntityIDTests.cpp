@@ -8,7 +8,7 @@ TEST(EntityID, DefaultConstructedIsNull)
 {
 	EntityID id;
 
-	EXPECT_TRUE(id.IsNull());
+	EXPECT_TRUE(id.isNull());
 	EXPECT_FALSE(bool(id));
 }
 
@@ -16,7 +16,7 @@ TEST(EntityID, NullConstantIsNull)
 {
 	EntityID id = EntityID::Null;
 
-	EXPECT_TRUE(id.IsNull());
+	EXPECT_TRUE(id.isNull());
 	EXPECT_FALSE(bool(id));
 }
 
@@ -24,9 +24,9 @@ TEST(EntityID, IndexAndVersionRoundTripThroughConstructor)
 {
 	EntityID id(42, 7);
 
-	EXPECT_EQ(42, id.Index());
-	EXPECT_EQ(7, id.Version());
-	EXPECT_FALSE(id.IsNull());
+	EXPECT_EQ(42, id.index());
+	EXPECT_EQ(7, id.version());
+	EXPECT_FALSE(id.isNull());
 	EXPECT_TRUE(bool(id));
 }
 
@@ -35,19 +35,19 @@ TEST(EntityID, ZeroIndexAndVersionIsNotNull)
 	// Null is encoded as UINT32_MAX, so an all-zero id must not be confused with it.
 	EntityID id(0, 0);
 
-	EXPECT_FALSE(id.IsNull());
-	EXPECT_EQ(0, id.Index());
-	EXPECT_EQ(0, id.Version());
+	EXPECT_FALSE(id.isNull());
+	EXPECT_EQ(0, id.index());
+	EXPECT_EQ(0, id.version());
 }
 
 TEST(EntityID, ValueRoundTripsThroughRawConstructor)
 {
 	EntityID original(123, 45);
-	EntityID copy(original.Value());
+	EntityID copy(original.value());
 
 	EXPECT_EQ(original, copy);
-	EXPECT_EQ(original.Index(), copy.Index());
-	EXPECT_EQ(original.Version(), copy.Version());
+	EXPECT_EQ(original.index(), copy.index());
+	EXPECT_EQ(original.version(), copy.version());
 }
 
 TEST(EntityID, EqualityComparesIndexAndVersion)

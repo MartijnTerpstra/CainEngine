@@ -25,13 +25,13 @@ public:
 		m_mainWindow = m_platformFactory->CreateNewWindow("Main Window", uint2(1280, 720),
 			Platform::WindowType::Default, Platform::WindowFlags::Default, shared_from_this());
 
-		m_mainWindow->Show();
+		m_mainWindow->show();
 
-		while (m_mainWindow->IsShown())
+		while (m_mainWindow->isShown())
 		{
-			m_mainWindow->Redraw();
+			m_mainWindow->redraw();
 
-			m_mainWindow->HandleEvents();
+			m_mainWindow->handleEvents();
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
@@ -42,7 +42,7 @@ public:
 private:
 	// IWindowEventListener overrides
 
-	void OnRedraw(Platform::IWindow* window) override
+	void onRedraw(Platform::IWindow* window) override
 	{
 		// TODO: render a frame via Graphics::Vulkan once it's wired up.
 	}
@@ -57,7 +57,7 @@ private:
 
 int main()
 {
-	auto platform = Platform::Xorg::CreateInstance();
+	auto platform = Platform::Xorg::createInstance();
 
 	auto application = std::make_shared<Application>(platform);
 

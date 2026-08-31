@@ -19,21 +19,21 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IMonitor> GetMainMonitor();
-	static std::vector<RefPtr<IMonitor>> GetMonitors();
+	static RefPtr<IMonitor> getMainMonitor();
+	static std::vector<RefPtr<IMonitor>> getMonitors();
 
 public:
 	// IMonitor overrides
 
-	std::string GetName() const override;
-	Rect GetResolution() const override;
-	Rect GetWorkSpace() const override;
-	uint32_t GetRefreshFrequency() const override;
+	std::string getName() const override;
+	Rect getResolution() const override;
+	Rect getWorkSpace() const override;
+	uint32_t getRefreshFrequency() const override;
 
 private:
 	// BaseObject overrides
 
-	virtual void* _As(uint64_t) const override;
+	virtual void* asImpl(uint64_t) const override;
 
 private:
 	// Member variables

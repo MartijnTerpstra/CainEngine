@@ -11,7 +11,7 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-std::unique_ptr<API::IRenderer> DX11::CreateInstance()
+std::unique_ptr<API::IRenderer> DX11::createInstance()
 {
 	return std::make_unique<DX11::DX11Renderer>();
 }
@@ -26,24 +26,24 @@ DX11Renderer::~DX11Renderer()
 	FreeLibrary(m_d3d11);
 }
 
-ID3D11Device* DX11Renderer::D3DDevice()
+ID3D11Device* DX11Renderer::d3DDevice()
 {
 	return m_device.get();
 }
 
-void DX11Renderer::AddVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
+void DX11Renderer::addVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
 {
-	m_inputLayoutResolver.AddVertexShaderInputRegisters(inputRegisterHash, inputRegisters);
+	m_inputLayoutResolver.addVertexShaderInputRegisters(inputRegisterHash, inputRegisters);
 }
 
-ID3D11InputLayout* DX11Renderer::GetOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout)
+ID3D11InputLayout* DX11Renderer::getOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout)
 {
-	return m_inputLayoutResolver.Resolve(m_device.get(), vs, vertexLayoutHash, vertexLayout);
+	return m_inputLayoutResolver.resolve(m_device.get(), vs, vertexLayoutHash, vertexLayout);
 }
 
-void DX11Renderer::RemoveSwapChain()
+void DX11Renderer::removeSwapChain()
 {
-	Flush();
+	flush();
 
 	// Release old window handles
 	m_context->OMSetRenderTargets(0, nullptr, nullptr);
@@ -52,7 +52,7 @@ void DX11Renderer::RemoveSwapChain()
 	m_swapChain.reset();
 }
 
-void DX11Renderer::CreateSwapChain(DXGI_SWAP_CHAIN_DESC& desc)
+void DX11Renderer::createSwapChain(DXGI_SWAP_CHAIN_DESC& desc)
 {
 	com_ptr<IDXGIFactory> factory;
 	CHECK_HRESULT(m_adapter->GetParent(MST_IID_PPV_ARGS(factory)));
@@ -61,10 +61,10 @@ void DX11Renderer::CreateSwapChain(DXGI_SWAP_CHAIN_DESC& desc)
 
 	CHECK_HRESULT(m_swapChain->GetBuffer(0, MST_IID_PPV_ARGS(m_backbuffer)));
 
-	UpdateRTV(MultiSamplingCount());
+	updateRtv(multiSamplingCount());
 }
 
-void CainEngine::Graphics::DX11::DX11Renderer::UpdateRTV(uint32_t multiSamplingCount)
+void CainEngine::Graphics::DX11::DX11Renderer::updateRtv(uint32_t multiSamplingCount)
 {
 	m_msBackBuffer.reset();
 
@@ -83,7 +83,7 @@ void CainEngine::Graphics::DX11::DX11Renderer::UpdateRTV(uint32_t multiSamplingC
 		CHECK_HRESULT(m_device->CheckMultisampleQualityLevels(desc.Format, multiSamplingCount, &qualityLevels));
 
 		if (qualityLevels == 0)
-			Common::FatalError("invalid argument: multiSamplingCount (%u), sampling count is not supported", multiSamplingCount);
+			Common::fatalError("invalid argument: multiSamplingCount (%u), sampling count is not supported", multiSamplingCount);
 
 		desc.SampleDesc.Count = multiSamplingCount;
 		desc.SampleDesc.Quality = qualityLevels - 1;

@@ -3,7 +3,7 @@
 namespace CainEngine::EntitySystem {
 
 template<typename Func>
-void Scene::ForEach(Func func) noexcept
+void Scene::forEach(Func func) noexcept
 {
 	if (m_entityCount == 0) [[unlikely]]
 		return;
@@ -41,7 +41,7 @@ void Scene::ForEach(Func func) noexcept
 }
 
 template<typename Func, typename Arg>
-void Scene::ForEach(Func func, Arg&& arg) noexcept
+void Scene::forEach(Func func, Arg&& arg) noexcept
 {
 	if (m_entityCount == 0) [[unlikely]]
 		return;
@@ -79,7 +79,7 @@ void Scene::ForEach(Func func, Arg&& arg) noexcept
 }
 
 template<typename Func>
-void Scene::ForEach(Func func) const noexcept
+void Scene::forEach(Func func) const noexcept
 {
 	if (m_entityCount == 0) [[unlikely]]
 		return;
@@ -117,7 +117,7 @@ void Scene::ForEach(Func func) const noexcept
 }
 
 template<typename Func, typename Arg>
-void Scene::ForEach(Func func, Arg&& arg) const noexcept
+void Scene::forEach(Func func, Arg&& arg) const noexcept
 {
 	if (m_entityCount == 0) [[unlikely]]
 		return;

@@ -11,22 +11,22 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
-uint32_t DX11Renderer::ID() const noexcept
+uint32_t DX11Renderer::id() const noexcept
 {
-	return Common::PackChars('d', 'x', '1', '1');
+	return Common::packChars('d', 'x', '1', '1');
 }
 
-std::string DX11Renderer::ShortName() const noexcept
+std::string DX11Renderer::shortName() const noexcept
 {
 	return "DX11";
 }
 
-std::string DX11Renderer::Name() const noexcept
+std::string DX11Renderer::name() const noexcept
 {
 	return "DirectX 11";
 }
 
-void DX11Renderer::Init(flag<RendererInitFlags> initFlags)
+void DX11Renderer::init(flag<RendererInitFlags> initFlags)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -80,21 +80,21 @@ void DX11Renderer::Init(flag<RendererInitFlags> initFlags)
 	}
 }
 
-void DX11Renderer::Exit()
+void DX11Renderer::exit()
 {
 	COMMON_CALLSTACK_CALL;
 
-	Flush();
+	flush();
 
-	m_inputLayoutResolver.Clear();
+	m_inputLayoutResolver.clear();
 
-	RemoveSwapChain();
+	removeSwapChain();
 	m_mainWindow = nullptr;
 
 	m_context->ClearState();
 	m_context->Flush();
 
-	m_factory.Clear();
+	m_factory.clear();
 
 	auto tempCopy = m_device;
 	m_context.reset();
@@ -119,38 +119,38 @@ void DX11Renderer::Exit()
 				D3D11_MESSAGE* message = (D3D11_MESSAGE*)malloc(messageSize);
 				CHECK_HRESULT(queue->GetMessageA(messageIndex, message, &messageSize));
 
-				Common::Error("%s", message->pDescription);
+				Common::error("%s", message->pDescription);
 
 				free(message);
 			}
 		}
 
-		Common::FatalError("Reference leak in DX11Renderer::Exit()");
+		Common::fatalError("Reference leak in DX11Renderer::exit()");
 	}
 }
 
-void DX11Renderer::Flush()
+void DX11Renderer::flush()
 {
 	m_context->Flush();
 }
 
-void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	COMMON_CALLSTACK_CALL;
 
 	if (m_mainWindow == mainWindow)
 		return;
 
-	m_mainWindow = mainWindow->As<Platform::Win32::IWin32Window>();
+	m_mainWindow = mainWindow->as<Platform::Win32::IWin32Window>();
 
 	if (!m_mainWindow)
 	{ // unset main window
 		return;
 	}
 
-	auto hwnd = m_mainWindow->GetHwnd();
+	auto hwnd = m_mainWindow->getHwnd();
 
-	auto rect = m_mainWindow->GetClientRect();
+	auto rect = m_mainWindow->getClientRect();
 
 	DXGI_FORMAT format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	uint32_t refreshRate = 60;
@@ -159,7 +159,7 @@ void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 
 	if (creationSettings)
 	{
-		format = EnumConverter::Convert(creationSettings->pixelFormat);
+		format = EnumConverter::convert(creationSettings->pixelFormat);
 		refreshRate = creationSettings->refreshRate;
 		preferredOutput = creationSettings->preferredOutput;
 		creationSettings->multiSamplingCount;
@@ -169,8 +169,8 @@ void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = { };
 	swapChainDesc.BufferCount = 2; // double buffering
-	swapChainDesc.BufferDesc.Width = rect.GetWidth();
-	swapChainDesc.BufferDesc.Height = rect.GetHeight();
+	swapChainDesc.BufferDesc.Width = rect.getWidth();
+	swapChainDesc.BufferDesc.Height = rect.getHeight();
 	swapChainDesc.BufferDesc.Format = format;
 	swapChainDesc.BufferDesc.RefreshRate.Numerator = refreshRate;
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
@@ -188,29 +188,29 @@ void DX11Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 
 	swapChainDesc.BufferDesc.RefreshRate = closestMatch.RefreshRate;
 
-	CreateSwapChain(swapChainDesc);
+	createSwapChain(swapChainDesc);
 }
 
-void CainEngine::Graphics::DX11::DX11Renderer::HandleWindowResize()
+void CainEngine::Graphics::DX11::DX11Renderer::handleWindowResize()
 {
 	if (!m_mainWindow)
 		return;
 
-	Flush();
+	flush();
 
 	m_backbuffer.reset();
 	m_backBufferRTV.reset();
 
-	auto rect = m_mainWindow->GetClientRect();
+	auto rect = m_mainWindow->getClientRect();
 
-	m_swapChain->ResizeBuffers(2, (UINT)rect.GetWidth(), (UINT)rect.GetHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0);
+	m_swapChain->ResizeBuffers(2, (UINT)rect.getWidth(), (UINT)rect.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
 	CHECK_HRESULT(m_swapChain->GetBuffer(0, MST_IID_PPV_ARGS(m_backbuffer)));
 
-	UpdateRTV(MultiSamplingCount());
+	updateRtv(multiSamplingCount());
 }
 
-bool DX11Renderer::HasFeature(RendererFeature feature) const
+bool DX11Renderer::hasFeature(RendererFeature feature) const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -221,11 +221,11 @@ bool DX11Renderer::HasFeature(RendererFeature feature) const
 	case CainEngine::Graphics::RendererFeature::MultiThreadedCommandLists:
 		return false;
 	default:
-		Common::FatalError("Unimplemented feature");
+		Common::fatalError("Unimplemented feature");
 	}
 }
 
-uint2 CainEngine::Graphics::DX11::DX11Renderer::GetBackBufferSize() const noexcept
+uint2 CainEngine::Graphics::DX11::DX11Renderer::getBackBufferSize() const noexcept
 {
 	D3D11_TEXTURE2D_DESC desc;
 	m_backbuffer->GetDesc(&desc);
@@ -233,12 +233,12 @@ uint2 CainEngine::Graphics::DX11::DX11Renderer::GetBackBufferSize() const noexce
 	return { desc.Width, desc.Height };
 }
 
-API::IDisplaySettings& DX11Renderer::DisplaySettings() noexcept
+API::IDisplaySettings& DX11Renderer::displaySettings() noexcept
 {
 	return *this;
 }
 
-API::IFactory* DX11Renderer::GetFactory() noexcept
+API::IFactory* DX11Renderer::getFactory() noexcept
 {
 	return &m_factory;
 }

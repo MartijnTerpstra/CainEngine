@@ -19,7 +19,7 @@ Event::~Event()
 	m_fence.reset();
 
 	if (CloseHandle(m_event) == FALSE)
-		Common::FatalError("CloseHandle failed");
+		Common::fatalError("CloseHandle failed");
 }
 
 void Event::Init(ID3D12Device* device)

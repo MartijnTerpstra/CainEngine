@@ -16,7 +16,7 @@ DX11Texture::~DX11Texture()
 { }
 
 
-ResourceType DX11Texture::Type() const
+ResourceType DX11Texture::type() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -45,11 +45,11 @@ ResourceType DX11Texture::Type() const
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }
 
-API::Usage DX11Texture::Usage() const
+API::Usage DX11Texture::usage() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -64,7 +64,7 @@ API::Usage DX11Texture::Usage() const
 		D3D11_TEXTURE1D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Usage);
+		return EnumConverter::convert(desc.Usage);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE2D: {
 		com_ptr<ID3D11Texture2D> tex;
@@ -72,7 +72,7 @@ API::Usage DX11Texture::Usage() const
 		D3D11_TEXTURE2D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Usage);
+		return EnumConverter::convert(desc.Usage);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE3D: {
 		com_ptr<ID3D11Texture3D> tex;
@@ -80,16 +80,16 @@ API::Usage DX11Texture::Usage() const
 		D3D11_TEXTURE3D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Usage);
+		return EnumConverter::convert(desc.Usage);
 	}
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }
 
-uint3 DX11Texture::Size() const
+uint3 DX11Texture::size() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -125,11 +125,11 @@ uint3 DX11Texture::Size() const
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }
 
-PixelFormat DX11Texture::Format() const
+PixelFormat DX11Texture::format() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -144,7 +144,7 @@ PixelFormat DX11Texture::Format() const
 		D3D11_TEXTURE1D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Format);
+		return EnumConverter::convert(desc.Format);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE2D: {
 		com_ptr<ID3D11Texture2D> tex;
@@ -152,7 +152,7 @@ PixelFormat DX11Texture::Format() const
 		D3D11_TEXTURE2D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Format);
+		return EnumConverter::convert(desc.Format);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE3D: {
 		com_ptr<ID3D11Texture3D> tex;
@@ -160,16 +160,16 @@ PixelFormat DX11Texture::Format() const
 		D3D11_TEXTURE3D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::Convert(desc.Format);
+		return EnumConverter::convert(desc.Format);
 	}
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }
 
-uint32_t DX11Texture::ArraySize() const
+uint32_t DX11Texture::arraySize() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -199,11 +199,11 @@ uint32_t DX11Texture::ArraySize() const
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }
 
-flag<API::BindFlags> DX11Texture::BindFlags() const
+flag<API::BindFlags> DX11Texture::bindFlags() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -218,7 +218,7 @@ flag<API::BindFlags> DX11Texture::BindFlags() const
 		D3D11_TEXTURE1D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::ConvertBindFlags(desc.BindFlags);
+		return EnumConverter::convertBindFlags(desc.BindFlags);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE2D: {
 		com_ptr<ID3D11Texture2D> tex;
@@ -226,7 +226,7 @@ flag<API::BindFlags> DX11Texture::BindFlags() const
 		D3D11_TEXTURE2D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::ConvertBindFlags(desc.BindFlags);
+		return EnumConverter::convertBindFlags(desc.BindFlags);
 	}
 	case D3D11_RESOURCE_DIMENSION_TEXTURE3D: {
 		com_ptr<ID3D11Texture3D> tex;
@@ -234,11 +234,11 @@ flag<API::BindFlags> DX11Texture::BindFlags() const
 		D3D11_TEXTURE3D_DESC desc;
 		tex->GetDesc(&desc);
 
-		return EnumConverter::ConvertBindFlags(desc.BindFlags);
+		return EnumConverter::convertBindFlags(desc.BindFlags);
 	}
 	case D3D11_RESOURCE_DIMENSION_BUFFER:
 	case D3D11_RESOURCE_DIMENSION_UNKNOWN:
 	default:
-		Common::FatalError("Unknown resource dimension");
+		Common::fatalError("Unknown resource dimension");
 	}
 }

@@ -13,13 +13,13 @@ private:
 public:
 	// Main functionality
 
-	static void Init(Renderer* renderer, Common::Source& source);
+	static void init(Renderer* renderer, Common::Source& source);
 
-	static void Exit();
+	static void exit();
 
-	static API::VertexShader* GetVertexShader(const std::string& name);
+	static API::VertexShader* getVertexShader(const std::string& name);
 
-	static API::PixelShader* GetPixelShader(const std::string& name);
+	static API::PixelShader* getPixelShader(const std::string& name);
 
 private:
 	// Member variables

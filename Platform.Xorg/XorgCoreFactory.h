@@ -22,38 +22,38 @@ private:
 public:
 	// IPlatformFactory overrides
 
-	string GetPlatformName() const override;
+	string getPlatformName() const override;
 
-	vector<RefPtr<IProcess>> GetProcesses(const string& name) override;
+	vector<RefPtr<IProcess>> getProcesses(const string& name) override;
 
-	RefPtr<IProcess> GetProcess(uint32_t id) override;
+	RefPtr<IProcess> getProcess(uint32_t id) override;
 
-	RefPtr<IProcess> GetCurrentProcess() override;
+	RefPtr<IProcess> getCurrentProcess() override;
 
-	RefPtr<IProcess> CreateNewProcess(const string& path) override;
+	RefPtr<IProcess> createNewProcess(const string& path) override;
 
-	RefPtr<IProcess> CreateNewProcess(const string& path, const string& commandLine) override;
+	RefPtr<IProcess> createNewProcess(const string& path, const string& commandLine) override;
 
-	RefPtr<IProcess> CreateNewProcess(
+	RefPtr<IProcess> createNewProcess(
 		const string& path, const string& commandLine, const string& workingDirectory) override;
 
-	vector<RefPtr<IMonitor>> GetMonitors() override;
+	vector<RefPtr<IMonitor>> getMonitors() override;
 
-	RefPtr<IMonitor> GetMainMonitor() override;
+	RefPtr<IMonitor> getMainMonitor() override;
 
-	RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type,
+	RefPtr<IWindow> createNewWindow(const string& name, const uint2& size, WindowType type,
 		flag<WindowFlags> flags,
 		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener) override;
 
-	RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type,
+	RefPtr<IWindow> createNewWindow(const string& name, const uint2& size, WindowType type,
 		flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener) override;
 
-	RefPtr<IWindow> GetConsoleWindow() override;
+	RefPtr<IWindow> getConsoleWindow() override;
 
 private:
 	// ICastable overrides
 
-	void* _As(uint64_t) const override;
+	void* asImpl(uint64_t) const override;
 
 private:
 	// Member variables

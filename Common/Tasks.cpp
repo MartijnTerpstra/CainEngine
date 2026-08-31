@@ -18,18 +18,18 @@ TaskManager::~TaskManager()
 {
 	for (auto& task : m_allThreads)
 	{
-		task->Stop();
+		task->stop();
 	}
 
 	for (auto& task : m_allThreads)
 	{
-		task->Wait();
+		task->wait();
 	}
 
 	m_allThreads.clear();
 }
 
-std::future<void> TaskManager::Run(std::function<void()> job)
+std::future<void> TaskManager::run(std::function<void()> job)
 {
 	std::lock_guard<std::mutex> l(m_mutex);
 
@@ -46,12 +46,12 @@ std::future<void> TaskManager::Run(std::function<void()> job)
 
 	auto future = promise.get_future();
 
-	retval->Run(std::move(promise), std::move(job));
+	retval->run(std::move(promise), std::move(job));
 
 	return future;
 }
 
-void TaskManager::TaskCompleted(Details::Thread* thread)
+void TaskManager::taskCompleted(Details::Thread* thread)
 {
 	std::lock_guard<std::mutex> l(m_mutex);
 
@@ -61,14 +61,14 @@ void TaskManager::TaskCompleted(Details::Thread* thread)
 Details::Thread::Thread(TaskManager* manager)
 	: m_manager(manager)
 {
-	m_thread = std::make_unique<std::thread>([this]() { ThreadProc(); });
+	m_thread = std::make_unique<std::thread>([this]() { threadProc(); });
 }
 
 Details::Thread::~Thread()
 {
 }
 
-void Details::Thread::Run(std::promise<void>&& promise, std::function<void()>&& job)
+void Details::Thread::run(std::promise<void>&& promise, std::function<void()>&& job)
 {
 	m_job = std::move(job);
 	m_promise = std::move(promise);
@@ -80,7 +80,7 @@ void Details::Thread::Run(std::promise<void>&& promise, std::function<void()>&& 
 	m_cv.notify_one();
 }
 
-void Details::Thread::Stop()
+void Details::Thread::stop()
 {
 	{
 		std::lock_guard<std::mutex> l(m_mutex);
@@ -89,13 +89,13 @@ void Details::Thread::Stop()
 	m_cv.notify_one();
 }
 
-void Details::Thread::Wait()
+void Details::Thread::wait()
 {
 	m_thread->join();
 	m_thread.reset();
 }
 
-void Details::Thread::ThreadProc()
+void Details::Thread::threadProc()
 {
 	while (true)
 	{
@@ -117,6 +117,6 @@ void Details::Thread::ThreadProc()
 		m_job();
 		m_promise.set_value();
 
-		m_manager->TaskCompleted(this);
+		m_manager->taskCompleted(this);
 	}
 }

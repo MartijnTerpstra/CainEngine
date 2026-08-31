@@ -9,8 +9,8 @@ int main()
 {
 	ShaderSourceManager manager;
 
-	if (!manager.CompileShaders())
+	if (!manager.compileShaders())
 	{
-		Common::FatalError("Error compiling shaders");
+		Common::fatalError("Error compiling shaders");
 	}
 }

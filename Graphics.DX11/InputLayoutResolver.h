@@ -12,13 +12,13 @@ public:
 public:
 	// Main functionality
 
-	ID3D11InputLayout* Resolve(ID3D11Device* device, API::VertexShader* vs,
+	ID3D11InputLayout* resolve(ID3D11Device* device, API::VertexShader* vs,
 		uint64_t vertexLayoutHash, array_view<API::VertexBufferDesc> vertexLayout);
 
-	void AddVertexShaderInputRegisters(
+	void addVertexShaderInputRegisters(
 		uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
 
-	void Clear();
+	void clear();
 
 private:
 	// Member variables

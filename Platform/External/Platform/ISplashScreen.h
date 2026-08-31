@@ -9,9 +9,9 @@ class ISplashScreen
 public:
 	// Main functionality
 
-	virtual void Show() = 0;
+	virtual void show() = 0;
 
-	virtual void Hide() = 0;
+	virtual void hide() = 0;
 
 };
 

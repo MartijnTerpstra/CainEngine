@@ -16,13 +16,13 @@ public:
 public:
 	// Main functionality
 
-	void SetVertexData(API::VertexData* vertexData) noexcept;
+	void setVertexData(API::VertexData* vertexData) noexcept;
 
-	void AddSubMesh(uint32_t indexOffset, uint32_t indexCount, int32_t materialIndex);
+	void addSubMesh(uint32_t indexOffset, uint32_t indexCount, int32_t materialIndex);
 
-	[[nodiscard]] array_view<SubMesh> SubMeshes() const noexcept;
+	[[nodiscard]] array_view<SubMesh> subMeshes() const noexcept;
 
-	[[nodiscard]] const API::VertexData& VertexData() const noexcept;
+	[[nodiscard]] const API::VertexData& vertexData() const noexcept;
 
 private:
 	// Member variables

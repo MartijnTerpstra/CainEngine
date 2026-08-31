@@ -21,7 +21,7 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> CreateNewWindow(const string& name, const uint2& size, WindowType type,
+	static RefPtr<IWindow> createNewWindow(const string& name, const uint2& size, WindowType type,
 		flag<WindowFlags> flags,
 		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 		ClientInterfaces::IWindowEventListener* listenerPointer);
@@ -29,48 +29,48 @@ public:
 public:
 	// IWindow overrides
 
-	void Show() override;
+	void show() override;
 
-	void Redraw() override;
+	void redraw() override;
 
-	void Maximize() override;
+	void maximize() override;
 
-	void Minimize() override;
+	void minimize() override;
 
-	void Close() override;
+	void close() override;
 
-	void HandleEvents() override;
+	void handleEvents() override;
 
-	bool IsShown() const override;
+	bool isShown() const override;
 
-	string GetName() const override;
+	string getName() const override;
 
-	int GetWidth() const override;
+	int getWidth() const override;
 
-	int GetHeight() const override;
+	int getHeight() const override;
 
-	Rect GetRect() const override;
+	Rect getRect() const override;
 
-	Rect GetClientRect() const override;
+	Rect getClientRect() const override;
 
-	void ToForeground() override;
+	void toForeground() override;
 
 public:
 	// IXorgWindow overrides
 
-	::Display* GetDisplay() const override;
+	::Display* getDisplay() const override;
 
-	::Window GetWindow() const override;
+	::Window getWindow() const override;
 
 private:
 	// BaseObject overrides
 
-	void* _As(uint64_t) const override;
+	void* asImpl(uint64_t) const override;
 
 private:
 	// Internal functionality
 
-	void HandleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
+	void handleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
 
 private:
 	// Member variables

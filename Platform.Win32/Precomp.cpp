@@ -3,7 +3,7 @@
 
 using namespace ::CainEngine::Platform;
 
-RefPtr<ICoreFactory> Win32::CreateInstance()
+RefPtr<ICoreFactory> Win32::createInstance()
 {
-	return RefPtr<Internal::Win32CoreFactory>::Create();
+	return RefPtr<Internal::Win32CoreFactory>::create();
 }

@@ -19,26 +19,26 @@ public:
 public:
 	// Main functionality
 
-	bool HasValue(const char* name) const;
-	bool GetBool(const char* name);
-	uint32_t GetUint32(const char* name);
-	float GetFloat(const char* name);
-	int32_t GetInt32(const char* name);
-	std::string GetString(const char* name);
-	JsonEngine* GetObject(const char* name);
+	bool hasValue(const char* name) const;
+	bool getBool(const char* name);
+	uint32_t getUint32(const char* name);
+	float getFloat(const char* name);
+	int32_t getInt32(const char* name);
+	std::string getString(const char* name);
+	JsonEngine* getObject(const char* name);
 
-	std::vector<bool> GetBools(const char* name);
-	std::vector<uint32_t> GetUint32s(const char* name);
-	std::vector<float> GetFloats(const char* name);
-	std::vector<int32_t> GetInt32s(const char* name);
-	std::vector<std::string> GetStrings(const char* name);
-	std::vector<JsonEngine*> GetObjects(const char* name);
+	std::vector<bool> getBools(const char* name);
+	std::vector<uint32_t> getUint32s(const char* name);
+	std::vector<float> getFloats(const char* name);
+	std::vector<int32_t> getInt32s(const char* name);
+	std::vector<std::string> getStrings(const char* name);
+	std::vector<JsonEngine*> getObjects(const char* name);
 
 private:
 	// Internal functionality
-	void SetFailure(const char* name);
+	void setFailure(const char* name);
 
-	void SetFailure(const char* name, const char* exprectedType);
+	void setFailure(const char* name, const char* exprectedType);
 
 private:
 	// Member variables
@@ -69,21 +69,21 @@ JsonParser::~JsonParser()
 {
 }
 
-void JsonParser::ParseImpl(const std::string& jsonFile, std::function<void(Details::JsonToken&)> onSuccess)
+void JsonParser::parseImpl(const std::string& jsonFile, std::function<void(Details::JsonToken&)> onSuccess)
 {
 	std::ifstream file(jsonFile);
 	auto j = json::parse(file, nullptr, false);
 
 	if (j.is_discarded())
 	{
-		Common::Error("unable to parse json file '%s': contains errors", jsonFile);
+		Common::error("unable to parse json file '%s': contains errors", jsonFile);
 		m_failure = true;
 		return;
 	}
 
 	if (j.is_array())
 	{
-		Common::Error("unable to parse json file '%s': contains an array, use the vector overload", jsonFile);
+		Common::error("unable to parse json file '%s': contains an array, use the vector overload", jsonFile);
 		m_failure = true;
 		return;
 	}
@@ -93,21 +93,21 @@ void JsonParser::ParseImpl(const std::string& jsonFile, std::function<void(Detai
 	onSuccess(token);
 }
 
-void JsonParser::ParseImpl(const std::string& jsonFile, std::function<void(std::vector<Details::JsonToken>&)> onSuccess)
+void JsonParser::parseImpl(const std::string& jsonFile, std::function<void(std::vector<Details::JsonToken>&)> onSuccess)
 {
 	std::ifstream file(jsonFile);
 	auto arr = json::parse(file, nullptr, false);
 
 	if (arr.is_discarded())
 	{
-		Common::Error("unable to parse json file '%s'", jsonFile);
+		Common::error("unable to parse json file '%s'", jsonFile);
 		m_failure = true;
 		return;
 	}
 
 	if (!arr.is_array())
 	{
-		Common::Error("unable to parse json file '%s': does not contain an array, use the non-vector overload", jsonFile);
+		Common::error("unable to parse json file '%s': does not contain an array, use the non-vector overload", jsonFile);
 		m_failure = true;
 		return;
 	}
@@ -145,69 +145,69 @@ JsonToken::~JsonToken()
 	delete m_engine;
 }
 
-bool JsonToken::HasValue(const char* name) const
+bool JsonToken::hasValue(const char* name) const
 {
-	return m_engine->HasValue(name);
+	return m_engine->hasValue(name);
 }
 
-bool JsonToken::GetBool(const char* name)
+bool JsonToken::getBool(const char* name)
 {
-	return m_engine->GetBool(name);
+	return m_engine->getBool(name);
 }
 
-uint32_t JsonToken::GetUint32(const char* name)
+uint32_t JsonToken::getUint32(const char* name)
 {
-	return m_engine->GetUint32(name);
+	return m_engine->getUint32(name);
 }
 
-float JsonToken::GetFloat(const char* name)
+float JsonToken::getFloat(const char* name)
 {
-	return m_engine->GetFloat(name);
+	return m_engine->getFloat(name);
 }
 
-int32_t JsonToken::GetInt32(const char* name)
+int32_t JsonToken::getInt32(const char* name)
 {
-	return m_engine->GetInt32(name);
+	return m_engine->getInt32(name);
 }
 
-std::string JsonToken::GetString(const char* name)
+std::string JsonToken::getString(const char* name)
 {
-	return m_engine->GetString(name);
+	return m_engine->getString(name);
 }
 
-JsonToken JsonToken::GetObjectToken(const char* name)
+JsonToken JsonToken::getObjectToken(const char* name)
 {
-	return JsonToken(m_engine->GetObject(name));
+	return JsonToken(m_engine->getObject(name));
 }
 
-std::vector<bool> JsonToken::GetBools(const char* name)
+std::vector<bool> JsonToken::getBools(const char* name)
 {
-	return m_engine->GetBools(name);
+	return m_engine->getBools(name);
 }
 
-std::vector<uint32_t> JsonToken::GetUint32s(const char* name)
+std::vector<uint32_t> JsonToken::getUint32s(const char* name)
 {
-	return m_engine->GetUint32s(name);
+	return m_engine->getUint32s(name);
 }
 
-std::vector<float> JsonToken::GetFloats(const char* name)
+std::vector<float> JsonToken::getFloats(const char* name)
 {
-	return m_engine->GetFloats(name);
+	return m_engine->getFloats(name);
 }
 
-std::vector<int32_t> JsonToken::GetInt32s(const char* name)
+std::vector<int32_t> JsonToken::getInt32s(const char* name)
 {
-	return m_engine->GetInt32s(name);
+	return m_engine->getInt32s(name);
 }
 
-std::vector<std::string> JsonToken::GetStrings(const char* name)
+std::vector<std::string> JsonToken::getStrings(const char* name)
 {
-	return m_engine->GetStrings(name);
+	return m_engine->getStrings(name);
 }
 
-std::vector<JsonToken> JsonToken::GetObjectTokens(const char* name)
+std::vector<JsonToken> JsonToken::getObjectTokens(const char* name)
 {
-	auto objects = m_engine->GetObjects(name);
+	auto objects = m_engine->getObjects(name);
 
 	std::vector<JsonToken> tokens;
 
@@ -231,115 +231,115 @@ JsonEngine::~JsonEngine()
 {
 }
 
-bool JsonEngine::HasValue(const char* name) const
+bool JsonEngine::hasValue(const char* name) const
 {
 	return m_json.contains(name) && !m_json[name].is_null();
 }
 
-bool JsonEngine::GetBool(const char* name)
+bool JsonEngine::getBool(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return false;
 	}
 
 	if (!m_json.at(name).is_boolean())
-		SetFailure(name, "boolean");
+		setFailure(name, "boolean");
 
 	return m_json.value<bool>(name, false);
 }
 
-uint32_t JsonEngine::GetUint32(const char* name)
+uint32_t JsonEngine::getUint32(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return 0;
 	}
 
 	if (!m_json.at(name).is_number_unsigned())
-		SetFailure(name, "positive integer number");
+		setFailure(name, "positive integer number");
 
 	return m_json.value<uint32_t>(name, 0);
 }
 
-float JsonEngine::GetFloat(const char* name)
+float JsonEngine::getFloat(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return 0;
 	}
 
 	if (!m_json.at(name).is_number())
-		SetFailure(name, "float number");
+		setFailure(name, "float number");
 
 	return m_json.value<float>(name, 0);
 }
 
-int32_t JsonEngine::GetInt32(const char* name)
+int32_t JsonEngine::getInt32(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return 0;
 	}
 
 	if (!m_json.at(name).is_number_integer())
-		SetFailure(name, "integer number");
+		setFailure(name, "integer number");
 
 	return m_json.value<int32_t>(name, 0);
 }
 
-std::string JsonEngine::GetString(const char* name)
+std::string JsonEngine::getString(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return "";
 	}
 
 	if (!m_json.at(name).is_string())
-		SetFailure(name, "std::string");
+		setFailure(name, "std::string");
 
 	return m_json.value(name, "");
 }
 
-JsonEngine* JsonEngine::GetObject(const char* name)
+JsonEngine* JsonEngine::getObject(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 
 		// Generate empty object to help the parser survive
 		m_json[name] = {};
 	}
 
 	if (!m_json.at(name).is_object())
-		SetFailure(name, "object");
+		setFailure(name, "object");
 
 	return new JsonEngine(m_failure, m_json.at(name));
 }
 
-std::vector<bool> JsonEngine::GetBools(const char* name)
+std::vector<bool> JsonEngine::getBools(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json[name].is_array())
 	{
-		return { GetBool(name) };
+		return { getBool(name) };
 	}
 
 	for (auto& j : m_json.at(name))
 	{
 		if (!j.is_boolean())
 		{
-			SetFailure(name, "boolean");
+			setFailure(name, "boolean");
 			break;
 		}
 	}
@@ -347,24 +347,24 @@ std::vector<bool> JsonEngine::GetBools(const char* name)
 	return m_json.value<std::vector<bool>>(name, {});
 }
 
-std::vector<uint32_t> JsonEngine::GetUint32s(const char* name)
+std::vector<uint32_t> JsonEngine::getUint32s(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json[name].is_array())
 	{
-		return { GetUint32(name) };
+		return { getUint32(name) };
 	}
 
 	for (auto& j : m_json.at(name))
 	{
 		if (!j.is_number_unsigned())
 		{
-			SetFailure(name, "positive integer number");
+			setFailure(name, "positive integer number");
 			break;
 		}
 	}
@@ -372,24 +372,24 @@ std::vector<uint32_t> JsonEngine::GetUint32s(const char* name)
 	return m_json.value<std::vector<uint32_t>>(name, {});
 }
 
-std::vector<float> JsonEngine::GetFloats(const char* name)
+std::vector<float> JsonEngine::getFloats(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json.at(name).is_array())
 	{
-		return { GetFloat(name) };
+		return { getFloat(name) };
 	}
 
 	for (auto& j : m_json.at(name))
 	{
 		if(!j.is_number())
 		{
-			SetFailure(name, "float number");
+			setFailure(name, "float number");
 			break;
 		}
 	}
@@ -397,24 +397,24 @@ std::vector<float> JsonEngine::GetFloats(const char* name)
 	return m_json.value<std::vector<float>>(name, {});
 }
 
-std::vector<int32_t> JsonEngine::GetInt32s(const char* name)
+std::vector<int32_t> JsonEngine::getInt32s(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json.at(name).is_array())
 	{
-		return { GetInt32(name) };
+		return { getInt32(name) };
 	}
 
 	for (auto& j : m_json[name])
 	{
 		if (!j.is_number_integer())
 		{
-			SetFailure(name, "integer number");
+			setFailure(name, "integer number");
 			break;
 		}
 	}
@@ -422,24 +422,24 @@ std::vector<int32_t> JsonEngine::GetInt32s(const char* name)
 	return m_json.value<std::vector<int32_t>>(name, {});
 }
 
-std::vector<std::string> JsonEngine::GetStrings(const char* name)
+std::vector<std::string> JsonEngine::getStrings(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json.at(name).is_array())
 	{
-		return { GetString(name) };
+		return { getString(name) };
 	}
 
 	for (auto& j : m_json.at(name))
 	{
 		if (!j.is_string())
 		{
-			SetFailure(name, "std::string");
+			setFailure(name, "std::string");
 			break;
 		}
 	}
@@ -447,24 +447,24 @@ std::vector<std::string> JsonEngine::GetStrings(const char* name)
 	return m_json.value<std::vector<std::string>>(name, {});
 }
 
-std::vector<JsonEngine*> JsonEngine::GetObjects(const char* name)
+std::vector<JsonEngine*> JsonEngine::getObjects(const char* name)
 {
 	if (!m_json.contains(name))
 	{
-		SetFailure(name);
+		setFailure(name);
 		return {};
 	}
 
 	if (!m_json.at(name).is_array())
 	{
-		return { GetObject(name) };
+		return { getObject(name) };
 	}
 
 	for (auto& j : m_json.at(name))
 	{
 		if (!j.is_object())
 		{
-			SetFailure(name, "object");
+			setFailure(name, "object");
 			break;
 		}
 	}
@@ -480,14 +480,14 @@ std::vector<JsonEngine*> JsonEngine::GetObjects(const char* name)
 	return tokens;
 }
 
-void JsonEngine::SetFailure(const char* name)
+void JsonEngine::setFailure(const char* name)
 {
-	Common::Error("member '%s' required", name);
+	Common::error("member '%s' required", name);
 	m_failure = true;
 }
 
-void JsonEngine::SetFailure(const char* name, const char* exprectedType)
+void JsonEngine::setFailure(const char* name, const char* exprectedType)
 {
-	Common::Error("member '%s' should be a %s", name, exprectedType);
+	Common::error("member '%s' should be a %s", name, exprectedType);
 	m_failure = true;
 }

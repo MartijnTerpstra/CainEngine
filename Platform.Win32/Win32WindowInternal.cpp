@@ -7,7 +7,7 @@
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-LRESULT Win32Window::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT Win32Window::wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -15,13 +15,13 @@ LRESULT Win32Window::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
 	if (backPtr != nullptr)
 	{
-		return backPtr->OnWndProc(message, wParam, lParam);
+		return backPtr->onWndProc(message, wParam, lParam);
 	}
 	
 	return DefWindowProcA(hwnd, message, wParam, lParam);
 }
 
-LRESULT Win32Window::OnWndProc(UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT Win32Window::onWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -39,7 +39,7 @@ LRESULT Win32Window::OnWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 				if (newSize != uint2::zero)
 				{
 					m_minimized = false;
-					listener->OnMaximize(this);
+					listener->onMaximize(this);
 				}
 			}
 			else
@@ -47,11 +47,11 @@ LRESULT Win32Window::OnWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 				if (newSize == uint2::zero)
 				{
 					m_minimized = true;
-					listener->OnMinimize(this);
+					listener->onMinimize(this);
 				}
 				else
 				{
-					listener->OnResize(this, newSize);
+					listener->onResize(this, newSize);
 				}
 			}
 		}
@@ -61,14 +61,14 @@ LRESULT Win32Window::OnWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		auto listener = m_eventListener.lock();
 		if (listener)
-			listener->OnRedraw(this);
+			listener->onRedraw(this);
 		break;
 	}
 	case WM_KEYDOWN:
 	{
 		auto listener = m_eventListener.lock();
 
-		KeyCodes keyCode = EnumConverter::ToKeyCodes(wParam);
+		KeyCodes keyCode = EnumConverter::toKeyCodes(wParam);
 
 		mst::flag<KeyModifiers> modifiers;
 
@@ -98,7 +98,7 @@ LRESULT Win32Window::OnWndProc(UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		if (listener)
-			listener->OnKeyDown(this, keyCode, modifiers);
+			listener->onKeyDown(this, keyCode, modifiers);
 		break;
 	}
 	}

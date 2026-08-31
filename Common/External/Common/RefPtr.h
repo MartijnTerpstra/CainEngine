@@ -37,11 +37,11 @@ public:
 	// Main functionality
 
 	template<typename... Args>
-	inline static RefPtr Create(Args&&... args);
+	inline static RefPtr create(Args&&... args);
 
-	void Swap(RefPtr& other);
+	void swap(RefPtr& other);
 
-	inline T* Get() const noexcept;
+	inline T* get() const noexcept;
 
 	inline T* operator->() const noexcept;
 
@@ -56,8 +56,8 @@ private:
 	{ };
 	inline RefPtr(InternalInit, T* ptr) noexcept;
 
-	inline void AddRef() noexcept;
-	inline void Release() noexcept;
+	inline void addRef() noexcept;
+	inline void release() noexcept;
 
 private:
 	// Member variable

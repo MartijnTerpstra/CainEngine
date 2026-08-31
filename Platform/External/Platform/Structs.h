@@ -21,24 +21,24 @@ struct Rect
 	{
 	}
 
-	int GetWidth() const
+	int getWidth() const
 	{
 		return Right - Left;
 	}
 
-	int GetHeight() const
+	int getHeight() const
 	{
 		return Bottom - Top;
 	}
 
-	int2 GetPosition() const
+	int2 getPosition() const
 	{
 		return int2(Left, Top);
 	}
 
-	int2 GetSize() const
+	int2 getSize() const
 	{
-		return int2(GetWidth(), GetHeight());
+		return int2(getWidth(), getHeight());
 	}
 
 	int Left, Top, Right, Bottom;

@@ -17,19 +17,19 @@ public:
 		Summary:
 			Returns the format of the pixels in the texture
 	*/
-	virtual PixelFormat Format() const = 0;
+	virtual PixelFormat format() const = 0;
 
 	/**
 		Summary:
 			Returns array elements in this texture
 	*/
-	virtual uint32_t ArraySize() const = 0;
+	virtual uint32_t arraySize() const = 0;
 
 	/**
 		Summary:
 			Returns the to what part of the pipeline the texture's will be bound
 	*/
-	virtual flag<BindFlags> BindFlags() const = 0;
+	virtual flag<BindFlags> bindFlags() const = 0;
 
 }; // class ITexture
 

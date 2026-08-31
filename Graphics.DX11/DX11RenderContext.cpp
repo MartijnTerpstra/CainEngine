@@ -23,7 +23,7 @@ DX11RenderContext::~DX11RenderContext()
 {
 }
 
-void DX11RenderContext::SetViewport(const Viewport& vp, float depthMin, float depthMax)
+void DX11RenderContext::setViewport(const Viewport& vp, float depthMin, float depthMax)
 {
 	D3D11_VIEWPORT v;
 	v.TopLeftX = vp.x;
@@ -36,7 +36,7 @@ void DX11RenderContext::SetViewport(const Viewport& vp, float depthMin, float de
 	m_context->RSSetViewports(1, &v);
 }
 
-void DX11RenderContext::SetVertexData(const API::VertexData& vertexData)
+void DX11RenderContext::setVertexData(const API::VertexData& vertexData)
 {
 	if (m_vertexData == &vertexData)
 		return;
@@ -58,27 +58,27 @@ void DX11RenderContext::SetVertexData(const API::VertexData& vertexData)
 	m_context->IASetIndexBuffer(vertexData.indexBuffer.get(), vertexData.indexFormat, 0);
 }
 
-void DX11RenderContext::SetVertexShader(API::VertexShader* shader)
+void DX11RenderContext::setVertexShader(API::VertexShader* shader)
 {
 	if (shader == m_vertexShader)
 		return; // do nothing
 
-	m_context->VSSetShader(shader->GetShader(), nullptr, 0);
+	m_context->VSSetShader(shader->getShader(), nullptr, 0);
 
-	m_context->IASetInputLayout(m_renderer->GetOrCreateInputLayout(shader, m_vertexData->vertexLayoutHash, m_vertexData->vertexLayout));
+	m_context->IASetInputLayout(m_renderer->getOrCreateInputLayout(shader, m_vertexData->vertexLayoutHash, m_vertexData->vertexLayout));
 }
 
-void DX11RenderContext::SetPixelShader(API::PixelShader* shader)
+void DX11RenderContext::setPixelShader(API::PixelShader* shader)
 {
-	m_context->PSSetShader(shader->GetShader(), nullptr, 0);
+	m_context->PSSetShader(shader->getShader(), nullptr, 0);
 }
 
-void DX11RenderContext::Draw(uint32_t vertexCount, uint32_t startOffset)
+void DX11RenderContext::draw(uint32_t vertexCount, uint32_t startOffset)
 {
 	m_context->Draw(vertexCount, startOffset);
 }
 
-void DX11RenderContext::DrawIndexed(uint32_t indexCount, uint32_t startOffset)
+void DX11RenderContext::drawIndexed(uint32_t indexCount, uint32_t startOffset)
 {
 	m_context->DrawIndexed(indexCount, startOffset, 0);
 }

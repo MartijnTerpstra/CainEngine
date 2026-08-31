@@ -17,36 +17,36 @@ public:
 	/**
 		Get the ID of the graphics API
 	*/
-	uint32_t ID() const;
+	uint32_t id() const;
 
-	std::string ShortName() const;
+	std::string shortName() const;
 
-	std::string Name() const;
+	std::string name() const;
 
-	void Init(flag<RendererInitFlags> initFlags);
+	void init(flag<RendererInitFlags> initFlags);
 
-	void Exit();
+	void exit();
 
-	void RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Graphics::Viewport>& viewport);
+	void renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Graphics::Viewport>& viewport);
 
-	void Flush();
+	void flush();
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings);
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings);
 
-	void HandleWindowResize();
+	void handleWindowResize();
 
-	bool HasFeature(RendererFeature feature) const;
+	bool hasFeature(RendererFeature feature) const;
 
-	API::IDisplaySettings& DisplaySettings();
+	API::IDisplaySettings& displaySettings();
 
-	API::IRenderer* Implementation();
+	API::IRenderer* implementation();
 
 private:
 	// Internal functionality
 
-	Viewport GetViewport() const;
+	Viewport getViewport() const;
 
-	void BuildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport);
+	void buildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport);
 
 private:
 

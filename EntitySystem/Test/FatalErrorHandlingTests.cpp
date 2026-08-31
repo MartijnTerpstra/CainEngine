@@ -14,17 +14,17 @@ using namespace ::CainEngine::TestSupport;
 TEST_F(FatalErrorTest, SetParentToSelfTriggersAnAssert)
 {
 	Scene scene;
-	const auto entity = scene.Create();
+	const auto entity = scene.create();
 
-	EXPECT_THROW(scene.SetParent(entity, entity), FatalErrorTriggered);
+	EXPECT_THROW(scene.setParent(entity, entity), FatalErrorTriggered);
 }
 
 TEST_F(FatalErrorTest, SetParentToADeadEntityTriggersAnAssert)
 {
 	Scene scene;
-	const auto entity = scene.Create();
-	const auto deadParent = scene.Create();
-	scene.Destroy(deadParent);
+	const auto entity = scene.create();
+	const auto deadParent = scene.create();
+	scene.destroy(deadParent);
 
-	EXPECT_THROW(scene.SetParent(entity, deadParent), FatalErrorTriggered);
+	EXPECT_THROW(scene.setParent(entity, deadParent), FatalErrorTriggered);
 }

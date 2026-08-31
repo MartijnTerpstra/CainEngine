@@ -6,10 +6,10 @@ namespace CainEngine {
 
 namespace {
 
-void DefaultFatalError(std::string_view)
+void defaultFatalError(std::string_view)
 {
 	printf("Callstack:\n");
-	for(auto& line : Common::Callstack::Get())
+	for(auto& line : Common::Callstack::get())
 	{
 		std::cout << line << std::endl;
 	}
@@ -22,32 +22,32 @@ void DefaultFatalError(std::string_view)
 	exit(1);
 }
 
-constinit FatalErrorHandlerFn g_onFatalError = DefaultFatalError;
+constinit FatalErrorHandlerFn g_onFatalError = defaultFatalError;
 
 } // namespace
 
 // Declared directly under CainEngine (not CainEngine::Common) in Common.h -
 // this definition has to match that exactly, or it silently compiles as an
-// unrelated CainEngine::Common::SetFatalErrorHandler that's never linked
+// unrelated CainEngine::Common::setFatalErrorHandler that's never linked
 // against the actual declaration (no compiler/linker error until something
 // finally calls it).
-void SetFatalErrorHandler(FatalErrorHandlerFn handler)
+void setFatalErrorHandler(FatalErrorHandlerFn handler)
 {
-	g_onFatalError = handler ? handler : DefaultFatalError;
+	g_onFatalError = handler ? handler : defaultFatalError;
 }
 
 namespace Common {
 
-[[noreturn]] void Details::InvokeFatalErrorHandler(std::string_view str)
+[[noreturn]] void Details::invokeFatalErrorHandler(std::string_view str)
 {
 	g_onFatalError(str);
 	throw std::runtime_error("FatalErrorHandler should not return");
 }
 
 #if DEBUG_CHECKS
-void Unreachable()
+void unreachable()
 {
-	Details::InvokeFatalErrorHandler("Unreachable code path");
+	Details::invokeFatalErrorHandler("Unreachable code path");
 }
 #endif
 
@@ -57,5 +57,5 @@ void Unreachable()
 
 void mst::fatalError(std::string_view str)
 {
-	CainEngine::Common::FatalError(str);
+	CainEngine::Common::fatalError(str);
 }

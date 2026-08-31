@@ -3,7 +3,7 @@
 
 using namespace ::CainEngine::Platform;
 
-RefPtr<ICoreFactory> Xorg::CreateInstance()
+RefPtr<ICoreFactory> Xorg::createInstance()
 {
-	return RefPtr<Internal::XorgCoreFactory>::Create();
+	return RefPtr<Internal::XorgCoreFactory>::create();
 }

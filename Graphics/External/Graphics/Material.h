@@ -13,11 +13,11 @@ public:
 public:
 	// Main functionality
 
-	void SetVariable(uint32_t index, const float4& value);
-	void SetTexture(uint32_t index, const float4& value);
+	void setVariable(uint32_t index, const float4& value);
+	void setTexture(uint32_t index, const float4& value);
 
-	API::VertexShader* VertexShader() const;
-	API::PixelShader* PixelShader() const;
+	API::VertexShader* vertexShader() const;
+	API::PixelShader* pixelShader() const;
 
 private:
 	// Member variables

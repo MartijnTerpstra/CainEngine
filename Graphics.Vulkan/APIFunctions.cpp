@@ -6,10 +6,10 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::Vulkan;
 
 #define GRAPHICS_INIT_INST_FUNCTION(x) x = (PFN_##x)vkGetInstanceProcAddr(Instance, #x); \
-if(x == null) Common::FatalError("APIFunctions::Init(): extensions function not loaded: " #x)
+if(x == null) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
 
 #define GRAPHICS_INIT_DEV_FUNCTION(x) x = (PFN_##x)vkGetDeviceProcAddr(Device, #x); \
-if(x == null) Common::FatalError("APIFunctions::Init(): extensions function not loaded: " #x)
+if(x == null) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
 
 
 VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -28,7 +28,7 @@ OnVulkanError(VkFlags msgFlags, VkDebugReportObjectTypeEXT,
 			strstr(pMsg, "Images passed to present must be in layout") == pMsg)
 			return false;
 
-		Common::Error("Vulkan API ERROR: [%s] Code %d : %s", pLayerPrefix, msgCode,
+		Common::error("Vulkan API ERROR: [%s] Code %d : %s", pLayerPrefix, msgCode,
 			pMsg);
 
 		exit(EXIT_FAILURE);
@@ -42,7 +42,7 @@ OnVulkanError(VkFlags msgFlags, VkDebugReportObjectTypeEXT,
 			strstr(pMsg, "prior to any Draw Cmds. It is recommended you use RenderPass LOAD_OP_CLEAR on Attachments prior to any Draw.")
 			)
 			return false;
-		Common::Warning("Vulkan API WARNING: [%s] Code %d : %s", pLayerPrefix, msgCode,
+		Common::warning("Vulkan API WARNING: [%s] Code %d : %s", pLayerPrefix, msgCode,
 			pMsg);
 
 		//exit(EXIT_FAILURE);

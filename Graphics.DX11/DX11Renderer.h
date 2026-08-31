@@ -13,66 +13,66 @@ public:
 public:
 	// Main functionality
 	
-	ID3D11Device* D3DDevice();
+	ID3D11Device* d3DDevice();
 
-	void AddVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
+	void addVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
 
-	ID3D11InputLayout* GetOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout);
+	ID3D11InputLayout* getOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout);
 
 public:
 	// IRenderer overrides
 
-	uint32_t ID() const noexcept override;
+	uint32_t id() const noexcept override;
 
-	std::string ShortName() const noexcept override;
+	std::string shortName() const noexcept override;
 
-	std::string Name() const noexcept override;
+	std::string name() const noexcept override;
 
-	void Init(flag<RendererInitFlags> initFlags) override;
+	void init(flag<RendererInitFlags> initFlags) override;
 
-	void Exit() override;
+	void exit() override;
 
-	void RenderFrame(std::function<void(API::IRenderContext*)> onRender) override;
+	void renderFrame(std::function<void(API::IRenderContext*)> onRender) override;
 
-	void Flush() override;
+	void flush() override;
 
-	void SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) override;
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) override;
 
-	void HandleWindowResize() override;
+	void handleWindowResize() override;
 
-	bool HasFeature(RendererFeature feature) const override;
+	bool hasFeature(RendererFeature feature) const override;
 
-	uint2 GetBackBufferSize() const noexcept override;
+	uint2 getBackBufferSize() const noexcept override;
 
-	IDisplaySettings& DisplaySettings() noexcept override;
+	IDisplaySettings& displaySettings() noexcept override;
 
-	API::IFactory* GetFactory() noexcept override;
+	API::IFactory* getFactory() noexcept override;
 
 private:
 	// IDisplaySettings overrides
 	
-	FullScreenState FullScreen() const override;
-	void SetFullScreen(bool fullScreen, uint32_t outputIndex) override;
-	uint32_t MultiSamplingCount() const override;
-	void SetMultiSamplingCount(uint32_t count) override;
-	bool VSync() const override;
-	void SetVSync(bool vSync) override;
-	PixelFormat Format() const override;
-	void SetFormat(PixelFormat format) override;
-	SwapChainDisplayMode DisplayMode() const override;
-	void SetDisplayMode(const SwapChainDisplayMode& mode) override;
-	std::vector<OutputDisplay> SupportedOutputs() const override;
-	std::vector<PixelFormat> SupportedPixelFormats(uint32_t outputIndex) const override;
-	std::vector<SwapChainDisplayMode> SupportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
-	std::vector<uint32_t> SupportedMultiSamplingCounts(PixelFormat format) const override;
+	FullScreenState fullScreen() const override;
+	void setFullScreen(bool fullScreen, uint32_t outputIndex) override;
+	uint32_t multiSamplingCount() const override;
+	void setMultiSamplingCount(uint32_t count) override;
+	bool vSync() const override;
+	void setVSync(bool vSync) override;
+	PixelFormat format() const override;
+	void setFormat(PixelFormat format) override;
+	SwapChainDisplayMode displayMode() const override;
+	void setDisplayMode(const SwapChainDisplayMode& mode) override;
+	std::vector<OutputDisplay> supportedOutputs() const override;
+	std::vector<PixelFormat> supportedPixelFormats(uint32_t outputIndex) const override;
+	std::vector<SwapChainDisplayMode> supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
+	std::vector<uint32_t> supportedMultiSamplingCounts(PixelFormat format) const override;
 
 private:
 	// Internal functionality
 
-	void RemoveSwapChain();
-	void CreateSwapChain(DXGI_SWAP_CHAIN_DESC& desc);
-	void EnsureFullscreen(bool fullscreen, IDXGIOutput* output);
-	void UpdateRTV(uint32_t multiSamplingCount);
+	void removeSwapChain();
+	void createSwapChain(DXGI_SWAP_CHAIN_DESC& desc);
+	void ensureFullscreen(bool fullscreen, IDXGIOutput* output);
+	void updateRtv(uint32_t multiSamplingCount);
 
 private:
 	// Member variables

@@ -19,94 +19,94 @@ public:
 public:
 	// Main functionality
 
-	EntityID Create();
+	EntityID create();
 
-	EntityID Create(std::string name);
+	EntityID create(std::string name);
 
-	EntityID Find(std::string_view name) const noexcept;
+	EntityID find(std::string_view name) const noexcept;
 
-	EntityID Find(const uuid& id) const noexcept;
+	EntityID find(const uuid& id) const noexcept;
 
-	void Destroy(EntityID entity, bool recursive = false);
+	void destroy(EntityID entity, bool recursive = false);
 
-	bool IsAlive(EntityID entity) const noexcept;
+	bool isAlive(EntityID entity) const noexcept;
 
-	void Clear() noexcept;
-
-	template<typename Func>
-	void ForEach(Func func) noexcept;
-
-	template<typename Func, typename Arg>
-	void ForEach(Func func, Arg&& arg) noexcept;
+	void clear() noexcept;
 
 	template<typename Func>
-	void ForEach(Func func) const noexcept;
+	void forEach(Func func) noexcept;
 
 	template<typename Func, typename Arg>
-	void ForEach(Func func, Arg&& arg) const noexcept;
+	void forEach(Func func, Arg&& arg) noexcept;
+
+	template<typename Func>
+	void forEach(Func func) const noexcept;
+
+	template<typename Func, typename Arg>
+	void forEach(Func func, Arg&& arg) const noexcept;
 
 public:
 	// Statistics
 
-	uint32_t LiveEntities() const noexcept;
-	uint32_t Capacity() const noexcept;
-	uint32_t DeadEntities() const noexcept;
+	uint32_t liveEntities() const noexcept;
+	uint32_t capacity() const noexcept;
+	uint32_t deadEntities() const noexcept;
 
 public:
 	// Built-in components
 
-	void SetName(EntityID entity, std::string name);
+	void setName(EntityID entity, std::string name);
 
-	std::string_view GetName(EntityID entity) const noexcept;
+	std::string_view getName(EntityID entity) const noexcept;
 
-	Transform GetTransform(EntityID entity) noexcept;
+	Transform getTransform(EntityID entity) noexcept;
 
-	CTransform GetTransform(EntityID entity) const noexcept;
+	CTransform getTransform(EntityID entity) const noexcept;
 
-	void SetParent(EntityID entity, EntityID parent);
+	void setParent(EntityID entity, EntityID parent);
 
-	EntityID GetParent(EntityID entity) const noexcept;
+	EntityID getParent(EntityID entity) const noexcept;
 
-	array_view<EntityID> GetChildren(EntityID entity) const noexcept;
+	array_view<EntityID> getChildren(EntityID entity) const noexcept;
 
-	void SetUniqueID(EntityID entity, const uuid& id);
+	void setUniqueId(EntityID entity, const uuid& id);
 
-	const uuid* GetUniqueID(EntityID entity) const noexcept;
+	const uuid* getUniqueId(EntityID entity) const noexcept;
 
 public:
 	// Event management
 
-	void AddCreateCallback(
+	void addCreateCallback(
 		void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onCreate);
-	void AddDestroyCallback(
+	void addDestroyCallback(
 		void* managerPtr, std::function<void(Scene& scene, EntityID entity)> onDestroy);
-	void AddTransformChangeCallback(void* managerPtr,
+	void addTransformChangeCallback(void* managerPtr,
 		std::function<void(Scene& scene, EntityID entity, const matrix3x4& matrix)>
 			onTransformChange);
-	void RemoveAllCallbacks(void* managerPtr) noexcept;
+	void removeAllCallbacks(void* managerPtr) noexcept;
 
 public:
 	// Rendering functionality
 
-	void BuildMatrices() noexcept;
-	const matrix3x4& GetGlobalMatrix(EntityID entity) const noexcept;
+	void buildMatrices() noexcept;
+	const matrix3x4& getGlobalMatrix(EntityID entity) const noexcept;
 
 private:
 	// Internal functionality
 
-	void RemoveChild(int32_t parentIndex, EntityID child) noexcept;
-	void ClearChilds(int32_t parentIndex);
-	void DestroyChilds(int32_t parentIndex);
-	void DestroyAndAddToFreeList(int32_t entityIndex);
-	void SetDirty(EntityID entity);
-	void SetDirtyWithNewParent(EntityID entity);
-	EntityData& GetFromID(EntityID entity) noexcept;
-	const EntityData& GetFromID(EntityID entity) const noexcept;
-	int32_t RemoveFromFreeList() noexcept;
-	void AddToFreeList(int32_t entityIndex) noexcept;
-	void ResetParentForDestroy(EntityID entityIndex) noexcept;
-	int32_t CreateNew();
-	bool HasParent(EntityID entity, EntityID parent) const noexcept;
+	void removeChild(int32_t parentIndex, EntityID child) noexcept;
+	void clearChilds(int32_t parentIndex);
+	void destroyChilds(int32_t parentIndex);
+	void destroyAndAddToFreeList(int32_t entityIndex);
+	void setDirty(EntityID entity);
+	void setDirtyWithNewParent(EntityID entity);
+	EntityData& getFromId(EntityID entity) noexcept;
+	const EntityData& getFromId(EntityID entity) const noexcept;
+	int32_t removeFromFreeList() noexcept;
+	void addToFreeList(int32_t entityIndex) noexcept;
+	void resetParentForDestroy(EntityID entityIndex) noexcept;
+	int32_t createNew();
+	bool hasParent(EntityID entity, EntityID parent) const noexcept;
 
 	struct EulerAngles
 	{
@@ -114,9 +114,9 @@ private:
 		euler_rotation_order order;
 	};
 
-	matrix3x4 GenerateLocalMatrixImpl(
+	matrix3x4 generateLocalMatrixImpl(
 		const float3& position, const EulerAngles& angles) const noexcept;
-	matrix3x4 GenerateLocalMatrixImpl(
+	matrix3x4 generateLocalMatrixImpl(
 		const float3& position, const quaternion& quat) const noexcept;
 
 private:

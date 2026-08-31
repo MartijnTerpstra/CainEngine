@@ -30,7 +30,7 @@ public:
 			null on a failure, a valid pointer on success
 	*/
 	template<typename T>
-	inline CastHandle<T> As();
+	inline CastHandle<T> as();
 
 	/**
 		Summary:
@@ -43,32 +43,36 @@ public:
 			null on a failure, a valid pointer on success
 	*/
 	template<typename T>
-	inline CastHandle<const T> As() const;
+	inline CastHandle<const T> as() const;
 
 	/**
 		Summary:
 			Returns whether the object implements the object/interface type
 	*/
 	template<typename T>
-	inline bool Is() const;
+	inline bool is() const;
 
 private:
 	template<typename T>
-	inline CastHandle<const T> As(std::true_type) const;
+	inline CastHandle<const T> as(std::true_type) const;
 
 	template<typename T>
-	inline CastHandle<const T> As(std::false_type) const;
+	inline CastHandle<const T> as(std::false_type) const;
 
 	template<typename T>
-	inline CastHandle<T> As(std::true_type);
+	inline CastHandle<T> as(std::true_type);
 
 	template<typename T>
-	inline CastHandle<T> As(std::false_type);
+	inline CastHandle<T> as(std::false_type);
 
-	inline void AddRef();
-	inline void Release();
+	inline void addRef();
+	inline void release();
 
-	virtual void* _As(uint64_t) const = 0;
+	// Named asImpl() rather than as() because introducing any member named
+	// "as" in a derived class's own scope would hide the public as<T>()/
+	// is<T>() templates inherited from BaseObject (C++ name-hiding across
+	// inheritance boundaries) - every derived class overrides only asImpl().
+	virtual void* asImpl(uint64_t) const = 0;
 
 protected:
 	std::atomic_uint32_t m_refCount;

@@ -8,7 +8,7 @@ inline StructType Source::ReadStruct()
 	StructType retval;
 	if (!Read(&retval, sizeof(StructType)))
 	{
-		Common::Error("Unable to read struct");
+		Common::error("Unable to read struct");
 		return StructType{};
 	}
 	return retval;
@@ -24,7 +24,7 @@ inline vector<T> Source::ReadVector()
 	{
 		if (!Read(retval.data(), sizeof(T) * size))
 		{
-			Common::Error("Unable to read vector<T>");
+			Common::error("Unable to read vector<T>");
 			return {};
 		}
 	}

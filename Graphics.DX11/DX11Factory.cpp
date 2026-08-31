@@ -22,7 +22,7 @@ DX11Factory::DX11Factory()
 DX11Factory::~DX11Factory()
 { }
 
-API::VertexShader* DX11Factory::CreateVertexShader(
+API::VertexShader* DX11Factory::createVertexShader(
 	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
 	COMMON_CALLSTACK_CALL;
@@ -32,15 +32,15 @@ API::VertexShader* DX11Factory::CreateVertexShader(
 	auto inputRegisterHash = mst::hash64(
 		memory_view(shaderData.inputRegisters.data(), shaderData.inputRegisters.size()));
 
-	dx11Renderer->AddVertexShaderInputRegisters(inputRegisterHash, shaderData.inputRegisters);
+	dx11Renderer->addVertexShaderInputRegisters(inputRegisterHash, shaderData.inputRegisters);
 
-	const auto iter = m_vertexShaders.emplace(dx11Renderer->D3DDevice(), std::move(shaderData),
+	const auto iter = m_vertexShaders.emplace(dx11Renderer->d3DDevice(), std::move(shaderData),
 		std::move(shaderData.byteCode), inputRegisterHash);
 
 	return iter.ptr();
 }
 
-API::PixelShader* DX11Factory::CreatePixelShader(
+API::PixelShader* DX11Factory::createPixelShader(
 	API::IRenderer* renderer, API::CompiledShaderData&& shaderData)
 {
 	COMMON_CALLSTACK_CALL;
@@ -48,12 +48,12 @@ API::PixelShader* DX11Factory::CreatePixelShader(
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
 	const auto iter = m_pixelShaders.emplace(
-		dx11Renderer->D3DDevice(), std::move(shaderData), shaderData.byteCode);
+		dx11Renderer->d3DDevice(), std::move(shaderData), shaderData.byteCode);
 
 	return iter.ptr();
 }
 
-API::VertexData* DX11Factory::CreateVertexData(
+API::VertexData* DX11Factory::createVertexData(
 	API::IRenderer* renderer, const VertexDataCreationInfo& creationInfo)
 {
 	COMMON_CALLSTACK_CALL;
@@ -62,24 +62,24 @@ API::VertexData* DX11Factory::CreateVertexData(
 
 	if(creationInfo.positions.empty())
 	{
-		Common::Error("Invalid call to CreateVertexData: positions is empty");
+		Common::error("Invalid call to createVertexData: positions is empty");
 		return nullptr;
 	}
 
 	if(creationInfo.indices.empty())
 	{
-		Common::Error("Invalid call to CreateVertexData: indices is empty");
+		Common::error("Invalid call to createVertexData: indices is empty");
 		return nullptr;
 	}
 
 	if(creationInfo.positions.size() != creationInfo.normals.size() ||
 		creationInfo.positions.size() != creationInfo.uvs.size())
 	{
-		Common::Error("Invalid call to CreateVertexData: positions is empty");
+		Common::error("Invalid call to createVertexData: positions is empty");
 		return nullptr;
 	}
 
-	const auto device = dx11Renderer->D3DDevice();
+	const auto device = dx11Renderer->d3DDevice();
 
 	const auto vertexData = m_vertexDatas.emplace();
 
@@ -100,7 +100,7 @@ API::VertexData* DX11Factory::CreateVertexData(
 	}
 	vertexData->stridesAndOffsets.push_back(sizeof(VertexItem));
 	vertexData->stridesAndOffsets.push_back(0);
-	vertexData->topology = EnumConverter::Convert(creationInfo.topology);
+	vertexData->topology = EnumConverter::convert(creationInfo.topology);
 	vertexData->vertexBuffers.emplace_back();
 
 	{
@@ -180,20 +180,20 @@ API::VertexData* DX11Factory::CreateVertexData(
 	return vertexData.ptr();
 }
 
-std::shared_ptr<API::IBuffer> DX11Factory::CreateBuffer(API::IRenderer* renderer, ResourceType type,
+std::shared_ptr<API::IBuffer> DX11Factory::createBuffer(API::IRenderer* renderer, ResourceType type,
 	size_t dataSize, memory_view memory, uint32_t structSize, API::Usage usage)
 {
 	return nullptr;
 }
 
-std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer,
+std::pair<int32_t, API::ITexture*> DX11Factory::createTexture(API::IRenderer* renderer,
 	ResourceType type, const uint3& size, PixelFormat format, flag<API::BindFlags> bindFlags,
 	API::Usage usage, uint32_t arraySize, uint32_t mipLevels)
 {
 	return { -1, nullptr };
 }
 
-std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* renderer,
+std::pair<int32_t, API::ITexture*> DX11Factory::createTexture(API::IRenderer* renderer,
 	ResourceType type, const uint3& size, array_view<API::PixelData> initialData,
 	PixelFormat format, flag<API::BindFlags> bindFlags, API::Usage usage, uint32_t arraySize,
 	uint32_t mipLevels)
@@ -202,7 +202,7 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 
 	const auto dx11Renderer = (DX11Renderer*)renderer;
 
-	auto device = dx11Renderer->D3DDevice();
+	auto device = dx11Renderer->d3DDevice();
 
 	inlined_vector<D3D11_SUBRESOURCE_DATA, 16> subResourceData(initialData.size());
 
@@ -227,16 +227,16 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 	case CainEngine::Graphics::ResourceType::ConstantBuffer:
 	case CainEngine::Graphics::ResourceType::ByteAddressBuffer:
 	case CainEngine::Graphics::ResourceType::StructuredBuffer:
-		Common::FatalError("Invalid argument: type");
+		Common::fatalError("Invalid argument: type");
 	case CainEngine::Graphics::ResourceType::Tex1D: {
 		D3D11_TEXTURE1D_DESC desc = {};
 		desc.ArraySize = arraySize;
-		desc.BindFlags = EnumConverter::Convert(bindFlags);
-		desc.Format = EnumConverter::Convert(format);
+		desc.BindFlags = EnumConverter::convert(bindFlags);
+		desc.Format = EnumConverter::convert(format);
 		desc.MipLevels = mipLevels;
 		desc.Width = size.x;
 
-		auto [u, c] = EnumConverter::Convert(usage);
+		auto [u, c] = EnumConverter::convert(usage);
 		desc.Usage = u;
 		desc.CPUAccessFlags = c;
 
@@ -260,7 +260,7 @@ std::pair<int32_t, API::ITexture*> DX11Factory::CreateTexture(API::IRenderer* re
 	return { iter.idx(), iter.ptr() };
 }
 
-void DX11Factory::Clear() noexcept
+void DX11Factory::clear() noexcept
 {
 	m_vertexDatas.clear();
 	m_vertexShaders.clear();

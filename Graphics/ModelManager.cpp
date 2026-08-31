@@ -9,7 +9,7 @@ ModelManager::ModelManager()
 ModelManager::~ModelManager()
 { }
 
-std::pair<int32_t, Material*> ModelManager::CreateMaterial(
+std::pair<int32_t, Material*> ModelManager::createMaterial(
 	Renderer& renderer, API::VertexShader* vs, API::PixelShader* ps)
 {
 	const auto iter = m_materials.emplace(vs, ps);
@@ -17,61 +17,61 @@ std::pair<int32_t, Material*> ModelManager::CreateMaterial(
 	return { iter.idx(), iter.ptr() };
 }
 
-Material* ModelManager::GetMaterial(int32_t materialID) noexcept
+Material* ModelManager::getMaterial(int32_t materialID) noexcept
 {
 	return &m_materials[materialID];
 }
 
-void ModelManager::RemoveMaterial(int32_t materialID) noexcept
+void ModelManager::removeMaterial(int32_t materialID) noexcept
 {
 	m_materials.erase(materialID);
 }
 
-std::pair<int32_t, Model*> ModelManager::CreateModel(
+std::pair<int32_t, Model*> ModelManager::createModel(
 	Renderer& renderer, const VertexDataCreationInfo& vertexData)
 {
-	const auto impl = renderer.Implementation();
-	const auto factory = impl->GetFactory();
+	const auto impl = renderer.implementation();
+	const auto factory = impl->getFactory();
 
 	const auto iter = m_models.emplace();
 
-	iter->model.SetVertexData(factory->CreateVertexData(impl, vertexData));
+	iter->model.setVertexData(factory->createVertexData(impl, vertexData));
 
 	return { iter.idx(), &iter->model };
 }
 
-[[nodiscard]] Model* ModelManager::GetModel(int32_t modelID) noexcept
+[[nodiscard]] Model* ModelManager::getModel(int32_t modelID) noexcept
 {
 	return &m_models[modelID].model;
 }
 
-void ModelManager::RemoveModel(int32_t modelID) noexcept
+void ModelManager::removeModel(int32_t modelID) noexcept
 {
 	m_models.erase(modelID);
 }
 
-void ModelManager::AddEntity(int32_t modelID, Scene& scene, EntityID entity)
+void ModelManager::addEntity(int32_t modelID, Scene& scene, EntityID entity)
 {
-	COMMON_ASSERT(m_entityMapping.find(entity.Index()) == m_entityMapping.end());
+	COMMON_ASSERT(m_entityMapping.find(entity.index()) == m_entityMapping.end());
 
 	const auto& iter = m_entityMapping.emplace(
-		std::piecewise_construct, std::make_tuple(entity.Index()), std::make_tuple());
+		std::piecewise_construct, std::make_tuple(entity.index()), std::make_tuple());
 
 	auto& data = iter.first->second;
 
 	data.modelID = modelID;
-	data.matrix = scene.GetGlobalMatrix(entity);
+	data.matrix = scene.getGlobalMatrix(entity);
 
 	auto& model = m_models[modelID];
 
 	model.matrices.emplace_back(data.matrix, float4(0, 0, 0, 1));
 }
 
-void ModelManager::RemoveEntity(EntityID entity) noexcept
+void ModelManager::removeEntity(EntityID entity) noexcept
 {
-	COMMON_ASSERT(m_entityMapping.find(entity.Index()) != m_entityMapping.end());
+	COMMON_ASSERT(m_entityMapping.find(entity.index()) != m_entityMapping.end());
 
-	const auto& iter = m_entityMapping.find(entity.Index());
+	const auto& iter = m_entityMapping.find(entity.index());
 
 	auto& model = m_models[iter->second.modelID];
 
@@ -88,24 +88,24 @@ void ModelManager::RemoveEntity(EntityID entity) noexcept
 	}
 }
 
-Model* ModelManager::GetModel(EntityID entity) noexcept
+Model* ModelManager::getModel(EntityID entity) noexcept
 {
-	const auto& iter = m_entityMapping.find(entity.Index());
+	const auto& iter = m_entityMapping.find(entity.index());
 
 	if(iter == m_entityMapping.end())
 		return nullptr;
 
-	return GetModel(iter->second.modelID);
+	return getModel(iter->second.modelID);
 }
 
-bool ModelManager::HasModel(EntityID entity) const noexcept
+bool ModelManager::hasModel(EntityID entity) const noexcept
 {
-	return m_entityMapping.find(entity.Index()) != m_entityMapping.end();
+	return m_entityMapping.find(entity.index()) != m_entityMapping.end();
 }
 
-bool ModelManager::HasModel(int32_t modelID, EntityID entity) const noexcept
+bool ModelManager::hasModel(int32_t modelID, EntityID entity) const noexcept
 {
-	const auto& iter = m_entityMapping.find(entity.Index());
+	const auto& iter = m_entityMapping.find(entity.index());
 
 	if(iter == m_entityMapping.end())
 		return false;
@@ -113,16 +113,16 @@ bool ModelManager::HasModel(int32_t modelID, EntityID entity) const noexcept
 	return modelID == iter->second.modelID;
 }
 
-void ModelManager::AttachCallbacks(Scene& scene)
+void ModelManager::attachCallbacks(Scene& scene)
 {
-	scene.AddDestroyCallback(this, [this](Scene& scene, EntityID entity) {
-		if(HasModel(entity))
-			RemoveEntity(entity);
+	scene.addDestroyCallback(this, [this](Scene& scene, EntityID entity) {
+		if(hasModel(entity))
+			removeEntity(entity);
 	});
 
-	scene.AddTransformChangeCallback(
+	scene.addTransformChangeCallback(
 		this, [this](Scene& scene, EntityID entity, const matrix3x4& matrix) {
-			const auto& iter = m_entityMapping.find(entity.Index());
+			const auto& iter = m_entityMapping.find(entity.index());
 
 			if(iter == m_entityMapping.end())
 				return;
@@ -149,7 +149,7 @@ void ModelManager::AttachCallbacks(Scene& scene)
 		});
 }
 
-const colony<ModelManager::ModelData>& ModelManager::GetModels() const noexcept
+const colony<ModelManager::ModelData>& ModelManager::getModels() const noexcept
 {
 	return m_models;
 }

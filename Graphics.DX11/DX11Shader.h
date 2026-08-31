@@ -13,11 +13,11 @@ public:
 public:
 	// Main functionality
 
-	ID3D11VertexShader* GetShader() const;
+	ID3D11VertexShader* getShader() const;
 
-	memory_view ByteCode() const;
+	memory_view byteCode() const;
 
-	uint64_t InputRegisterHash() const;
+	uint64_t inputRegisterHash() const;
 
 private:
 	com_ptr<ID3D11VertexShader> m_vertexShader;
@@ -37,7 +37,7 @@ public:
 public:
 	// Main functionality
 
-	ID3D11PixelShader* GetShader() const;
+	ID3D11PixelShader* getShader() const;
 
 private:
 	com_ptr<ID3D11PixelShader> m_pixelShader;

@@ -3,21 +3,21 @@
 using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
-void Renderer::BuildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport)
+void Renderer::buildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport)
 {
 }
 
-void Renderer::RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Viewport>& vp)
+void Renderer::renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Viewport>& vp)
 {
 	++m_frameIndex;
 
-	auto viewport = vp.value_or(GetViewport());
+	auto viewport = vp.value_or(getViewport());
 
-	BuildFrameData(scene, viewport);
+	buildFrameData(scene, viewport);
 
-	m_renderer->RenderFrame([&](API::IRenderContext* context)
+	m_renderer->renderFrame([&](API::IRenderContext* context)
 	{
-		context->SetViewport(viewport);
+		context->setViewport(viewport);
 
 		/*
 
@@ -27,20 +27,20 @@ void Renderer::RenderFrame(EntitySystem::Scene& scene, CameraManager& cameras, M
 
 		*/
 
-		for (auto& modelData : models.GetModels())
+		for (auto& modelData : models.getModels())
 		{
 			const auto& model = modelData.model;
 
-			context->SetVertexData(model.VertexData());
+			context->setVertexData(model.vertexData());
 
-			for (auto subMesh : model.SubMeshes())
+			for (auto subMesh : model.subMeshes())
 			{
-				const auto material = models.GetMaterial(subMesh.materialIndex);
+				const auto material = models.getMaterial(subMesh.materialIndex);
 
-				context->SetVertexShader(material->VertexShader());
-				context->SetPixelShader(material->PixelShader());
+				context->setVertexShader(material->vertexShader());
+				context->setPixelShader(material->pixelShader());
 
-				context->DrawIndexed(subMesh.indexCount, subMesh.indexOffset);
+				context->drawIndexed(subMesh.indexCount, subMesh.indexOffset);
 			}
 
 		}

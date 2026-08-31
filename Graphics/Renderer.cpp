@@ -12,62 +12,62 @@ Renderer::~Renderer()
 {
 }
 
-uint32_t Renderer::ID() const
+uint32_t Renderer::id() const
 {
-	return m_renderer->ID();
+	return m_renderer->id();
 }
 
-std::string Renderer::ShortName() const
+std::string Renderer::shortName() const
 {
-	return m_renderer->ShortName();
+	return m_renderer->shortName();
 }
 
-std::string Renderer::Name() const
+std::string Renderer::name() const
 {
-	return m_renderer->Name();
+	return m_renderer->name();
 }
 
-void Renderer::Init(flag<RendererInitFlags> initFlags)
+void Renderer::init(flag<RendererInitFlags> initFlags)
 {
-	m_renderer->Init(initFlags);
+	m_renderer->init(initFlags);
 }
 
-void Renderer::Exit()
+void Renderer::exit()
 {
-	m_renderer->Exit();
+	m_renderer->exit();
 }
 
-void Renderer::Flush()
+void Renderer::flush()
 {
-	m_renderer->Flush();
+	m_renderer->flush();
 }
 
-void Renderer::SetMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
 {
-	m_renderer->SetMainWindow(mainWindow, creationSettings);
+	m_renderer->setMainWindow(mainWindow, creationSettings);
 }
 
-void Renderer::HandleWindowResize()
+void Renderer::handleWindowResize()
 {
-	m_renderer->HandleWindowResize();
+	m_renderer->handleWindowResize();
 }
 
-bool Renderer::HasFeature(RendererFeature feature) const
+bool Renderer::hasFeature(RendererFeature feature) const
 {
-	return m_renderer->HasFeature(feature);
+	return m_renderer->hasFeature(feature);
 }
 
-API::IDisplaySettings& CainEngine::Graphics::Renderer::DisplaySettings()
+API::IDisplaySettings& CainEngine::Graphics::Renderer::displaySettings()
 {
-	return m_renderer->DisplaySettings();
+	return m_renderer->displaySettings();
 }
 
-API::IRenderer* Renderer::Implementation()
+API::IRenderer* Renderer::implementation()
 {
 	return m_renderer.get();
 }
 
-Viewport Renderer::GetViewport() const
+Viewport Renderer::getViewport() const
 {
-	return Viewport{ float2::zero, float2(m_renderer->GetBackBufferSize()) };
+	return Viewport{ float2::zero, float2(m_renderer->getBackBufferSize()) };
 }

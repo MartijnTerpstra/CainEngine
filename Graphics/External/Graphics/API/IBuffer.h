@@ -9,9 +9,9 @@ class IBuffer : public IResource
 public:
 	// Main functionality
 
-	virtual void* Map() = 0;
+	virtual void* map() = 0;
 
-	virtual void Unmap() = 0;
+	virtual void unmap() = 0;
 };
 
 inline IBuffer::~IBuffer() = default;

@@ -13,13 +13,13 @@ public:
 public:
 	// Main functionality
 
-	virtual VertexShader* CreateVertexShader(
+	virtual VertexShader* createVertexShader(
 		IRenderer* renderer, API::CompiledShaderData&& shaderData) = 0;
 
-	virtual PixelShader* CreatePixelShader(
+	virtual PixelShader* createPixelShader(
 		IRenderer* renderer, API::CompiledShaderData&& shaderData) = 0;
 
-	virtual VertexData* CreateVertexData(
+	virtual VertexData* createVertexData(
 		IRenderer* renderer, const VertexDataCreationInfo& creationInfo) = 0;
 
 	/**
@@ -33,7 +33,7 @@ public:
 	   and vertex buffers
 			- usage: the read and writability on the CPU and GPU
 	*/
-	virtual std::shared_ptr<IBuffer> CreateBuffer(IRenderer* renderer, ResourceType type,
+	virtual std::shared_ptr<IBuffer> createBuffer(IRenderer* renderer, ResourceType type,
 		size_t dataSize, memory_view memory = memory_view(nullptr, 0), uint32_t structSize = 0,
 		Usage usage = Usage::Default) = 0;
 
@@ -51,7 +51,7 @@ public:
 			- mipLevels: the amount of mip levels to create, use GRAPHICS_CORE_GENERATE_MAX_MIPS to
 	   let the api generate the maximal amount
 	*/
-	virtual std::pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type,
+	virtual std::pair<int32_t, API::ITexture*> createTexture(IRenderer* renderer, ResourceType type,
 		const uint3& size, PixelFormat format = PixelFormat::Default,
 		flag<BindFlags> bindFlags = BindFlags::ShaderResource, Usage usage = Usage::Default,
 		uint32_t arraySize = 1, uint32_t mipLevels = 1) = 0;
@@ -71,7 +71,7 @@ public:
 			- mipLevels: the amount of mip levels to create, use GRAPHICS_CORE_GENERATE_MAX_MIPS to
 	   let the api generate the maximal amount
 	*/
-	virtual std::pair<int32_t, API::ITexture*> CreateTexture(IRenderer* renderer, ResourceType type,
+	virtual std::pair<int32_t, API::ITexture*> createTexture(IRenderer* renderer, ResourceType type,
 		const uint3& size, array_view<API::PixelData> initialData,
 		PixelFormat format = PixelFormat::Default,
 		flag<BindFlags> bindFlags = BindFlags::ShaderResource, Usage usage = Usage::Default,

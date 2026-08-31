@@ -4,11 +4,11 @@ namespace CainEngine::Common {
 
 constinit IConsole* g_console = nullptr;
 
-void Details::Log(LogSeverity severity, std::string_view str)
+void Details::log(LogSeverity severity, std::string_view str)
 {
 	if(g_console)
 	{
-		g_console->WriteLine(severity, str);
+		g_console->writeLine(severity, str);
 		return;
 	}
 
@@ -28,7 +28,7 @@ void Details::Log(LogSeverity severity, std::string_view str)
 		severityStr = "[MESG ]: ";
 		break;
 	default:
-		Unreachable();
+		unreachable();
 	}
 
 	std::cout << str << std::endl;

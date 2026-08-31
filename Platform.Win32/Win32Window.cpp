@@ -27,7 +27,7 @@ Win32Window::~Win32Window()
 		delete thisPtr;
 }
 
-RefPtr<IWindow> Win32Window::CreateNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
+RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -38,7 +38,7 @@ RefPtr<IWindow> Win32Window::CreateNewWindow(const std::string& name, const uint
 	{
 		// create window class
 		wc.style = CS_HREDRAW | CS_VREDRAW;
-		wc.lpfnWndProc = &Win32Window::WndProc;
+		wc.lpfnWndProc = &Win32Window::wndProc;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = instance;
@@ -63,10 +63,10 @@ RefPtr<IWindow> Win32Window::CreateNewWindow(const std::string& name, const uint
 		style = WS_OVERLAPPED;
 		break;
 	case Platform::WindowType::FullscreenBorderless:
-		Common::FatalError("Not implemented: Platform::WindowType::Fullscreen");
+		Common::fatalError("Not implemented: Platform::WindowType::Fullscreen");
 		break;
 	default:
-		Common::FatalError("WindowsWindow::CreateNewWindow(): corrupted value: type");
+		Common::fatalError("WindowsWindow::CreateNewWindow(): corrupted value: type");
 	}
 
 	if (flags.is_enabled(Platform::WindowFlags::NoMinimizeButton))
@@ -92,14 +92,14 @@ RefPtr<IWindow> Win32Window::CreateNewWindow(const std::string& name, const uint
 		return nullptr;
 	}
 
-	auto retval = Common::RefPtr<Win32Window>::Create(hwnd, name, listener, listenerPointer);
+	auto retval = Common::RefPtr<Win32Window>::create(hwnd, name, listener, listenerPointer);
 
-	SetWindowLongPtrA(retval->m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(retval.Get()));
+	SetWindowLongPtrA(retval->m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(retval.get()));
 
 	return retval;
 }
 
-RefPtr<IWindow> Win32Window::GetConsole()
+RefPtr<IWindow> Win32Window::getConsole()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -108,49 +108,49 @@ RefPtr<IWindow> Win32Window::GetConsole()
 	if (hwnd == nullptr)
 		return nullptr;
 
-	auto retval = Common::RefPtr<Win32Window>::Create(hwnd, "Console", nullptr, nullptr);
+	auto retval = Common::RefPtr<Win32Window>::create(hwnd, "Console", nullptr, nullptr);
 
-	SetWindowLongPtrA(retval->m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(retval.Get()));
+	SetWindowLongPtrA(retval->m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(retval.get()));
 
 	return retval;
 }
 
-void Win32Window::Show()
+void Win32Window::show()
 {
 	COMMON_CALLSTACK_CALL;
 
 	ShowWindow(m_hwnd, SW_NORMAL);
 }
 
-void Win32Window::Redraw()
+void Win32Window::redraw()
 {
 	COMMON_CALLSTACK_CALL;
 
 	RedrawWindow(m_hwnd, nullptr, nullptr, RDW_INTERNALPAINT);
 }
 
-void Win32Window::Maximize()
+void Win32Window::maximize()
 {
 	COMMON_CALLSTACK_CALL;
 
 	ShowWindow(m_hwnd, SW_MAXIMIZE);
 }
 
-void Win32Window::Close()
+void Win32Window::close()
 {
 	COMMON_CALLSTACK_CALL;
 
 	DestroyWindow(m_hwnd);
 }
 
-void Win32Window::Minimize()
+void Win32Window::minimize()
 {
 	COMMON_CALLSTACK_CALL;
 
 	ShowWindow(m_hwnd, SW_MINIMIZE);
 }
 
-void Win32Window::HandleEvents()
+void Win32Window::handleEvents()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -172,21 +172,21 @@ void Win32Window::HandleEvents()
 	}
 }
 
-bool Win32Window::IsShown() const
+bool Win32Window::isShown() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return (IsWindowVisible(m_hwnd) != FALSE);
 }
 
-std::string Win32Window::GetName() const
+std::string Win32Window::getName() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_name;
 }
 
-int Win32Window::GetWidth() const
+int Win32Window::getWidth() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -196,7 +196,7 @@ int Win32Window::GetWidth() const
 	return rect.right - rect.left;
 }
 
-int Win32Window::GetHeight() const
+int Win32Window::getHeight() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -206,7 +206,7 @@ int Win32Window::GetHeight() const
 	return rect.bottom - rect.top;
 }
 
-Rect Win32Window::GetRect() const
+Rect Win32Window::getRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -216,7 +216,7 @@ Rect Win32Window::GetRect() const
 	return Rect(rect.left, rect.top, rect.right, rect.bottom);
 }
 
-Rect Win32Window::GetClientRect() const
+Rect Win32Window::getClientRect() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -226,21 +226,21 @@ Rect Win32Window::GetClientRect() const
 	return Rect(rect.left, rect.top, rect.right, rect.bottom);
 }
 
-void Win32Window::ToForeground()
+void Win32Window::toForeground()
 {
 	COMMON_CALLSTACK_CALL;
 
 	SetForegroundWindow(m_hwnd);
 }
 
-HWND Win32Window::GetHwnd() const
+HWND Win32Window::getHwnd() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return m_hwnd;
 }
 
-void* Win32Window::_As(uint64_t typeHash) const
+void* Win32Window::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 

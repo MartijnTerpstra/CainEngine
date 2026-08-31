@@ -12,7 +12,7 @@ namespace Win32 {
 
 class IWin32Window;
 
-RefPtr<ICoreFactory> CreateInstance();
+RefPtr<ICoreFactory> createInstance();
 
 }; // namespace Windows
 }; // namespace Platform

@@ -13,31 +13,31 @@ public:
 public:
 	// IResourceFactory overrides
 
-	API::VertexShader* CreateVertexShader(
+	API::VertexShader* createVertexShader(
 		API::IRenderer* renderer, API::CompiledShaderData&& shaderData) override;
 
-	API::PixelShader* CreatePixelShader(
+	API::PixelShader* createPixelShader(
 		API::IRenderer* renderer, API::CompiledShaderData&& shaderData) override;
 
-	API::VertexData* CreateVertexData(
+	API::VertexData* createVertexData(
 		API::IRenderer* renderer, const VertexDataCreationInfo& creationInfo) override;
 
-	std::shared_ptr<API::IBuffer> CreateBuffer(API::IRenderer* renderer, ResourceType type,
+	std::shared_ptr<API::IBuffer> createBuffer(API::IRenderer* renderer, ResourceType type,
 		size_t dataSize, memory_view memory = memory_view(nullptr, 0), uint32_t structSize = 0,
 		API::Usage usage = API::Usage::Default) override;
-	std::pair<int32_t, API::ITexture*> CreateTexture(API::IRenderer* renderer, ResourceType type,
+	std::pair<int32_t, API::ITexture*> createTexture(API::IRenderer* renderer, ResourceType type,
 		const uint3& size, PixelFormat format = PixelFormat::Default,
 		flag<API::BindFlags> bindFlags = API::BindFlags::ShaderResource,
 		API::Usage usage = API::Usage::Default, uint32_t arraySize = 1,
 		uint32_t mipLevels = 1) override;
-	std::pair<int32_t, API::ITexture*> CreateTexture(API::IRenderer* renderer, ResourceType type,
+	std::pair<int32_t, API::ITexture*> createTexture(API::IRenderer* renderer, ResourceType type,
 		const uint3& size, array_view<API::PixelData> initialData,
 		PixelFormat format = PixelFormat::Default,
 		flag<API::BindFlags> bindFlags = API::BindFlags::ShaderResource,
 		API::Usage usage = API::Usage::Default, uint32_t arraySize = 1,
 		uint32_t mipLevels = 1) override;
 
-	void Clear() noexcept;
+	void clear() noexcept;
 
 private:
 	// Member variables
