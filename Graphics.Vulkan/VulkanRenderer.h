@@ -33,7 +33,8 @@ public:
 
 	void flush() override;
 
-	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) override;
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<SwapChainCreationSettings>& creationSettings) override;
 
 	void handleWindowResize() override;
 
@@ -60,8 +61,9 @@ private:
 	void setDisplayMode(const SwapChainDisplayMode& mode) override;
 	std::vector<OutputDisplay> supportedOutputs() const override;
 	std::vector<PixelFormat> supportedPixelFormats(uint32_t outputIndex) const override;
-	std::vector<SwapChainDisplayMode> supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
+	std::vector<SwapChainDisplayMode> supportedDisplayModes(
+		uint32_t outputIndex, PixelFormat format) const override;
 	std::vector<uint32_t> supportedMultiSamplingCounts(PixelFormat format) const override;
 };
 
-};
+}; // namespace CainEngine::Graphics::Vulkan

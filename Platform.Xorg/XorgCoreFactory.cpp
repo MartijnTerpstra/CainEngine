@@ -111,7 +111,7 @@ void* XorgCoreFactory::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(ICoreFactory);

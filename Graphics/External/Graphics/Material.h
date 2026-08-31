@@ -6,7 +6,7 @@ class Material final
 {
 public:
 	// ctor & dtor
-	
+
 	Material(API::VertexShader* vs, API::PixelShader* ps);
 	~Material();
 
@@ -29,4 +29,4 @@ private:
 	std::vector<int32_t> m_variableOffsets;
 };
 
-}
+} // namespace CainEngine::Graphics

@@ -24,10 +24,19 @@ struct Counters
 class Base : public BaseObject
 {
 public:
-	Base() { ++Counters::constructed; }
-	~Base() override { ++Counters::destroyed; }
+	Base()
+	{
+		++Counters::constructed;
+	}
+	~Base() override
+	{
+		++Counters::destroyed;
+	}
 
-	virtual int tag() const { return 1; }
+	virtual int tag() const
+	{
+		return 1;
+	}
 
 private:
 	// Deliberately returns nullptr for unrecognized types, matching
@@ -51,7 +60,10 @@ private:
 class Derived final : public Base
 {
 public:
-	int tag() const override { return 2; }
+	int tag() const override
+	{
+		return 2;
+	}
 
 private:
 	void* asImpl(uint64_t typeHash) const override

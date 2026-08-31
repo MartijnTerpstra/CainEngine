@@ -9,7 +9,7 @@ using namespace ::CainEngine::Platform::Internal;
 
 KeyCodes EnumConverter::toKeyCodes(KeySym k)
 {
-	switch (k)
+	switch(k)
 	{
 	case XK_Shift_L:
 		return KeyCodes::LeftShift;

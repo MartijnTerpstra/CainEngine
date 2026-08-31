@@ -3,7 +3,7 @@
 namespace CainEngine::Graphics::Vulkan {
 
 #define GRAPHICS_DECLARE_INST_FUNCTION(x) PFN_##x x = nullptr;
-#define GRAPHICS_DECLARE_DEV_FUNCTION(x) PFN_##x x = nullptr;
+#define GRAPHICS_DECLARE_DEV_FUNCTION(x)  PFN_##x x = nullptr;
 
 class APIFunctions
 {
@@ -39,4 +39,4 @@ private:
 #undef GRAPHICS_DECLARE_INST_FUNCTION
 #undef GRAPHICS_DECLARE_DEV_FUNCTION
 
-};
+}; // namespace CainEngine::Graphics::Vulkan

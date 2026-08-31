@@ -12,12 +12,14 @@ public:
 
 public:
 	// Main functionality
-	
+
 	ID3D11Device* d3DDevice();
 
-	void addVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
+	void addVertexShaderInputRegisters(
+		uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters);
 
-	ID3D11InputLayout* getOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout);
+	ID3D11InputLayout* getOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash,
+		mst::array_view<API::VertexBufferDesc> vertexLayout);
 
 public:
 	// IRenderer overrides
@@ -36,7 +38,8 @@ public:
 
 	void flush() override;
 
-	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings) override;
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<SwapChainCreationSettings>& creationSettings) override;
 
 	void handleWindowResize() override;
 
@@ -50,7 +53,7 @@ public:
 
 private:
 	// IDisplaySettings overrides
-	
+
 	FullScreenState fullScreen() const override;
 	void setFullScreen(bool fullScreen, uint32_t outputIndex) override;
 	uint32_t multiSamplingCount() const override;
@@ -63,7 +66,8 @@ private:
 	void setDisplayMode(const SwapChainDisplayMode& mode) override;
 	std::vector<OutputDisplay> supportedOutputs() const override;
 	std::vector<PixelFormat> supportedPixelFormats(uint32_t outputIndex) const override;
-	std::vector<SwapChainDisplayMode> supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const override;
+	std::vector<SwapChainDisplayMode> supportedDisplayModes(
+		uint32_t outputIndex, PixelFormat format) const override;
 	std::vector<uint32_t> supportedMultiSamplingCounts(PixelFormat format) const override;
 
 private:
@@ -95,4 +99,4 @@ private:
 	HMODULE m_d3d11;
 };
 
-};
+}; // namespace CainEngine::Graphics::DX11

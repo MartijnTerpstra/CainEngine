@@ -12,7 +12,6 @@ public:
 	virtual void show() = 0;
 
 	virtual void hide() = 0;
-
 };
 
-}
+} // namespace CainEngine::Platform

@@ -18,7 +18,7 @@ Event::~Event()
 
 	m_fence.reset();
 
-	if (CloseHandle(m_event) == FALSE)
+	if(CloseHandle(m_event) == FALSE)
 		Common::fatalError("CloseHandle failed");
 }
 
@@ -31,7 +31,7 @@ void Event::waitTillCompletion() const
 {
 	COMMON_CALLSTACK_CALL;
 
-	if (m_fence->GetCompletedValue() < m_fenceValue)
+	if(m_fence->GetCompletedValue() < m_fenceValue)
 	{
 		CHECK_HRESULT(m_fence->SetEventOnCompletion(m_fenceValue, m_event));
 

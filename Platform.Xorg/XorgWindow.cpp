@@ -14,11 +14,11 @@ using namespace ::CainEngine::Platform::Internal;
 XorgWindow::XorgWindow(Display* display, ::Window window, std::string name,
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
-	: m_display(display),
-	m_window(window),
-	m_name(std::move(name)),
-	m_listener(listener),
-	m_listenerPointer(listenerPointer)
+	: m_display(display)
+	, m_window(window)
+	, m_name(std::move(name))
+	, m_listener(listener)
+	, m_listenerPointer(listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 }
@@ -40,7 +40,7 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const std::string& name, const uint2
 	COMMON_CALLSTACK_CALL;
 
 	Display* display = XOpenDisplay(":0.0");
-	if (display == nullptr)
+	if(display == nullptr)
 	{
 		Common::fatalError("XorgWindow::createNewWindow(): XOpenDisplay failed");
 	}
@@ -49,29 +49,27 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const std::string& name, const uint2
 	int numberOfVisuals;
 	XVisualInfo vInfoTemplate = {};
 	vInfoTemplate.screen = XDefaultScreen(display);
-	XVisualInfo *visualInfo = XGetVisualInfo(display, visualMask,
-		&vInfoTemplate, &numberOfVisuals);
+	XVisualInfo* visualInfo = XGetVisualInfo(display, visualMask, &vInfoTemplate, &numberOfVisuals);
 
 	Colormap colormap = XCreateColormap(
-		display, XRootWindow(display, vInfoTemplate.screen),
-		visualInfo->visual, AllocNone);
+		display, XRootWindow(display, vInfoTemplate.screen), visualInfo->visual, AllocNone);
 
 	XSetWindowAttributes windowAttributes = {};
 	windowAttributes.colormap = colormap;
 	windowAttributes.background_pixel = 0xFFFFFFFF;
 	windowAttributes.border_pixel = 0;
 	windowAttributes.event_mask =
-		/*KeyPressMask | KeyReleaseMask | StructureNotifyMask | ExposureMask | VisibilityNotify*/ 0xFFFFFF;
+		/*KeyPressMask | KeyReleaseMask | StructureNotifyMask | ExposureMask | VisibilityNotify*/
+		0xFFFFFF;
 
-	Window window = XCreateWindow(
-		display, XRootWindow(display, vInfoTemplate.screen), 0, 0,
-		size.x, size.y, 0, visualInfo->depth, InputOutput,
-		visualInfo->visual,
+	Window window = XCreateWindow(display, XRootWindow(display, vInfoTemplate.screen), 0, 0, size.x,
+		size.y, 0, visualInfo->depth, InputOutput, visualInfo->visual,
 		CWBackPixel | CWBorderPixel | CWEventMask | CWColormap, &windowAttributes);
 
 	XStoreName(display, window, name.c_str());
 
-	//XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask | VisibilityNotify);
+	// XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask |
+	// VisibilityNotify);
 
 	return Common::RefPtr<XorgWindow>::create(display, window, name, listener, listenerPointer);
 }
@@ -85,8 +83,7 @@ void XorgWindow::show()
 	XMapWindow(m_display, m_window);
 	XFlush(m_display);
 
-	m_deleteWindowAtom =
-		XInternAtom(m_display, "WM_DELETE_WINDOW", False);
+	m_deleteWindowAtom = XInternAtom(m_display, "WM_DELETE_WINDOW", False);
 }
 
 void XorgWindow::redraw()
@@ -128,38 +125,38 @@ void XorgWindow::handleEvents()
 
 	XEvent evt;
 
-	while (XPending(m_display) > 0)
+	while(XPending(m_display) > 0)
 	{
 		XNextEvent(m_display, &evt);
 
 		/* draw or redraw the window */
-		if (evt.type == Expose || evt.type == GraphicsExpose)
+		if(evt.type == Expose || evt.type == GraphicsExpose)
 		{
 			auto listener = m_listener.lock();
 
-			if (listener != nullptr)
+			if(listener != nullptr)
 			{
 				listener->onRedraw(this);
 			}
 			continue;
 		}
-		if (evt.type == VisibilityNotify)
+		if(evt.type == VisibilityNotify)
 		{
 			mst::printf("state: %d\n", evt.xvisibility.state);
 		}
-		if (evt.type == KeyPress || evt.type == KeyRelease)
+		if(evt.type == KeyPress || evt.type == KeyRelease)
 		{
 			auto listener = m_listener.lock();
 
-			if (listener == nullptr)
+			if(listener == nullptr)
 				continue;
 
-			if (evt.type == KeyRelease && XEventsQueued(m_display, QueuedAfterReading))
+			if(evt.type == KeyRelease && XEventsQueued(m_display, QueuedAfterReading))
 			{
 				XEvent nev;
 				XPeekEvent(m_display, &nev);
 
-				if (nev.type == KeyPress && nev.xkey.time == evt.xkey.time &&
+				if(nev.type == KeyPress && nev.xkey.time == evt.xkey.time &&
 					nev.xkey.keycode == evt.xkey.keycode)
 				{
 					/* Key wasn't actually released */
@@ -169,17 +166,17 @@ void XorgWindow::handleEvents()
 
 			handleKeyEvent(&evt, listener);
 		}
-		if (evt.type == MapNotify)
+		if(evt.type == MapNotify)
 		{
 			m_shown = true;
 		}
-		if (evt.type == UnmapNotify)
+		if(evt.type == UnmapNotify)
 		{
 			m_shown = false;
 		}
-		if (evt.type == ClientMessage)
+		if(evt.type == ClientMessage)
 		{
-			if ((Atom)evt.xclient.data.l[0] == m_deleteWindowAtom)
+			if((Atom)evt.xclient.data.l[0] == m_deleteWindowAtom)
 			{
 				m_shown = false;
 			}
@@ -254,7 +251,7 @@ void* XorgWindow::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(IWindow);
@@ -265,24 +262,26 @@ void* XorgWindow::asImpl(uint64_t typeHash) const
 	}
 }
 
-void XorgWindow::handleKeyEvent(XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+void XorgWindow::handleKeyEvent(
+	XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
-	auto sym = XkbKeycodeToKeysym(m_display, evt->xkey.keycode, 0, (evt->xkey.state & ShiftMask) != 0 ? 1 : 0);
+	auto sym = XkbKeycodeToKeysym(
+		m_display, evt->xkey.keycode, 0, (evt->xkey.state & ShiftMask) != 0 ? 1 : 0);
 
 	auto keyCode = EnumConverter::toKeyCodes(sym);
 
 	mst::flag<KeyModifiers> modifiers;
 
-	if ((evt->xkey.state & ControlMask) != 0)
+	if((evt->xkey.state & ControlMask) != 0)
 		modifiers.enable(KeyModifiers::Ctrl);
 
-	if ((evt->xkey.state & ShiftMask) != 0)
+	if((evt->xkey.state & ShiftMask) != 0)
 		modifiers.enable(KeyModifiers::Shift);
 
-	if ((evt->xkey.state & LockMask) != 0)
+	if((evt->xkey.state & LockMask) != 0)
 		modifiers.enable(KeyModifiers::CapsLock);
 
-	if (evt->type == KeyPress)
+	if(evt->type == KeyPress)
 	{
 		listener->onKeyDown(this, keyCode, modifiers);
 	}

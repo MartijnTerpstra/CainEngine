@@ -5,7 +5,6 @@ namespace CainEngine::EntitySystem {
 class EntityID
 {
 public:
-
 	EntityID() noexcept;
 	explicit EntityID(uint32_t value) noexcept;
 	explicit EntityID(int32_t index, uint16_t version) noexcept;
@@ -18,9 +17,9 @@ public:
 
 	bool isNull() const noexcept;
 
-	friend bool operator == (EntityID left, EntityID right) noexcept;
+	friend bool operator==(EntityID left, EntityID right) noexcept;
 
-	friend bool operator != (EntityID left, EntityID right) noexcept;
+	friend bool operator!=(EntityID left, EntityID right) noexcept;
 
 	explicit operator bool() noexcept;
 
@@ -30,4 +29,4 @@ private:
 	uint32_t m_value;
 };
 
-}
+} // namespace CainEngine::EntitySystem

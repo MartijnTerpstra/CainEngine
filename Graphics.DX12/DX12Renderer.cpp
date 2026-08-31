@@ -11,7 +11,7 @@ namespace {
 
 [[noreturn]] void notImplemented(const char* function)
 {
-	Common::fatalError("Graphics::DX12::DX12Renderer::%s(): not implemented", function);
+	CainEngine::Common::fatalError("Graphics::DX12::DX12Renderer::%s(): not implemented", function);
 }
 
 } // namespace
@@ -161,7 +161,8 @@ void DX12Renderer::flush()
 	notImplemented("flush");
 }
 
-void DX12Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void DX12Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+	const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -273,7 +274,8 @@ std::vector<PixelFormat> DX12Renderer::supportedPixelFormats(uint32_t outputInde
 	notImplemented("supportedPixelFormats");
 }
 
-std::vector<SwapChainDisplayMode> DX12Renderer::supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
+std::vector<SwapChainDisplayMode> DX12Renderer::supportedDisplayModes(
+	uint32_t outputIndex, PixelFormat format) const
 {
 	notImplemented("supportedDisplayModes");
 }

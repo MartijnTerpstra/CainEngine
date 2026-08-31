@@ -10,7 +10,7 @@ public:
 
 public:
 	// Main functionality
-	
+
 	virtual void setViewport(const Viewport& vp, float depthMin = 0, float depthMax = 1) = 0;
 
 	virtual void setVertexData(const VertexData& vertexData) = 0;
@@ -27,4 +27,4 @@ public:
 
 inline IRenderContext::~IRenderContext() = default;
 
-};
+}; // namespace CainEngine::Graphics::API

@@ -7,19 +7,17 @@ struct Rect
 {
 	Rect() = default;
 	Rect(int left, int top, int right, int bottom)
-		: Left(left),
-		Top(top),
-		Right(right),
-		Bottom(bottom)
-	{
-	}
+		: Left(left)
+		, Top(top)
+		, Right(right)
+		, Bottom(bottom)
+	{ }
 	Rect(const int2& position, const int2& size)
-		: Left(position.x),
-		Top(position.y),
-		Right(position.x + size.x),
-		Bottom(position.y + size.y)
-	{
-	}
+		: Left(position.x)
+		, Top(position.y)
+		, Right(position.x + size.x)
+		, Bottom(position.y + size.y)
+	{ }
 
 	int getWidth() const
 	{

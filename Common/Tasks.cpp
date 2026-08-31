@@ -7,7 +7,7 @@ TaskManager::TaskManager(uint32_t initialThreadCount)
 	m_allThreads.reserve(initialThreadCount);
 	m_waitingThreads.reserve(initialThreadCount);
 
-	for (uint32_t i = 0; i < initialThreadCount; ++i)
+	for(uint32_t i = 0; i < initialThreadCount; ++i)
 	{
 		m_allThreads.push_back(std::make_unique<Details::Thread>(this));
 		m_waitingThreads.push_back(m_allThreads.back().get());
@@ -16,12 +16,12 @@ TaskManager::TaskManager(uint32_t initialThreadCount)
 
 TaskManager::~TaskManager()
 {
-	for (auto& task : m_allThreads)
+	for(auto& task : m_allThreads)
 	{
 		task->stop();
 	}
 
-	for (auto& task : m_allThreads)
+	for(auto& task : m_allThreads)
 	{
 		task->wait();
 	}
@@ -33,7 +33,7 @@ std::future<void> TaskManager::run(std::function<void()> job)
 {
 	std::lock_guard<std::mutex> l(m_mutex);
 
-	if (m_waitingThreads.empty())
+	if(m_waitingThreads.empty())
 	{
 		m_allThreads.push_back(std::make_unique<Details::Thread>(this));
 		m_waitingThreads.push_back(m_allThreads.back().get());
@@ -65,8 +65,7 @@ Details::Thread::Thread(TaskManager* manager)
 }
 
 Details::Thread::~Thread()
-{
-}
+{ }
 
 void Details::Thread::run(std::promise<void>&& promise, std::function<void()>&& job)
 {
@@ -97,7 +96,7 @@ void Details::Thread::wait()
 
 void Details::Thread::threadProc()
 {
-	while (true)
+	while(true)
 	{
 		std::unique_lock<std::mutex> l(m_mutex);
 		m_cv.wait(l, [this]() { return m_run || m_quit; });
@@ -107,7 +106,7 @@ void Details::Thread::threadProc()
 		// destructor calls Stop() right after Run() queues a job, often
 		// before this thread even gets scheduled. Only treat m_quit as a
 		// reason to exit once there's no pending job left to run.
-		if (!m_run)
+		if(!m_run)
 			return;
 
 		m_run = false;

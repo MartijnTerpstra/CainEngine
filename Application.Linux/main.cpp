@@ -4,6 +4,7 @@
 #include <thread>
 
 using namespace ::CainEngine;
+using namespace ::CainEngine::Common;
 
 // Minimal Linux launcher: opens a window via the Xorg backend and pumps its
 // event loop until closed. No rendering yet - once a Vulkan swap chain can be
@@ -13,7 +14,7 @@ using namespace ::CainEngine;
 // chosen between (e.g. try Wayland, fall back to Xorg).
 
 class Application final : public Platform::ClientInterfaces::IWindowEventListener,
-						   public std::enable_shared_from_this<Application>
+						  public std::enable_shared_from_this<Application>
 {
 public:
 	explicit Application(const RefPtr<Platform::ICoreFactory>& platform)
@@ -27,7 +28,7 @@ public:
 
 		m_mainWindow->show();
 
-		while (m_mainWindow->isShown())
+		while(m_mainWindow->isShown())
 		{
 			m_mainWindow->redraw();
 

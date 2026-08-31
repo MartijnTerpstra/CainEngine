@@ -8,34 +8,38 @@ using namespace CainEngine::Graphics;
 using namespace CainEngine::Editor::ShaderCompiler;
 
 template<typename T>
-static const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::string& key, const char* variableName);
+static const T* ExtractFromMapping(
+	const std::map<std::string, T>& mapping, const std::string& key, const char* variableName);
 
-bool CainEngine::Editor::ShaderCompiler::compileShaders(const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory, const char* targetDirectory, bool optization)
+bool CainEngine::Editor::ShaderCompiler::compileShaders(
+	const std::vector<ShaderCompilation>& shaders, const char* sourceDirectory,
+	const char* targetDirectory, bool optization)
 {
 	std::map<std::string, std::unique_ptr<ICompiler>> rendererTypeMap;
 	rendererTypeMap["DX11"] = createDX11Compiler();
 	rendererTypeMap["DX12"] = createDX12Compiler();
 
-	std::map<ICompiler*, std::vector<std::tuple<std::string, ShaderType, API::CompiledShaderData>>> compiledShaders;
+	std::map<ICompiler*, std::vector<std::tuple<std::string, ShaderType, API::CompiledShaderData>>>
+		compiledShaders;
 
 	bool failure = false;
 
-	for (auto& shader : shaders)
+	for(auto& shader : shaders)
 	{
-		if (shader.name.empty())
+		if(shader.name.empty())
 		{
 			Common::error("name: required");
 			failure = true;
 			continue;
 		}
 
-		if (shader.name.length() > 63)
+		if(shader.name.length() > 63)
 		{
 			Common::error("name: must be max. 63 characters long, name will be truncated");
 			failure = true;
 		}
 
-		if (shader.shaderType == (ShaderType)0)
+		if(shader.shaderType == (ShaderType)0)
 		{
 			failure = true;
 			continue;
@@ -43,31 +47,36 @@ bool CainEngine::Editor::ShaderCompiler::compileShaders(const std::vector<Shader
 
 		auto entryPoint = shader.entryPoint.value_or("main");
 
-		if (shader.renderers.empty())
+		if(shader.renderers.empty())
 		{
 			Common::error("renderers: required");
 			failure = true;
 			continue;
 		}
 
-		for (auto& renderer : shader.renderers)
+		for(auto& renderer : shader.renderers)
 		{
 			auto compiler = ExtractFromMapping(rendererTypeMap, renderer, "Renderer");
-			if (!compiler)
+			if(!compiler)
 				continue;
 
-			compiledShaders[compiler->get()].emplace_back(shader.name.substr(0, 63), shader.shaderType, (*compiler)->compile(sourceDirectory, shader.source.c_str(), shader.shaderType, entryPoint.c_str(), shader.defines, optization));
+			compiledShaders[compiler->get()].emplace_back(shader.name.substr(0, 63),
+				shader.shaderType,
+				(*compiler)->compile(sourceDirectory, shader.source.c_str(), shader.shaderType,
+					entryPoint.c_str(), shader.defines, optization));
 		}
 	}
 
-	for (auto& byRenderer : compiledShaders)
+	for(auto& byRenderer : compiledShaders)
 	{
 		std::vector<API::CompiledShaderMetaData> metadata(byRenderer.second.size());
 
-		std::ofstream outfile(std::string(targetDirectory) + "/" + byRenderer.first->rendererType() + ".shaders", std::ios::binary);
+		std::ofstream outfile(
+			std::string(targetDirectory) + "/" + byRenderer.first->rendererType() + ".shaders",
+			std::ios::binary);
 
 		auto m = API::SHADER_MAGIC_NUMBER;
-		auto id = byRenderer.first->rendererId(); 
+		auto id = byRenderer.first->rendererId();
 
 		outfile.write(reinterpret_cast<const char*>(&m), sizeof(m));
 		outfile.write(reinterpret_cast<const char*>(&id), sizeof(id));
@@ -78,9 +87,10 @@ bool CainEngine::Editor::ShaderCompiler::compileShaders(const std::vector<Shader
 
 		int64_t metaStart = outfile.tellp();
 
-		outfile.write(reinterpret_cast<const char*>(metadata.data()), sizeof(API::CompiledShaderMetaData) * metadata.size());
+		outfile.write(reinterpret_cast<const char*>(metadata.data()),
+			sizeof(API::CompiledShaderMetaData) * metadata.size());
 
-		for (size_t i = 0; i < metadata.size(); ++i)
+		for(size_t i = 0; i < metadata.size(); ++i)
 		{
 			metadata[i].shaderName = std::get<0>(byRenderer.second[i]);
 			metadata[i].shaderType = std::get<1>(byRenderer.second[i]);
@@ -90,44 +100,51 @@ bool CainEngine::Editor::ShaderCompiler::compileShaders(const std::vector<Shader
 
 			uint32_t size = (uint32_t)data.byteCode.size();
 			outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-			outfile.write(reinterpret_cast<const char*>(data.byteCode.data()), data.byteCode.size());
+			outfile.write(
+				reinterpret_cast<const char*>(data.byteCode.data()), data.byteCode.size());
 
 			size = (uint32_t)data.buffers.size();
 			outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-			outfile.write(reinterpret_cast<const char*>(data.buffers.data()), data.buffers.size() * sizeof(ShaderBufferInfo));
+			outfile.write(reinterpret_cast<const char*>(data.buffers.data()),
+				data.buffers.size() * sizeof(ShaderBufferInfo));
 
 			size = (uint32_t)data.textures.size();
 			outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-			outfile.write(reinterpret_cast<const char*>(data.textures.data()), data.textures.size() * sizeof(ShaderTextureInfo));
+			outfile.write(reinterpret_cast<const char*>(data.textures.data()),
+				data.textures.size() * sizeof(ShaderTextureInfo));
 
 			size = (uint32_t)data.inputRegisters.size();
 			outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-			outfile.write(reinterpret_cast<const char*>(data.inputRegisters.data()), data.inputRegisters.size() * sizeof(API::ShaderRegisterInfo));
+			outfile.write(reinterpret_cast<const char*>(data.inputRegisters.data()),
+				data.inputRegisters.size() * sizeof(API::ShaderRegisterInfo));
 
 			size = (uint32_t)data.outputRegisters.size();
 			outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-			outfile.write(reinterpret_cast<const char*>(data.outputRegisters.data()), data.outputRegisters.size() * sizeof(API::ShaderRegisterInfo));
+			outfile.write(reinterpret_cast<const char*>(data.outputRegisters.data()),
+				data.outputRegisters.size() * sizeof(API::ShaderRegisterInfo));
 		}
 
 		outfile.seekp(metaStart);
 
-		outfile.write(reinterpret_cast<const char*>(metadata.data()), sizeof(API::CompiledShaderMetaData)* metadata.size());
-
+		outfile.write(reinterpret_cast<const char*>(metadata.data()),
+			sizeof(API::CompiledShaderMetaData) * metadata.size());
 	}
 
 	return !failure;
 }
 
 template<typename T>
-const T* ExtractFromMapping(const std::map<std::string, T>& mapping, const std::string& key, const char* variableName)
+const T* ExtractFromMapping(
+	const std::map<std::string, T>& mapping, const std::string& key, const char* variableName)
 {
 	auto foundIt = mapping.find(key);
 
-	if (foundIt == mapping.end())
+	if(foundIt == mapping.end())
 	{
 		std::string supportedValues;
 
-		Common::error("%s: '%s' in not a valid value, supported values: ", variableName, key, supportedValues);
+		Common::error("%s: '%s' in not a valid value, supported values: ", variableName, key,
+			supportedValues);
 		return nullptr;
 	}
 

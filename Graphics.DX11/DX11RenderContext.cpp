@@ -14,14 +14,12 @@ using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::DX11;
 
 DX11RenderContext::DX11RenderContext(DX11Renderer* renderer, ID3D11DeviceContext* context)
-	: m_context(context),
-	m_renderer(renderer)
-{
-}
+	: m_context(context)
+	, m_renderer(renderer)
+{ }
 
 DX11RenderContext::~DX11RenderContext()
-{
-}
+{ }
 
 void DX11RenderContext::setViewport(const Viewport& vp, float depthMin, float depthMax)
 {
@@ -38,14 +36,14 @@ void DX11RenderContext::setViewport(const Viewport& vp, float depthMin, float de
 
 void DX11RenderContext::setVertexData(const API::VertexData& vertexData)
 {
-	if (m_vertexData == &vertexData)
+	if(m_vertexData == &vertexData)
 		return;
 
 	m_vertexData = &vertexData;
 
 	inlined_vector<ID3D11Buffer*, 8> buffers(vertexData.vertexBuffers.size());
 
-	for (size_t i = 0; i < buffers.size(); ++i)
+	for(size_t i = 0; i < buffers.size(); ++i)
 	{
 		buffers[i] = vertexData.vertexBuffers[i].get();
 	}
@@ -60,12 +58,13 @@ void DX11RenderContext::setVertexData(const API::VertexData& vertexData)
 
 void DX11RenderContext::setVertexShader(API::VertexShader* shader)
 {
-	if (shader == m_vertexShader)
+	if(shader == m_vertexShader)
 		return; // do nothing
 
 	m_context->VSSetShader(shader->getShader(), nullptr, 0);
 
-	m_context->IASetInputLayout(m_renderer->getOrCreateInputLayout(shader, m_vertexData->vertexLayoutHash, m_vertexData->vertexLayout));
+	m_context->IASetInputLayout(m_renderer->getOrCreateInputLayout(
+		shader, m_vertexData->vertexLayoutHash, m_vertexData->vertexLayout));
 }
 
 void DX11RenderContext::setPixelShader(API::PixelShader* shader)

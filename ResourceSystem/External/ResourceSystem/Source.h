@@ -5,6 +5,7 @@ namespace CainEngine::ResourceSystem {
 class Source
 {
 	COMMON_DECLARE_NON_COPY(Source);
+
 public:
 	// ctor & dtor
 	Source();
@@ -45,4 +46,4 @@ private:
 	std::ifstream m_infile;
 };
 
-}
+} // namespace CainEngine::ResourceSystem

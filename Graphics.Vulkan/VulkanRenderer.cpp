@@ -10,7 +10,8 @@ namespace {
 
 [[noreturn]] void notImplemented(const char* function)
 {
-	Common::fatalError("Graphics::Vulkan::VulkanRenderer::%s(): not implemented", function);
+	CainEngine::Common::fatalError(
+		"Graphics::Vulkan::VulkanRenderer::%s(): not implemented", function);
 }
 
 } // namespace
@@ -56,7 +57,8 @@ void VulkanRenderer::flush()
 	notImplemented("flush");
 }
 
-void VulkanRenderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void VulkanRenderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+	const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	notImplemented("setMainWindow");
 }
@@ -146,7 +148,8 @@ std::vector<PixelFormat> VulkanRenderer::supportedPixelFormats(uint32_t outputIn
 	notImplemented("supportedPixelFormats");
 }
 
-std::vector<SwapChainDisplayMode> VulkanRenderer::supportedDisplayModes(uint32_t outputIndex, PixelFormat format) const
+std::vector<SwapChainDisplayMode> VulkanRenderer::supportedDisplayModes(
+	uint32_t outputIndex, PixelFormat format) const
 {
 	notImplemented("supportedDisplayModes");
 }

@@ -29,8 +29,7 @@ ShaderSourceManager::ShaderSourceManager()
 }
 
 ShaderSourceManager::~ShaderSourceManager()
-{
-}
+{ }
 
 bool ShaderSourceManager::compileShaders()
 {
@@ -38,9 +37,10 @@ bool ShaderSourceManager::compileShaders()
 
 	auto config = parser.parseArray(CONTENT_DIRECTORY "/Config/Shaders.json", m_declaration);
 
-	if (config)
+	if(config)
 	{
-		return ShaderCompiler::compileShaders(*config, CONTENT_DIRECTORY "/Shaders source", CONTENT_DIRECTORY "/Shaders", false);
+		return ShaderCompiler::compileShaders(
+			*config, CONTENT_DIRECTORY "/Shaders source", CONTENT_DIRECTORY "/Shaders", false);
 	}
 	return false;
 }

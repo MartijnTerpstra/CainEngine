@@ -31,12 +31,14 @@ ID3D11Device* DX11Renderer::d3DDevice()
 	return m_device.get();
 }
 
-void DX11Renderer::addVertexShaderInputRegisters(uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
+void DX11Renderer::addVertexShaderInputRegisters(
+	uint64_t inputRegisterHash, array_view<API::ShaderRegisterInfo> inputRegisters)
 {
 	m_inputLayoutResolver.addVertexShaderInputRegisters(inputRegisterHash, inputRegisters);
 }
 
-ID3D11InputLayout* DX11Renderer::getOrCreateInputLayout(API::VertexShader* vs, uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout)
+ID3D11InputLayout* DX11Renderer::getOrCreateInputLayout(API::VertexShader* vs,
+	uint64_t vertexLayoutHash, mst::array_view<API::VertexBufferDesc> vertexLayout)
 {
 	return m_inputLayoutResolver.resolve(m_device.get(), vs, vertexLayoutHash, vertexLayout);
 }
@@ -68,10 +70,11 @@ void CainEngine::Graphics::DX11::DX11Renderer::updateRtv(uint32_t multiSamplingC
 {
 	m_msBackBuffer.reset();
 
-	if (multiSamplingCount == 1)
+	if(multiSamplingCount == 1)
 	{ // No multi sampling
 
-		CHECK_HRESULT(m_device->CreateRenderTargetView(m_backbuffer.get(), nullptr, mst::initialize(m_backBufferRTV)));
+		CHECK_HRESULT(m_device->CreateRenderTargetView(
+			m_backbuffer.get(), nullptr, mst::initialize(m_backBufferRTV)));
 	}
 	else
 	{
@@ -80,16 +83,20 @@ void CainEngine::Graphics::DX11::DX11Renderer::updateRtv(uint32_t multiSamplingC
 		m_backbuffer->GetDesc(&desc);
 
 		UINT qualityLevels;
-		CHECK_HRESULT(m_device->CheckMultisampleQualityLevels(desc.Format, multiSamplingCount, &qualityLevels));
+		CHECK_HRESULT(m_device->CheckMultisampleQualityLevels(
+			desc.Format, multiSamplingCount, &qualityLevels));
 
-		if (qualityLevels == 0)
-			Common::fatalError("invalid argument: multiSamplingCount (%u), sampling count is not supported", multiSamplingCount);
+		if(qualityLevels == 0)
+			Common::fatalError(
+				"invalid argument: multiSamplingCount (%u), sampling count is not supported",
+				multiSamplingCount);
 
 		desc.SampleDesc.Count = multiSamplingCount;
 		desc.SampleDesc.Quality = qualityLevels - 1;
 
 		CHECK_HRESULT(m_device->CreateTexture2D(&desc, nullptr, mst::initialize(m_msBackBuffer)));
 
-		CHECK_HRESULT(m_device->CreateRenderTargetView(m_msBackBuffer.get(), nullptr, mst::initialize(m_backBufferRTV)));
+		CHECK_HRESULT(m_device->CreateRenderTargetView(
+			m_msBackBuffer.get(), nullptr, mst::initialize(m_backBufferRTV)));
 	}
 }

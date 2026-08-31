@@ -7,10 +7,13 @@ namespace Internal {
 class Win32Window final : public Win32::IWin32Window
 {
 	friend class RefPtr<Win32Window>;
+
 private:
 	// ctor & dtor
 
-	Win32Window(HWND hwnd, std::string name, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
+	Win32Window(HWND hwnd, std::string name,
+		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+		ClientInterfaces::IWindowEventListener* listenerPointer);
 	~Win32Window();
 
 	COMMON_DECLARE_NON_COPY(Win32Window);
@@ -18,7 +21,10 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer);
+	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size,
+		WindowType type, flag<WindowFlags> flags,
+		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+		ClientInterfaces::IWindowEventListener* listenerPointer);
 
 	static RefPtr<IWindow> getConsole();
 
@@ -59,7 +65,7 @@ public:
 private:
 	// BaseObject overrides
 
-	virtual void * asImpl(uint64_t) const override;
+	virtual void* asImpl(uint64_t) const override;
 
 private:
 	// Internal functionality

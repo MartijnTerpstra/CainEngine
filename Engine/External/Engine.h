@@ -12,6 +12,6 @@ using Common::RefPtr;
 
 class Engine;
 
-}
+} // namespace CainEngine
 
 #include "Engine/Engine.h"

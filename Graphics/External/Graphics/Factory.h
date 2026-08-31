@@ -15,7 +15,6 @@ public:
 private:
 	API::IFactory* const m_factory;
 	API::IRenderer* const m_renderer;
-
 };
 
-}
+} // namespace CainEngine::Graphics

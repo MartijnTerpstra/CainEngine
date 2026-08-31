@@ -18,7 +18,6 @@ public:
 	std::unique_ptr<Source> getResource(uuid id);
 
 private:
-
 };
 
-}
+} // namespace CainEngine::ResourceSystem

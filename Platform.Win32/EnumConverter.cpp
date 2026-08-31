@@ -9,7 +9,7 @@ KeyCodes EnumConverter::toKeyCodes(WPARAM wParam)
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (wParam)
+	switch(wParam)
 	{
 	case 'A':
 		return KeyCodes::A;

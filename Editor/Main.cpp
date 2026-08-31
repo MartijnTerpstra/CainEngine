@@ -9,7 +9,7 @@ int main()
 {
 	ShaderSourceManager manager;
 
-	if (!manager.compileShaders())
+	if(!manager.compileShaders())
 	{
 		Common::fatalError("Error compiling shaders");
 	}

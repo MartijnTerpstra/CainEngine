@@ -32,10 +32,11 @@ public:
 
 	RefPtr<IProcess> createNewProcess(const std::string& path) override;
 
-	RefPtr<IProcess> createNewProcess(const std::string& path, const std::string& commandLine) override;
-
 	RefPtr<IProcess> createNewProcess(
-		const std::string& path, const std::string& commandLine, const std::string& workingDirectory) override;
+		const std::string& path, const std::string& commandLine) override;
+
+	RefPtr<IProcess> createNewProcess(const std::string& path, const std::string& commandLine,
+		const std::string& workingDirectory) override;
 
 	std::vector<RefPtr<IMonitor>> getMonitors() override;
 

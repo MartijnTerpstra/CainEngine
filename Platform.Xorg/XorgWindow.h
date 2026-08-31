@@ -21,8 +21,8 @@ private:
 public:
 	// Creation
 
-	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size, WindowType type,
-		flag<WindowFlags> flags,
+	static RefPtr<IWindow> createNewWindow(const std::string& name, const uint2& size,
+		WindowType type, flag<WindowFlags> flags,
 		const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 		ClientInterfaces::IWindowEventListener* listenerPointer);
 
@@ -70,12 +70,13 @@ private:
 private:
 	// Internal functionality
 
-	void handleKeyEvent(XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
+	void handleKeyEvent(
+		XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener);
 
 private:
 	// Member variables
 
-	::Display *const m_display;
+	::Display* const m_display;
 	const ::Window m_window;
 	const std::string m_name;
 	const std::weak_ptr<ClientInterfaces::IWindowEventListener> m_listener;

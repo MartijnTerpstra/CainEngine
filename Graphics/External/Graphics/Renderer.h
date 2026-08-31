@@ -27,11 +27,13 @@ public:
 
 	void exit();
 
-	void renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models, const std::optional<Graphics::Viewport>& viewport);
+	void renderFrame(EntitySystem::Scene& scene, CameraManager& cameras, ModelManager& models,
+		const std::optional<Graphics::Viewport>& viewport);
 
 	void flush();
 
-	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings);
+	void setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+		const std::optional<SwapChainCreationSettings>& creationSettings);
 
 	void handleWindowResize();
 
@@ -49,10 +51,8 @@ private:
 	void buildFrameData(EntitySystem::Scene& scene, const Graphics::Viewport& viewport);
 
 private:
-
 	const std::unique_ptr<API::IRenderer> m_renderer;
 	uint32_t m_frameIndex = 0;
-
 };
 
 }; // namespace Graphics

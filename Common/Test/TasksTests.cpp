@@ -12,7 +12,7 @@ using namespace ::CainEngine::Common;
 TEST(TaskManager, RunExecutesJobAndFutureBecomesReady)
 {
 	TaskManager manager;
-	std::atomic<bool> ran{false};
+	std::atomic<bool> ran{ false };
 
 	auto future = manager.run([&]() { ran = true; });
 	future.wait();
@@ -24,7 +24,7 @@ TEST(TaskManager, RunExecutesMultipleJobsConcurrently)
 {
 	TaskManager manager;
 	constexpr int jobCount = 8;
-	std::atomic<int> completed{0};
+	std::atomic<int> completed{ 0 };
 
 	std::vector<std::future<void>> futures;
 	for(int i = 0; i < jobCount; ++i)
@@ -43,7 +43,7 @@ TEST(TaskManager, ConstructingWithInitialThreadCountStillRunsJobs)
 	// Thread count isn't observable through the public API; this just checks
 	// that pre-warming worker threads doesn't break job execution.
 	TaskManager manager(4);
-	std::atomic<bool> ran{false};
+	std::atomic<bool> ran{ false };
 
 	manager.run([&]() { ran = true; }).wait();
 
@@ -63,7 +63,7 @@ TEST(TaskManager, JobsRunOnADifferentThreadThanTheCaller)
 
 TEST(TaskManager, DestructorWaitsForOutstandingJobsToFinish)
 {
-	std::atomic<bool> ran{false};
+	std::atomic<bool> ran{ false };
 	{
 		TaskManager manager;
 		manager.run([&]() {
@@ -79,9 +79,9 @@ TEST(TaskManager, RunAfterPreviousJobCompletedReusesTheManager)
 {
 	TaskManager manager;
 
-	manager.run([]() {}).wait();
+	manager.run([]() { }).wait();
 
-	std::atomic<bool> ran{false};
+	std::atomic<bool> ran{ false };
 	manager.run([&]() { ran = true; }).wait();
 
 	EXPECT_TRUE(ran.load());

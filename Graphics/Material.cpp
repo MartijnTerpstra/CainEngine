@@ -4,14 +4,12 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Graphics;
 
 Material::Material(API::VertexShader* vs, API::PixelShader* ps)
-	: m_vertexShader(vs),
-	m_pixelShader(ps)
-{
-}
+	: m_vertexShader(vs)
+	, m_pixelShader(ps)
+{ }
 
 Material::~Material()
-{
-}
+{ }
 
 API::VertexShader* Material::vertexShader() const
 {

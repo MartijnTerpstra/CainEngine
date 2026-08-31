@@ -16,4 +16,4 @@ public:
 
 inline IBuffer::~IBuffer() = default;
 
-}
+} // namespace CainEngine::Graphics::API

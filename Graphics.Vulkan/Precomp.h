@@ -11,7 +11,7 @@
 
 inline void checkVkResult(VkResult res, const char* errorMessage)
 {
-	if (res != VK_SUCCESS)
+	if(res != VK_SUCCESS)
 	{
 		int resultCode = (long)res;
 		CainEngine::Common::fatalError("%s VkResult: %d", errorMessage, resultCode);

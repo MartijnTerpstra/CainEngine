@@ -30,18 +30,20 @@ void DX11Renderer::init(flag<RendererInitFlags> initFlags)
 {
 	COMMON_CALLSTACK_CALL;
 
-	auto createDeviceFunc = reinterpret_cast<decltype(D3D11CreateDevice)*>(GetProcAddress(m_d3d11, "D3D11CreateDevice"));
+	auto createDeviceFunc = reinterpret_cast<decltype(D3D11CreateDevice)*>(
+		GetProcAddress(m_d3d11, "D3D11CreateDevice"));
 
 	D3D_FEATURE_LEVEL levels[2] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
 
 	DWORD flags = 0;
-	if (initFlags.is_enabled(RendererInitFlags::ApiDebug))
+	if(initFlags.is_enabled(RendererInitFlags::ApiDebug))
 	{
 		D3D_FEATURE_LEVEL selectedLvl;
 
-		CHECK_HRESULT(createDeviceFunc(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, levels, 2, D3D11_SDK_VERSION, nullptr, &selectedLvl, nullptr));
+		CHECK_HRESULT(createDeviceFunc(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, levels, 2,
+			D3D11_SDK_VERSION, nullptr, &selectedLvl, nullptr));
 
-		if (selectedLvl == D3D_FEATURE_LEVEL_11_1)
+		if(selectedLvl == D3D_FEATURE_LEVEL_11_1)
 		{
 			flags = D3D11_CREATE_DEVICE_DEBUG; // D3D11_CREATE_DEVICE_DEBUGGABLE;
 		}
@@ -51,7 +53,8 @@ void DX11Renderer::init(flag<RendererInitFlags> initFlags)
 		}
 	}
 
-	CHECK_HRESULT(createDeviceFunc(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, levels, 2, D3D11_SDK_VERSION, mst::initialize(m_device), nullptr, mst::initialize(m_context)));
+	CHECK_HRESULT(createDeviceFunc(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, levels, 2,
+		D3D11_SDK_VERSION, mst::initialize(m_device), nullptr, mst::initialize(m_context)));
 
 	com_ptr<IDXGIDevice> device;
 	CHECK_HRESULT(m_device->QueryInterface<IDXGIDevice>(mst::initialize(device)));
@@ -98,12 +101,12 @@ void DX11Renderer::exit()
 
 	auto tempCopy = m_device;
 	m_context.reset();
-	if (m_device.reset() > 1) // just the copy
+	if(m_device.reset() > 1) // just the copy
 	{
 		auto debug = tempCopy.as<ID3D11Debug>();
 		auto queue = tempCopy.as<ID3D11InfoQueue>();
 
-		if (debug != nullptr && queue != nullptr)
+		if(debug != nullptr && queue != nullptr)
 		{
 			queue->ClearStoredMessages();
 
@@ -111,7 +114,7 @@ void DX11Renderer::exit()
 
 			UINT64 messageCount = queue->GetNumStoredMessages();
 
-			for (UINT64 messageIndex = 0; messageIndex < messageCount; ++messageIndex)
+			for(UINT64 messageIndex = 0; messageIndex < messageCount; ++messageIndex)
 			{
 				SIZE_T messageSize;
 				CHECK_HRESULT(queue->GetMessageA(messageIndex, nullptr, &messageSize));
@@ -134,16 +137,17 @@ void DX11Renderer::flush()
 	m_context->Flush();
 }
 
-void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow, const std::optional<SwapChainCreationSettings>& creationSettings)
+void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWindow,
+	const std::optional<SwapChainCreationSettings>& creationSettings)
 {
 	COMMON_CALLSTACK_CALL;
 
-	if (m_mainWindow == mainWindow)
+	if(m_mainWindow == mainWindow)
 		return;
 
 	m_mainWindow = mainWindow->as<Platform::Win32::IWin32Window>();
 
-	if (!m_mainWindow)
+	if(!m_mainWindow)
 	{ // unset main window
 		return;
 	}
@@ -157,7 +161,7 @@ void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 	uint32_t preferredOutput = 0;
 	uint32_t multiSamplingCount = 1;
 
-	if (creationSettings)
+	if(creationSettings)
 	{
 		format = EnumConverter::convert(creationSettings->pixelFormat);
 		refreshRate = creationSettings->refreshRate;
@@ -167,7 +171,7 @@ void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 		m_vSync = creationSettings->vSync;
 	}
 
-	DXGI_SWAP_CHAIN_DESC swapChainDesc = { };
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 	swapChainDesc.BufferCount = 2; // double buffering
 	swapChainDesc.BufferDesc.Width = rect.getWidth();
 	swapChainDesc.BufferDesc.Height = rect.getHeight();
@@ -184,7 +188,8 @@ void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 	CHECK_HRESULT(m_adapter->EnumOutputs(preferredOutput, mst::initialize(output)));
 
 	DXGI_MODE_DESC closestMatch;
-	CHECK_HRESULT(output->FindClosestMatchingMode(&swapChainDesc.BufferDesc, &closestMatch, m_device.get()));
+	CHECK_HRESULT(
+		output->FindClosestMatchingMode(&swapChainDesc.BufferDesc, &closestMatch, m_device.get()));
 
 	swapChainDesc.BufferDesc.RefreshRate = closestMatch.RefreshRate;
 
@@ -193,7 +198,7 @@ void DX11Renderer::setMainWindow(const Common::RefPtr<Platform::IWindow>& mainWi
 
 void CainEngine::Graphics::DX11::DX11Renderer::handleWindowResize()
 {
-	if (!m_mainWindow)
+	if(!m_mainWindow)
 		return;
 
 	flush();
@@ -203,7 +208,8 @@ void CainEngine::Graphics::DX11::DX11Renderer::handleWindowResize()
 
 	auto rect = m_mainWindow->getClientRect();
 
-	m_swapChain->ResizeBuffers(2, (UINT)rect.getWidth(), (UINT)rect.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0);
+	m_swapChain->ResizeBuffers(
+		2, (UINT)rect.getWidth(), (UINT)rect.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
 	CHECK_HRESULT(m_swapChain->GetBuffer(0, MST_IID_PPV_ARGS(m_backbuffer)));
 
@@ -214,7 +220,7 @@ bool DX11Renderer::hasFeature(RendererFeature feature) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (feature)
+	switch(feature)
 	{
 	case CainEngine::Graphics::RendererFeature::AsyncShaderLoading:
 		return true;

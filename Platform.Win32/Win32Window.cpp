@@ -6,8 +6,11 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-Win32Window::Win32Window(HWND hwnd, std::string name, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
-	: m_hwnd(hwnd), m_name(std::move(name))
+Win32Window::Win32Window(HWND hwnd, std::string name,
+	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+	ClientInterfaces::IWindowEventListener* listenerPointer)
+	: m_hwnd(hwnd)
+	, m_name(std::move(name))
 	, m_minimized(false)
 	, m_eventListener(listener)
 	, m_eventListenerPointer(listenerPointer)
@@ -23,18 +26,21 @@ Win32Window::~Win32Window()
 
 	SetWindowLongPtrA(m_hwnd, GWLP_USERDATA, 0);
 
-	if (thisPtr)
+	if(thisPtr)
 		delete thisPtr;
 }
 
-RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint2& size, WindowType type, flag<WindowFlags> flags, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener, ClientInterfaces::IWindowEventListener* listenerPointer)
+RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint2& size,
+	WindowType type, flag<WindowFlags> flags,
+	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
+	ClientInterfaces::IWindowEventListener* listenerPointer)
 {
 	COMMON_CALLSTACK_CALL;
 
 	HINSTANCE instance = GetModuleHandleA(nullptr);
 
 	WNDCLASSA wc;
-	if (!GetClassInfoA(instance, name.c_str(), &wc))
+	if(!GetClassInfoA(instance, name.c_str(), &wc))
 	{
 		// create window class
 		wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -54,7 +60,7 @@ RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint
 
 	DWORD style;
 
-	switch (type)
+	switch(type)
 	{
 	case Platform::WindowType::Sizable:
 		style = WS_OVERLAPPEDWINDOW;
@@ -69,17 +75,17 @@ RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint
 		Common::fatalError("WindowsWindow::CreateNewWindow(): corrupted value: type");
 	}
 
-	if (flags.is_enabled(Platform::WindowFlags::NoMinimizeButton))
+	if(flags.is_enabled(Platform::WindowFlags::NoMinimizeButton))
 	{
 		style &= ~WS_MINIMIZEBOX;
 	}
 
-	if (flags.is_enabled(Platform::WindowFlags::NoMaximizeButton))
+	if(flags.is_enabled(Platform::WindowFlags::NoMaximizeButton))
 	{
 		style &= ~WS_MAXIMIZEBOX;
 	}
 
-	if (flags.is_enabled(Platform::WindowFlags::NoCloseButton))
+	if(flags.is_enabled(Platform::WindowFlags::NoCloseButton))
 	{
 		style &= ~WS_SYSMENU;
 	}
@@ -87,7 +93,7 @@ RefPtr<IWindow> Win32Window::createNewWindow(const std::string& name, const uint
 	HWND hwnd = CreateWindowExA(WS_EX_APPWINDOW, name.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, size.x, size.y, nullptr, nullptr, instance, nullptr);
 
-	if (!hwnd)
+	if(!hwnd)
 	{
 		return nullptr;
 	}
@@ -105,7 +111,7 @@ RefPtr<IWindow> Win32Window::getConsole()
 
 	auto hwnd = GetConsoleWindow();
 
-	if (hwnd == nullptr)
+	if(hwnd == nullptr)
 		return nullptr;
 
 	auto retval = Common::RefPtr<Win32Window>::create(hwnd, "Console", nullptr, nullptr);
@@ -154,13 +160,13 @@ void Win32Window::handleEvents()
 {
 	COMMON_CALLSTACK_CALL;
 
-	MSG msg = { };
+	MSG msg = {};
 
-	while (1)
+	while(1)
 	{
 		BOOL result = PeekMessageA(&msg, m_hwnd, 0, 0, PM_REMOVE);
 
-		if (result == FALSE || result == -1)
+		if(result == FALSE || result == -1)
 		{
 			break;
 		}
@@ -244,7 +250,7 @@ void* Win32Window::asImpl(uint64_t typeHash) const
 {
 	COMMON_CALLSTACK_CALL;
 
-	switch (typeHash)
+	switch(typeHash)
 	{
 		CHECK_TYPE_AND_RETURN(Common::BaseObject);
 		CHECK_TYPE_AND_RETURN(IWindow);
