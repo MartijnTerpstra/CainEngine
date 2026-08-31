@@ -13,9 +13,9 @@ public:
 public:
 	// Main functionality
 
-	void Init();
+	void init();
 
-	unique_ptr<Source> GetResource(uuid id);
+	std::unique_ptr<Source> getResource(uuid id);
 
 private:
 

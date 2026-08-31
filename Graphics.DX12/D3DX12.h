@@ -1907,8 +1907,8 @@ inline UINT64 UpdateSubresources(
 	pDevice->GetCopyableFootprints(&Desc, FirstSubresource, NumSubresources, IntermediateOffset, Layouts, NumRows, RowSizesInBytes, &RequiredSize);
 	pDevice->Release();
 
-	vector<UINT64> d3d12Sizes;
-	vector<UINT64> d3d11Sizes;
+	std::vector<UINT64> d3d12Sizes;
+	std::vector<UINT64> d3d11Sizes;
 
 	d3d11Sizes.push_back(pSrcData[0].SlicePitch);
 	for(size_t i = 1; i < NumSubresources; ++i)

@@ -18,6 +18,6 @@ inline void checkHResult(HRESULT hr, const char* errorMessage)
 {
 	if (FAILED(hr))
 	{
-		Common::fatalError("%s HRESULT: 0x%x", errorMessage, (uint32)hr);
+		CainEngine::Common::fatalError("%s HRESULT: 0x%x", errorMessage, (uint32_t)hr);
 	}
 }

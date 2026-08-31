@@ -18,14 +18,14 @@ XorgCoreFactory::~XorgCoreFactory()
 	COMMON_CALLSTACK_CALL;
 }
 
-string XorgCoreFactory::getPlatformName() const
+std::string XorgCoreFactory::getPlatformName() const
 {
 	COMMON_CALLSTACK_CALL;
 
 	return "Xorg";
 }
 
-vector<RefPtr<IProcess>> XorgCoreFactory::getProcesses(const string& name)
+std::vector<RefPtr<IProcess>> XorgCoreFactory::getProcesses(const std::string& name)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -46,7 +46,7 @@ RefPtr<IProcess> XorgCoreFactory::getCurrentProcess()
 	return {}; // TODO: not implemented
 }
 
-RefPtr<IProcess> XorgCoreFactory::createNewProcess(const string& path)
+RefPtr<IProcess> XorgCoreFactory::createNewProcess(const std::string& path)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -54,7 +54,7 @@ RefPtr<IProcess> XorgCoreFactory::createNewProcess(const string& path)
 }
 
 RefPtr<IProcess> XorgCoreFactory::createNewProcess(
-	const string& path, const string& commandLine)
+	const std::string& path, const std::string& commandLine)
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -62,14 +62,14 @@ RefPtr<IProcess> XorgCoreFactory::createNewProcess(
 }
 
 RefPtr<IProcess> XorgCoreFactory::createNewProcess(
-	const string& path, const string& commandLine, const string& workingDirectory)
+	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
 {
 	COMMON_CALLSTACK_CALL;
 
 	return {}; // TODO: not implemented
 }
 
-vector<RefPtr<IMonitor>> XorgCoreFactory::getMonitors()
+std::vector<RefPtr<IMonitor>> XorgCoreFactory::getMonitors()
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -83,7 +83,7 @@ RefPtr<IMonitor> XorgCoreFactory::getMainMonitor()
 	return {}; // TODO: not implemented
 }
 
-RefPtr<IWindow> XorgCoreFactory::createNewWindow(const string& name, const uint2& size,
+RefPtr<IWindow> XorgCoreFactory::createNewWindow(const std::string& name, const uint2& size,
 	WindowType type, flag<WindowFlags> flags,
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
@@ -92,7 +92,7 @@ RefPtr<IWindow> XorgCoreFactory::createNewWindow(const string& name, const uint2
 	return XorgWindow::createNewWindow(name, size, type, flags, listener, nullptr);
 }
 
-RefPtr<IWindow> XorgCoreFactory::createNewWindow(const string& name, const uint2& size,
+RefPtr<IWindow> XorgCoreFactory::createNewWindow(const std::string& name, const uint2& size,
 	WindowType type, flag<WindowFlags> flags, ClientInterfaces::IWindowEventListener* listener)
 {
 	COMMON_CALLSTACK_CALL;
@@ -104,7 +104,7 @@ RefPtr<IWindow> XorgCoreFactory::getConsoleWindow()
 {
 	COMMON_CALLSTACK_CALL;
 
-	return null;
+	return nullptr;
 }
 
 void* XorgCoreFactory::asImpl(uint64_t typeHash) const

@@ -15,11 +15,11 @@ public:
 public:
 	// Main functionality
 
-	void Init(ID3D12Device* device);
+	void init(ID3D12Device* device);
 
-	void WaitTillCompletion() const;
-	bool IsCompleted() const;
-	void SignalFence(ID3D12CommandQueue* queue);
+	void waitTillCompletion() const;
+	bool isCompleted() const;
+	void signalFence(ID3D12CommandQueue* queue);
 
 private:
 	// Internal functionality

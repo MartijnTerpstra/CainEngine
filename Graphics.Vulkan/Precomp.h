@@ -7,13 +7,13 @@
 #include "APIFunctions.h"
 #include "VkPtr.h"
 
-#define CHECK_VKESULT(x) CheckVkResult(x, __FUNCTION__ "(): call failed: " #x)
+#define CHECK_VKESULT(x) checkVkResult(x, __FUNCTION__ "(): call failed: " #x)
 
-inline void CheckVkResult(VkResult res, const char* errorMessage)
+inline void checkVkResult(VkResult res, const char* errorMessage)
 {
 	if (res != VK_SUCCESS)
 	{
 		int resultCode = (long)res;
-		Common::fatalError("%s VkResult: %d", errorMessage, resultCode);
+		CainEngine::Common::fatalError("%s VkResult: %d", errorMessage, resultCode);
 	}
 }

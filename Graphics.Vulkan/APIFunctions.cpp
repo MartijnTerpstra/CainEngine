@@ -2,14 +2,16 @@
 
 #include "APIFunctions.h"
 
+#include <cstring>
+
 using namespace ::CainEngine::Graphics;
 using namespace ::CainEngine::Graphics::Vulkan;
 
 #define GRAPHICS_INIT_INST_FUNCTION(x) x = (PFN_##x)vkGetInstanceProcAddr(Instance, #x); \
-if(x == null) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
+if(x == nullptr) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
 
 #define GRAPHICS_INIT_DEV_FUNCTION(x) x = (PFN_##x)vkGetDeviceProcAddr(Device, #x); \
-if(x == null) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
+if(x == nullptr) Common::fatalError("APIFunctions::Init(): extensions function not loaded: " #x)
 
 
 VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -63,7 +65,7 @@ OnVulkanError(VkFlags msgFlags, VkDebugReportObjectTypeEXT,
 }
 
 
-APIFunctions::APIFunctions(const shared_ptr<VkInstance_T>& instance, VkDevice device,
+APIFunctions::APIFunctions(const std::shared_ptr<VkInstance_T>& instance, VkDevice device,
 	bool debuglayer)
 	: Instance(instance.get()),
 	Device(device),
@@ -84,7 +86,7 @@ APIFunctions::APIFunctions(const shared_ptr<VkInstance_T>& instance, VkDevice de
 		debugInfo.flags =
 			VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
 
-		CheckVkResult(vkCreateDebugReportCallbackEXT(Instance, &debugInfo, null, &m_debugCallback),
+		checkVkResult(vkCreateDebugReportCallbackEXT(Instance, &debugInfo, nullptr, &m_debugCallback),
 			"Graphics::Internal::VulkanObjectFactory::VulkanObjectFactory(): call failed: vkCreateDebugReportCallbackEXT");
 	}
 
@@ -97,8 +99,8 @@ APIFunctions::APIFunctions(const shared_ptr<VkInstance_T>& instance, VkDevice de
 
 APIFunctions::~APIFunctions()
 {
-	vkDestroyDevice(Device, null);
+	vkDestroyDevice(Device, nullptr);
 
 	if (m_debugCallback)
-		vkDestroyDebugReportCallbackEXT(Instance, m_debugCallback, null);
+		vkDestroyDebugReportCallbackEXT(Instance, m_debugCallback, nullptr);
 }

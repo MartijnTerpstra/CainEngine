@@ -11,12 +11,12 @@ using namespace ::CainEngine;
 using namespace ::CainEngine::Platform;
 using namespace ::CainEngine::Platform::Internal;
 
-XorgWindow::XorgWindow(Display* display, ::Window window, string name,
+XorgWindow::XorgWindow(Display* display, ::Window window, std::string name,
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
 	: m_display(display),
 	m_window(window),
-	m_name(move(name)),
+	m_name(std::move(name)),
 	m_listener(listener),
 	m_listenerPointer(listenerPointer)
 {
@@ -32,7 +32,7 @@ XorgWindow::~XorgWindow()
 	XCloseDisplay(m_display);
 }
 
-RefPtr<IWindow> XorgWindow::createNewWindow(const string& name, const uint2& size,
+RefPtr<IWindow> XorgWindow::createNewWindow(const std::string& name, const uint2& size,
 	WindowType type, flag<WindowFlags> flags,
 	const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener,
 	ClientInterfaces::IWindowEventListener* listenerPointer)
@@ -40,7 +40,7 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const string& name, const uint2& siz
 	COMMON_CALLSTACK_CALL;
 
 	Display* display = XOpenDisplay(":0.0");
-	if (display == null)
+	if (display == nullptr)
 	{
 		Common::fatalError("XorgWindow::createNewWindow(): XOpenDisplay failed");
 	}
@@ -73,7 +73,7 @@ RefPtr<IWindow> XorgWindow::createNewWindow(const string& name, const uint2& siz
 
 	//XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask | VisibilityNotify);
 
-	return Common::RefPtr<XorgWindow>::Create(display, window, name, listener, listenerPointer);
+	return Common::RefPtr<XorgWindow>::create(display, window, name, listener, listenerPointer);
 }
 
 void XorgWindow::show()
@@ -137,9 +137,9 @@ void XorgWindow::handleEvents()
 		{
 			auto listener = m_listener.lock();
 
-			if (listener != null)
+			if (listener != nullptr)
 			{
-				listener->OnRedraw(this);
+				listener->onRedraw(this);
 			}
 			continue;
 		}
@@ -151,7 +151,7 @@ void XorgWindow::handleEvents()
 		{
 			auto listener = m_listener.lock();
 
-			if (listener == null)
+			if (listener == nullptr)
 				continue;
 
 			if (evt.type == KeyRelease && XEventsQueued(m_display, QueuedAfterReading))
@@ -194,7 +194,7 @@ bool XorgWindow::isShown() const
 	return m_shown;
 }
 
-string XorgWindow::getName() const
+std::string XorgWindow::getName() const
 {
 	COMMON_CALLSTACK_CALL;
 
@@ -265,7 +265,7 @@ void* XorgWindow::asImpl(uint64_t typeHash) const
 	}
 }
 
-void XorgWindow::handleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
+void XorgWindow::handleKeyEvent(XEvent* evt, const std::shared_ptr<ClientInterfaces::IWindowEventListener>& listener)
 {
 	auto sym = XkbKeycodeToKeysym(m_display, evt->xkey.keycode, 0, (evt->xkey.state & ShiftMask) != 0 ? 1 : 0);
 
@@ -284,7 +284,7 @@ void XorgWindow::handleKeyEvent(XEvent* evt, const shared_ptr<ClientInterfaces::
 
 	if (evt->type == KeyPress)
 	{
-		listener->OnKeyDown(this, keyCode, modifiers);
+		listener->onKeyDown(this, keyCode, modifiers);
 	}
 	else
 	{

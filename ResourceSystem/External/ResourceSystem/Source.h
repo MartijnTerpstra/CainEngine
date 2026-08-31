@@ -13,31 +13,31 @@ public:
 public:
 	// Main functionality
 
-	uint32_t ReadUint();
-	int32_t ReadInt();
-	float ReadFloat();
+	uint32_t readUint();
+	int32_t readInt();
+	float readFloat();
 
 	template<typename StructType>
-	inline StructType ReadStruct();
+	inline StructType readStruct();
 
 	template<typename T>
-	inline vector<T> ReadVector();
+	inline std::vector<T> readVector();
 
 private:
-	virtual bool Read(void* data, size_t dataSize) = 0;
+	virtual bool read(void* data, size_t dataSize) = 0;
 };
 
 class FileSource final : public Source
 {
 public:
 	// ctor & dtor
-	FileSource(const string& filePath);
+	FileSource(const std::string& filePath);
 	~FileSource();
 
 private:
 	// Source overrides
 
-	bool Read(void* data, size_t dataSize) override;
+	bool read(void* data, size_t dataSize) override;
 
 private:
 	// Member variables

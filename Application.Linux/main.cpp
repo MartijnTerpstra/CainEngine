@@ -20,9 +20,9 @@ public:
 		: m_platformFactory(platform)
 	{ }
 
-	void Run()
+	void run()
 	{
-		m_mainWindow = m_platformFactory->CreateNewWindow("Main Window", uint2(1280, 720),
+		m_mainWindow = m_platformFactory->createNewWindow("Main Window", uint2(1280, 720),
 			Platform::WindowType::Default, Platform::WindowFlags::Default, shared_from_this());
 
 		m_mainWindow->show();
@@ -61,5 +61,5 @@ int main()
 
 	auto application = std::make_shared<Application>(platform);
 
-	application->Run();
+	application->run();
 }
