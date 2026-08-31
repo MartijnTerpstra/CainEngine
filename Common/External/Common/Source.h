@@ -46,4 +46,4 @@ private:
 	std::ifstream m_infile;
 };
 
-} // namespace Common
+} // namespace CainEngine::Common

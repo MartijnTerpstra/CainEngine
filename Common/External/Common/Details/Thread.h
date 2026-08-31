@@ -8,14 +8,15 @@ namespace Details {
 
 class Thread
 {
-	friend class TaskManager;
+	friend class CainEngine::Common::TaskManager;
+
 public:
 	Thread(TaskManager* manager);
 	~Thread();
 
 private:
 	// For TaskManager
-	
+
 	void Run(std::promise<void>&& promise, std::function<void()>&& job);
 
 	void Stop();
@@ -40,6 +41,6 @@ private:
 	std::unique_ptr<std::thread> m_thread;
 };
 
-}
+} // namespace Details
 
-}
+} // namespace CainEngine::Common

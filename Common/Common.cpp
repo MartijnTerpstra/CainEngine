@@ -1,15 +1,13 @@
 #include "Precomp.h"
 
-#include "FatalErrorHandler.hpp"
 #include <mdebug.h>
 
 namespace CainEngine {
 
 namespace {
 
-void DefaultFatalError(std::string_view str)
+void DefaultFatalError(std::string_view)
 {
-	std::cout << str << std::endl;
 	printf("Callstack:\n");
 	for(auto& line : Common::Callstack::Get())
 	{
@@ -26,7 +24,7 @@ void DefaultFatalError(std::string_view str)
 
 constinit FatalErrorHandlerFn g_onFatalError = DefaultFatalError;
 
-}
+} // namespace
 
 // Declared directly under CainEngine (not CainEngine::Common) in Common.h -
 // this definition has to match that exactly, or it silently compiles as an
@@ -40,15 +38,16 @@ void SetFatalErrorHandler(FatalErrorHandlerFn handler)
 
 namespace Common {
 
-void InvokeFatalErrorHandler(std::string_view str)
+[[noreturn]] void Details::InvokeFatalErrorHandler(std::string_view str)
 {
 	g_onFatalError(str);
+	throw std::runtime_error("FatalErrorHandler should not return");
 }
 
 #if DEBUG_CHECKS
 void Unreachable()
 {
-	InvokeFatalErrorHandler("Unreachable code path");
+	Details::InvokeFatalErrorHandler("Unreachable code path");
 }
 #endif
 
@@ -58,5 +57,5 @@ void Unreachable()
 
 void mst::fatalError(std::string_view str)
 {
-	CainEngine::Common::InvokeFatalErrorHandler(str);
+	CainEngine::Common::FatalError(str);
 }

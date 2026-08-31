@@ -4,10 +4,22 @@
 #include <gtest/gtest.h>
 
 #include <cstring>
+#include <stdexcept>
 
 using namespace ::CainEngine;
 using namespace ::CainEngine::Common;
 using namespace ::CainEngine::TestSupport;
+
+namespace {
+
+// Deliberately violates the FatalErrorHandlerFn contract: a real handler is
+// never supposed to return (it must throw, exit(), or otherwise terminate
+// execution) - this simulates a client that fails to honor that [[noreturn]]
+// policy.
+void ReturningFatalErrorHandler(std::string_view)
+{ }
+
+} // namespace
 
 // Without FatalErrorTest installing a handler, any of these would hit the
 // default handler and hang the whole test binary waiting on std::cin.
@@ -38,4 +50,14 @@ TEST_F(FatalErrorTest, FailingAssertThrows)
 TEST_F(FatalErrorTest, PassingAssertDoesNotThrow)
 {
 	EXPECT_NO_THROW(COMMON_ASSERT(1 == 1));
+}
+
+TEST_F(FatalErrorTest, FatalErrorThrowsRuntimeErrorWhenHandlerReturns)
+{
+	// FatalErrorTest's own handler (ThrowingFatalErrorHandler) always throws,
+	// so it can't exercise this path - install a handler that breaks the
+	// noreturn contract instead.
+	SetFatalErrorHandler(&ReturningFatalErrorHandler);
+
+	EXPECT_THROW(Common::FatalError("deliberate failure: %d", 42), std::runtime_error);
 }
