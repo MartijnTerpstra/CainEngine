@@ -122,7 +122,7 @@
     {
       "name": "ci-linux-debug",
       "displayName": "CI Linux Debug",
-      "description": "Ninja generator, Debug build, BUILD_TESTING=ON; used by .github/workflows/unit-tests.yml. Requires ninja plus the X11 and Vulkan dev packages Platform.Xorg/Graphics.Vulkan find_package()-for on the runner.",
+      "description": "Ninja generator, Debug build, BUILD_TESTING=ON; used by .github/workflows/unit-tests.yml. Requires ninja plus the X11 and Vulkan dev packages Platform.Linux/Graphics.Vulkan find_package()-for on the runner.",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/_build/CainEngine/${presetName}",
       "condition": {

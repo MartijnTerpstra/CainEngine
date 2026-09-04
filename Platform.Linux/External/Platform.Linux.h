@@ -8,14 +8,14 @@
 // Forward declarations
 namespace CainEngine {
 namespace Platform {
-namespace Xorg {
+namespace Linux {
 
 class IXorgWindow;
 
 RefPtr<ICoreFactory> createInstance();
 
-}; // namespace Xorg
+}; // namespace Linux
 }; // namespace Platform
 }; // namespace CainEngine
 
-#include "Platform.Xorg/IXorgWindow.h"
+#include "Platform.Linux/IXorgWindow.h"

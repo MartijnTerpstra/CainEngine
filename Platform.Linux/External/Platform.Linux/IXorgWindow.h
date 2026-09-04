@@ -2,7 +2,7 @@
 
 namespace CainEngine {
 namespace Platform {
-namespace Xorg {
+namespace Linux {
 
 /**
 	Summary:
@@ -22,6 +22,6 @@ public:
 
 inline IXorgWindow::~IXorgWindow() = default;
 
-}; // namespace Xorg
+}; // namespace Linux
 }; // namespace Platform
 }; // namespace CainEngine

@@ -65,7 +65,7 @@ jobs:
       - name: Install build dependencies
         # Ninja for the ci-linux-debug preset; libx11-dev and libvulkan-dev
         # because the top-level CMakeLists.txt always add_subdirectory()s
-        # Platform.Xorg (find_package(X11) REQUIRED) and Graphics.Vulkan
+        # Platform.Linux (find_package(X11) REQUIRED) and Graphics.Vulkan
         # (find_package(Vulkan), FATAL_ERROR if missing) on UNIX, even though
         # the test suite itself only exercises Common/EntitySystem.
         run: |

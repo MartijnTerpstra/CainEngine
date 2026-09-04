@@ -1,4 +1,4 @@
-#include <Platform.Xorg.h>
+#include <Platform.Linux.h>
 
 #include <chrono>
 #include <thread>
@@ -58,7 +58,7 @@ private:
 
 int main()
 {
-	auto platform = Platform::Xorg::createInstance();
+	auto platform = Platform::Linux::createInstance();
 
 	auto application = std::make_shared<Application>(platform);
 
