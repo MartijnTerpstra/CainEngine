@@ -17,7 +17,7 @@ std::string LinuxCoreFactory::getPlatformName() const
 	return "Linux";
 }
 
-std::vector<RefPtr<IMonitor>> XorgCoreFactory::getMonitors()
+std::vector<RefPtr<IMonitor>> LinuxCoreFactory::getMonitors()
 {
 	return {}; // TODO: not implemented
 }
