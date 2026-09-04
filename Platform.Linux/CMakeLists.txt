@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.25)
 
-project (Platform.Xorg CXX)
+project (Platform.Linux CXX)
 
 file(GLOB SOURCELIST "*.cpp")
 
@@ -8,7 +8,7 @@ find_package(X11 REQUIRED)
 
 add_library(${PROJECT_NAME} ${SOURCELIST})
 
-add_library(Platform::Xorg ALIAS ${PROJECT_NAME})
+add_library(Platform::Linux ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC ${PROJECT_SOURCE_DIR}/External

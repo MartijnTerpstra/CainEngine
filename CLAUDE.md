@@ -67,7 +67,7 @@ module root so it isn't exported.
 ```
 Common  (foundation: logging, RefPtr/BaseObject casting, tasks, JSON parsing, Source/streams)
   ├── Platform            (interfaces: IWindow, IMonitor, IProcess, ICoreFactory, IInput...)
-  │     └── Platform.Win32 / Platform.Xorg   (concrete implementations of Platform's interfaces)
+  │     └── Platform.Win32 / Platform.Linux   (concrete implementations of Platform's interfaces)
   ├── EntitySystem         (Scene/EntityID/Transform — ECS-ish, not dependent on Platform/Graphics)
   └── Graphics             (interfaces: IRenderer, IFactory, IBuffer, ITexture... + Model/Material/ShaderManager)
         ├── Graphics.DX11 / .DX12 / .Vulkan   (concrete backend implementations)
@@ -88,7 +88,7 @@ ResourceSystem                -> standalone, depends only on Common (not current
   follow the existing unqualified style.
 - **Interface/implementation split**: `Platform` and `Graphics` define pure-virtual interfaces
   (`Platform::IWindow`, `Graphics::API::IRenderer`, `Graphics::API::IFactory`, ...) with no
-  platform/API-specific code; `Platform.Win32`/`Platform.Xorg` and
+  platform/API-specific code; `Platform.Win32`/`Platform.Linux` and
   `Graphics.DX11`/`.DX12`/`.Vulkan` provide the concrete backend. `Graphics::Renderer` and
   `Graphics::Factory` (in `Graphics/`) are the API-agnostic wrapper types application code
   actually uses; a backend is selected by calling that backend's `CreateInstance()` (see

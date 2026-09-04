@@ -37,7 +37,7 @@ elseif(UNIX)
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC Common::Common
 	PUBLIC Graphics::Core
-	PUBLIC Platform::Xorg
+	PUBLIC Platform::Linux
 	PRIVATE Vulkan::Vulkan)
 
 endif()

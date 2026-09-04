@@ -4,7 +4,7 @@ namespace CainEngine {
 namespace Platform {
 namespace Internal {
 
-class XorgWindow final : public Xorg::IXorgWindow
+class XorgWindow final : public Linux::IXorgWindow
 {
 	friend class Common::RefPtr<XorgWindow>;
 

@@ -84,7 +84,7 @@ add_subdirectory(Editor)
 elseif(UNIX)
 
 # Core library implementations
-add_subdirectory(Platform.Xorg)
+add_subdirectory(Platform.Linux)
 add_subdirectory(Graphics.Vulkan)
 
 # Launchers

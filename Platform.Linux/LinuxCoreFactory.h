@@ -6,18 +6,18 @@ namespace Internal {
 
 /*
 	Summary:
-		Xorg implementation of the IPlatformFactory
+		Linux implementation of the IPlatformFactory
 */
-class XorgCoreFactory final : public ICoreFactory
+class LinuxCoreFactory final : public ICoreFactory
 {
-	COMMON_DECLARE_NON_COPY(XorgCoreFactory);
-	friend class Common::RefPtr<XorgCoreFactory>;
+	COMMON_DECLARE_NON_COPY(LinuxCoreFactory);
+	friend class Common::RefPtr<LinuxCoreFactory>;
 
 private:
 	// ctor & dtor
 
-	XorgCoreFactory();
-	~XorgCoreFactory();
+	LinuxCoreFactory();
+	~LinuxCoreFactory();
 
 public:
 	// IPlatformFactory overrides
@@ -59,7 +59,7 @@ private:
 private:
 	// Member variables
 
-}; // class XorgCoreFactory
+}; // class LinuxCoreFactory
 
 }; // namespace Internal
 }; // namespace Platform
