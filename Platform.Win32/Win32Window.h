@@ -65,7 +65,7 @@ public:
 private:
 	// BaseObject overrides
 
-	virtual void* asImpl(uint64_t) const override;
+	void* asImpl(uint64_t) const override;
 
 private:
 	// Internal functionality
