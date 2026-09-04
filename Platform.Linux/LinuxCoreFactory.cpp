@@ -2,6 +2,7 @@
 
 #include "LinuxCoreFactory.h"
 
+#include "XorgMonitor.h"
 #include "XorgWindow.h"
 
 using namespace ::CainEngine;
@@ -19,12 +20,12 @@ std::string LinuxCoreFactory::getPlatformName() const
 
 std::vector<RefPtr<IMonitor>> LinuxCoreFactory::getMonitors()
 {
-	return {}; // TODO: not implemented
+	return XorgMonitor::getMonitors();
 }
 
 RefPtr<IMonitor> LinuxCoreFactory::getMainMonitor()
 {
-	return {}; // TODO: not implemented
+	return XorgMonitor::getMainMonitor();
 }
 
 RefPtr<IWindow> LinuxCoreFactory::createNewWindow(const std::string& name, const uint2& size,
