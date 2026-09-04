@@ -63,14 +63,21 @@ jobs:
           submodules: recursive
 
       - name: Install build dependencies
-        # Ninja for the ci-linux-debug preset; libx11-dev and libvulkan-dev
-        # because the top-level CMakeLists.txt always add_subdirectory()s
-        # Platform.Linux (find_package(X11) REQUIRED) and Graphics.Vulkan
-        # (find_package(Vulkan), FATAL_ERROR if missing) on UNIX, even though
-        # the test suite itself only exercises Common/EntitySystem.
+        # Ninja for the ci-linux-debug preset; libx11-dev, libxrandr-dev and
+        # libvulkan-dev because the top-level CMakeLists.txt always
+        # add_subdirectory()s Platform.Linux (find_package(X11) REQUIRED,
+        # X11_Xrandr_FOUND REQUIRED - see Platform.Linux/CMakeLists.txt) and
+        # Graphics.Vulkan (find_package(Vulkan), FATAL_ERROR if missing) on
+        # UNIX, even though the test suite itself only exercises
+        # Common/EntitySystem. pkg-config, libwayland-dev, wayland-protocols
+        # and libxkbcommon-dev are for Platform.Linux's Wayland backend
+        # (WaylandMonitor/WaylandWindow): wayland-client + wayland-scanner +
+        # the xdg-shell.xml it generates client bindings from, plus XKB
+        # keymap handling.
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build libx11-dev libvulkan-dev
+          sudo apt-get install -y ninja-build libx11-dev libxrandr-dev libvulkan-dev \
+            pkg-config libwayland-dev wayland-protocols libxkbcommon-dev
 
       - name: Configure
         # ci-linux-debug (CMakePresets.json) pins BUILD_TESTING=ON, same as
