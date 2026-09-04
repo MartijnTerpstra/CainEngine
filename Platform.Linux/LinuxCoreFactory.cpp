@@ -17,39 +17,7 @@ std::string LinuxCoreFactory::getPlatformName() const
 	return "Linux";
 }
 
-std::vector<RefPtr<IProcess>> LinuxCoreFactory::getProcesses(const std::string& name)
-{
-	return {}; // TODO: not implemented
-}
-
-RefPtr<IProcess> LinuxCoreFactory::getProcess(uint32_t id)
-{
-	return {}; // TODO: not implemented
-}
-
-RefPtr<IProcess> LinuxCoreFactory::getCurrentProcess()
-{
-	return {}; // TODO: not implemented
-}
-
-RefPtr<IProcess> LinuxCoreFactory::createNewProcess(const std::string& path)
-{
-	return {}; // TODO: not implemented
-}
-
-RefPtr<IProcess> LinuxCoreFactory::createNewProcess(
-	const std::string& path, const std::string& commandLine)
-{
-	return {}; // TODO: not implemented
-}
-
-RefPtr<IProcess> LinuxCoreFactory::createNewProcess(
-	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
-{
-	return {}; // TODO: not implemented
-}
-
-std::vector<RefPtr<IMonitor>> LinuxCoreFactory::getMonitors()
+std::vector<RefPtr<IMonitor>> XorgCoreFactory::getMonitors()
 {
 	return {}; // TODO: not implemented
 }

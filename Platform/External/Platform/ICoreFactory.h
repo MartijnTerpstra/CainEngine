@@ -16,20 +16,6 @@ public:
 
 	virtual std::string getPlatformName() const = 0;
 
-	virtual std::vector<RefPtr<IProcess>> getProcesses(const std::string& name) = 0;
-
-	virtual RefPtr<IProcess> getProcess(uint32_t id) = 0;
-
-	virtual RefPtr<IProcess> getCurrentProcess() = 0;
-
-	virtual RefPtr<IProcess> createNewProcess(const std::string& path) = 0;
-
-	virtual RefPtr<IProcess> createNewProcess(
-		const std::string& path, const std::string& commandLine) = 0;
-
-	virtual RefPtr<IProcess> createNewProcess(const std::string& path,
-		const std::string& commandLine, const std::string& workingDirectory) = 0;
-
 	virtual std::vector<RefPtr<IMonitor>> getMonitors() = 0;
 
 	virtual RefPtr<IMonitor> getMainMonitor() = 0;

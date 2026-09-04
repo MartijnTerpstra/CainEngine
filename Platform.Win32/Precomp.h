@@ -9,7 +9,6 @@ namespace CainEngine {
 namespace Graphics {
 namespace Internal {
 
-class Win32Process;
 class Win32Monitor;
 class Win32Window;
 class Win32Environment;

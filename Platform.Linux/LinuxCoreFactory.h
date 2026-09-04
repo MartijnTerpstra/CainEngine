@@ -24,20 +24,6 @@ public:
 
 	std::string getPlatformName() const override;
 
-	std::vector<RefPtr<IProcess>> getProcesses(const std::string& name) override;
-
-	RefPtr<IProcess> getProcess(uint32_t id) override;
-
-	RefPtr<IProcess> getCurrentProcess() override;
-
-	RefPtr<IProcess> createNewProcess(const std::string& path) override;
-
-	RefPtr<IProcess> createNewProcess(
-		const std::string& path, const std::string& commandLine) override;
-
-	RefPtr<IProcess> createNewProcess(const std::string& path, const std::string& commandLine,
-		const std::string& workingDirectory) override;
-
 	std::vector<RefPtr<IMonitor>> getMonitors() override;
 
 	RefPtr<IMonitor> getMainMonitor() override;
