@@ -10,7 +10,6 @@ using Common::RefPtr;
 
 class IWindow;
 class IInput;
-class IProcess;
 class ICoreFactory;
 
 namespace ClientInterfaces {
@@ -28,6 +27,5 @@ class IWindowEventListener;
 #include "Platform/ClientInterfaces/IWindowEventListener.h"
 #include "Platform/IWindow.h"
 #include "Platform/IInput.h"
-#include "Platform/IProcess.h"
 #include "Platform/IMonitor.h"
 #include "Platform/ICoreFactory.h"

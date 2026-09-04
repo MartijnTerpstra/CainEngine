@@ -2,7 +2,6 @@
 
 #include "Win32CoreFactory.h"
 
-#include "Win32Process.h"
 #include "Win32Window.h"
 #include "Win32Monitor.h"
 
@@ -17,38 +16,6 @@ Win32CoreFactory::~Win32CoreFactory() = default;
 std::string Win32CoreFactory::getPlatformName() const
 {
 	return "Win32";
-}
-
-std::vector<RefPtr<IProcess>> Win32CoreFactory::getProcesses(const std::string& name)
-{
-	return Win32Process::getProcesses(name);
-}
-
-RefPtr<IProcess> Win32CoreFactory::getProcess(uint32_t id)
-{
-	return Win32Process::getProcess(id);
-}
-
-RefPtr<IProcess> Win32CoreFactory::getCurrentProcess()
-{
-	return Win32Process::getCurrentProcess();
-}
-
-RefPtr<IProcess> Win32CoreFactory::createNewProcess(const std::string& path)
-{
-	return Win32Process::createNewProcess(path, "", "");
-}
-
-RefPtr<IProcess> Win32CoreFactory::createNewProcess(
-	const std::string& path, const std::string& commandLine)
-{
-	return Win32Process::createNewProcess(path, commandLine, "");
-}
-
-RefPtr<IProcess> Win32CoreFactory::createNewProcess(
-	const std::string& path, const std::string& commandLine, const std::string& workingDirectory)
-{
-	return Win32Process::createNewProcess(path, commandLine, workingDirectory);
 }
 
 std::vector<RefPtr<IMonitor>> Win32CoreFactory::getMonitors()
