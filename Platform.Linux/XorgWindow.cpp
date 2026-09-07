@@ -149,6 +149,17 @@ void XorgWindow::handleEvents()
 
 			handleKeyEvent(&evt, listener);
 		}
+		if(evt.type == ConfigureNotify)
+		{
+			auto listener = m_listener.lock();
+
+			if(listener != nullptr)
+			{
+				listener->onResize(this,
+					uint2(uint32_t(evt.xconfigure.width), uint32_t(evt.xconfigure.height)));
+			}
+			continue;
+		}
 		if(evt.type == MapNotify)
 		{
 			m_shown = true;
@@ -179,26 +190,51 @@ std::string XorgWindow::getName() const
 
 int XorgWindow::getWidth() const
 {
-	Common::fatalError("Not implemented");
-	return 0;
+	XWindowAttributes attrs;
+	if(!XGetWindowAttributes(m_display, m_window, &attrs))
+	{
+		Common::fatalError("XorgWindow::getWidth(): XGetWindowAttributes failed");
+	}
+
+	return attrs.width;
 }
 
 int XorgWindow::getHeight() const
 {
-	Common::fatalError("Not implemented");
-	return 0;
+	XWindowAttributes attrs;
+	if(!XGetWindowAttributes(m_display, m_window, &attrs))
+	{
+		Common::fatalError("XorgWindow::getHeight(): XGetWindowAttributes failed");
+	}
+
+	return attrs.height;
 }
 
 Rect XorgWindow::getRect() const
 {
-	Common::fatalError("Not implemented");
-	return Rect();
+	XWindowAttributes attrs;
+	if(!XGetWindowAttributes(m_display, m_window, &attrs))
+	{
+		Common::fatalError("XorgWindow::getRect(): XGetWindowAttributes failed");
+	}
+
+	// attrs.x/y are relative to this window's immediate parent, which - once a window manager
+	// has reparented it to add decorations - is that WM's frame rather than the root window;
+	// translate through to get screen-absolute coordinates regardless of that.
+	int screenX = 0;
+	int screenY = 0;
+	Window child;
+	XTranslateCoordinates(m_display, m_window, attrs.root, 0, 0, &screenX, &screenY, &child);
+
+	return Rect(screenX, screenY, screenX + attrs.width, screenY + attrs.height);
 }
 
 Rect XorgWindow::getClientRect() const
 {
-	Common::fatalError("Not implemented");
-	return Rect();
+	// No client-side decorations are drawn by this window either (any it has are the window
+	// manager's, same as it draws no server-side ones of its own), so the client area is the
+	// whole window - same as getRect().
+	return getRect();
 }
 
 void XorgWindow::toForeground()

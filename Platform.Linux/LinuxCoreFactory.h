@@ -43,7 +43,14 @@ private:
 	void* asImpl(uint64_t) const override;
 
 private:
+	// Internal functionality
+
+	static bool detectWayland();
+
+private:
 	// Member variables
+
+	const bool m_isWayland;
 
 }; // class LinuxCoreFactory
 
