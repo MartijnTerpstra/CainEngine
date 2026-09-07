@@ -44,13 +44,3 @@ EntityID::operator bool() noexcept
 {
 	return !isNull();
 }
-
-bool CainEngine::EntitySystem::operator==(EntityID left, EntityID right) noexcept
-{
-	return left.m_value == right.m_value;
-}
-
-bool CainEngine::EntitySystem::operator!=(EntityID left, EntityID right) noexcept
-{
-	return !(left == right);
-}
