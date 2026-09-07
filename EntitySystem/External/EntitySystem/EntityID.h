@@ -17,9 +17,7 @@ public:
 
 	bool isNull() const noexcept;
 
-	friend bool operator==(EntityID left, EntityID right) noexcept;
-
-	friend bool operator!=(EntityID left, EntityID right) noexcept;
+	bool operator==(const EntityID&) const noexcept = default;
 
 	explicit operator bool() noexcept;
 
