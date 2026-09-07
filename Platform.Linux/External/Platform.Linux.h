@@ -4,6 +4,7 @@
 #include <Platform.h>
 
 #include <X11/Xlib.h>
+#include <wayland-client.h>
 
 // Forward declarations
 namespace CainEngine {
@@ -11,6 +12,7 @@ namespace Platform {
 namespace Linux {
 
 class IXorgWindow;
+class IWaylandWindow;
 
 RefPtr<ICoreFactory> createInstance();
 
@@ -19,3 +21,4 @@ RefPtr<ICoreFactory> createInstance();
 }; // namespace CainEngine
 
 #include "Platform.Linux/IXorgWindow.h"
+#include "Platform.Linux/IWaylandWindow.h"
